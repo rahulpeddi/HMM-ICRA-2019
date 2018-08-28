@@ -315,6 +315,8 @@
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
+
+\newcommand\NB[1]{$\spadesuit$\footnote{NB: #1}}
 % reference package for bibtex
 
 %\usepackage{biblatex}
@@ -413,9 +415,9 @@ Email: rp3cy@virginia.edu}}
 % no \IEEEPARstart
     Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy. Many of these vehicles to be equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the contrary, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
     
-    One such example of an environment in which dangers arise rapidly are highways. Highways are often comprised of multiple lanes and many drivers performing different behaviors including lane changes, merges, passing, and reacting to other vehicles. In addition, highways involve travelling at very high velocities, which increase the likelihood that a dangerous situation will arise.
+    One such example of an environment in which dangers arise rapidly are highways. Highways are often comprised of multiple lanes and many drivers performing different behaviors including lane changes, merges, passing, and reacting to other vehicles. In addition, highways involve traveling at very high velocities, which increase the likelihood that a dangerous situation will arise. \NB{I would keep this more general. We don't want to have a paper about highway safety. The highway should be an example}
     
-    Because these dangerous situations can occur so rapidly, there is a need to increase the ability to guarantee safety when developing new systems for human drivers. This can be done by increasing the ability to predict and adapt to what will happen in the future. A simple depiction of a danger situation is shown in Fig. \ref{fig:hiway}. 
+    Because these dangerous situations can occur so rapidly \NB{need citation here}, there is a need to increase the ability to guarantee safety when developing new systems \NB{what do you mean with new systems?} for human drivers. This can be done by increasing the ability to predict and adapt to what will happen in the future. A simple depiction of a danger situation is shown in Fig. \ref{fig:hiway}. \NB{figure needs improvements}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{highwaysit.JPG}
@@ -428,7 +430,8 @@ Email: rp3cy@virginia.edu}}
     \item{a prediction method that can effectively and efficiently estimate the future positions of surrounding agents}
     \item{an adaptive framework that determines the adjustment and severity of such adjustment that should be made at any point in time}
     \end{itemize}
-    
+  
+  \NB{we should briefly mention how we solve these problems here}  
     The rest of this paper is organized as follows: in Section II, we discuss related work, and in Section III, we formally define the problem. The method to predict future behaviors and positions of other vehicles are presented in Section IV. We demonstrate our results with simulations and experiments in Sections V and VI, respectively.Lastly, we discuss our conclusions and discuss future work in Section VII.
 
     
@@ -451,15 +454,15 @@ Email: rp3cy@virginia.edu}}
     In this work, we are interested in developing a system that assists a human-operated vehicle in predicting and adapting to the future states of surrounding agents in a dynamic environment. The problem can be formally laid out as follows:
     
     \textbf{Problem 1: \textit{Predicting the future states of other vehicles}:}
-	A large roadway is very busy and many vehicles are performing typical highway behaviors; adjusting speeds, changing lanes, and passing. These vehicles' positions are detected using on-board sensors and an online method using pre-trained models is used to predict and estimate the future positions and behaviors of each vehicle. Given that the future positions have been estimated, the host vehicle (where our system is operating) needs to avoid possible dangerous situations. Formally:
+	A large roadway is very busy and many vehicles are performing typical highway \NB{let's remove highway} behaviors; adjusting speeds, changing lanes, and passing. These vehicles' positions are detected using on-board sensors and an online method using pre-trained models is used to predict and estimate the future positions and behaviors of each vehicle \NB{here you are giving the solution. This is a problem statement! What is the problem and what are the assumptions? }. Given that the future positions have been estimated, the host vehicle (where our system is operating) needs to avoid possible dangerous situations. Formally:
 	
-	\textbf{Problem 2: \textit{Minimizing dangerous situations}:} Given the future positions of the agents around the host vehicles, risky situations need to be minimized. The risk is minimized by maintaining a certain distance from other vehicles for up to five future time-steps. This is governed by the equation
+	\textbf{Problem 2: \textit{Minimizing dangerous situations}:} Given the future positions of the agents around the host vehicles \NB{what's the host vehicle?}, risky situations need to be minimized \NB{what are these risky situations?}. The risk is minimized by maintaining a certain distance from other vehicles for up to five \NB{why five?} future time-steps. This is governed by the equation \NB{the following equation doesn't make any sense}
 	\begin{equation}
 	argmin_{u}(\rho_{t+3})    
 	\end{equation}
 	where $\rho$ denotes the risk and $u$ describes the control input. It is important to note that this adjustment only occurs in relation to what the human-operator indicates is their intent. This introduces the third problem. Formally:
 
-	\textbf{Problem 3: \textit{Ensuring the system minimizes the deviation from the driver's intended action}:} The action that is taken by the system to correct the human driver's action should only deviate a certain threshold $\lambda_{d}$ from the driver's intended action. This deviation, however, is dynamic and increases as risk increases. When the level of autonomous input $u_{\alpha}$ approaches one, the deviation threshold approaches infinity, meaning that full autonomy is allowed:
+	\textbf{Problem 3: \textit{Ensuring the system minimizes the deviation from the driver's intended action}:} The action that is taken by the system to correct the human driver's action should only deviate a certain threshold $\lambda_{d}$ from the driver's intended action. This deviation, however, is dynamic and increases as risk increases. When the level of autonomous input $u_{\alpha}$ approaches one, the deviation threshold approaches infinity, meaning that full autonomy is allowed: \NB{not clear. what's the problem here?}
 	
 	\begin{equation}
 	    \lim_{u_{\alpha}\xrightarrow{}1}(\lambda_{d}) = \infty
@@ -476,6 +479,7 @@ The intent inference model is based on a Hidden Markov Model (HMM). In the imple
   \item Maintaining
 \end{enumerate}
 \end{varwidth}\\
+\NB{what about left right turns?}
 
 The states are the velocities of the moving vehicle to the left of the host vehicle, and the transition and observation probabilities are generated by using the probability model below.
 \begin{equation}
@@ -484,7 +488,7 @@ P(X, O \mid \mu) = \prod_{t=1}^{N} a[x_{t-1},x_{t}]b[o_{t},x_{t}]
 
 $X$ represents the sequence of states and $O$ represents the sequence of observations, and $A$ and $B$ represent the transition and observation probabilities, respectively. 
 
-This procedure generates the transition probabilities that reflected the training set. The training set is of a finite length and both the velocities and the sequence of observations are recorded. The transition matrix is built in such a manner that at any velocity, the most likely following velocity can be determined. For example, in a training set where the system measures 20 m/s in ten different instances, and in 6 of those instances the velocity jumps to 22 m/s, in 3 of them, the velocity remains at 20 m/s and in the final instance the velocity dips to 19 m/s, the transition matrix will return a 60\% chance that the following velocity is going to be 22 m/s. It is possible, however, that the probabilities are equal for multiple values. The emission probability matrix illustrates whether the following velocity should be higher, lower, or the same as the current velocity. This serves to help accurately determine the expected behavior and velocity in future steps. For example, if a driver determines they are driving too fast, it's likely that they'll slow down and vice-versa. A diagram of the Hidden Markov Model is depicted in Fig.\ref{fig:hmmdiag}
+This procedure \NB{what procedure?} generates the transition probabilities that reflected\NB{why past?} the training set. The training set is of a finite length and both the velocities and the sequence of observations are recorded. The transition matrix is built in such a manner that at any velocity, the most likely following velocity can be determined \NB{how? you are not showing how this is computed}. For example, in a training set where the system measures 20 m/s in ten different instances, and in 6 of those instances the velocity jumps to 22 m/s, in 3 of them, the velocity remains at 20 m/s and in the final instance the velocity dips to 19 m/s, the transition matrix will return a 60\% chance that the following velocity is going to be 22 m/s \NB{table this more than using text}. It is possible, however, that the probabilities are equal for multiple values \NB{...and what? This sentence is incomplete. The reviewer here will be left wondering what happens if tehy have teh same prob}. The emission probability matrix illustrates whether the following velocity should be higher, lower, or the same as the current velocity. This serves to help accurately determine the expected behavior and velocity in future steps. For example, if a driver determines they are driving too fast, it's likely that they'll slow down and vice-versa. A diagram of the Hidden Markov Model is depicted in Fig.\ref{fig:hmmdiag} \NB{explain what you are showing in the diagram.}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{hmmdiag.jpg}
@@ -492,9 +496,9 @@ This procedure generates the transition probabilities that reflected the trainin
     \label{fig:hmmdiag}
 \end{figure}
 
-In addition to velocities, this same method is used after a certain distance behind a slower-moving vehicle to determine the behavior in that situation. This, in our example, is the three lanes. The vehicle can remain in its own lane and slow down to match, or traverse to any available adjacent lane. This model is trained similarly, where the lane the vehicle is in is the observation, and the distance after which an action occurred is the state. For both velocity and behavior HMM's, three different models were built; one with a fast driver, on with a medium speed driver, another with a slow driver, and conservative, medium, and aggressive lane changers; as in the distance between vehicle and obstacle decrease as aggressiveness increases.
+In addition to velocities, this same method is used after a certain distance behind a slower-moving vehicle to determine the behavior in that situation \NB{what nehavior, not clear}. This, in our example, is the three lanes \NB{???}. The vehicle can remain in its own lane and slow down to match, or traverse to any available adjacent lane. This model is trained similarly, where the lane the vehicle is in is the observation, and the distance after which an action occurred is the state. For both velocity and behavior HMM's, three different models were built \NB{this is not a good information to provide here. We need to be more general and show how to generate models based on training data.}; one with a fast driver, on with a medium speed driver, another with a slow driver, and conservative, medium, and aggressive lane changers; as in the distance between vehicle and obstacle decrease as aggressiveness increases.\NB{this last sentence should be moved to the simualtion section}
 
-The purpose of the HMM is to use it to predict future states. In order to perform this prediction, first, observations and their matching states are compared with those of the three pre-trained models. These models are validated using a Matlab simulation, which is shown in Fig.\ref{fig:trainset}
+The purpose of the HMM is to use it to predict future states \NB{this sentence should be placed before. The sentence is contorted, simply say that the HMM is used to predict the surrounding vehicles future states and their likelihood}. In order to perform this prediction, first, observations and their matching states are compared with those of the three pre-trained models \NB{how do we so this comparison. We need to be formal here}. These models are validated using a Matlab simulation, which is shown in Fig.\ref{fig:trainset} \NB{simulations go in the simulation section}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{trainset.JPG}
@@ -509,7 +513,7 @@ The best match is found using
     min dist math
 \end{equation}
 
-Once the appropriate transition and emission matrices are identified, the following maximization function is used to predict the following velocity
+Once the appropriate transition and emission matrices are identified, the following maximization function is used to predict the following velocity \NB{not following, heere it looks liek you are showing in the text the following velocity. use next instead. We need to generalize that we are predicting next states which include both velocity and position}
 
 \begin{equation}
      K_{2}\lbrack j \rbrack \gets arg \max\limits_{j}(K_{1} \lbrack j \rbrack \cdot A_{kj})
@@ -519,31 +523,31 @@ This procedure gives an accurate idea of what the vehicle is going to do next. U
 
 \subsection{Risk Assessment}
 
-The risk is calculated as a function of distance between future steps of each vehicle. This includes our vehicle, assuming the driver continues his current action. A pictorial representation of this is taken from our MATLAB simulation and shown in Fig.\ref{fig:riskway}.
+The risk is calculated as a function of distance between future steps of each vehicle. This includes our vehicle, assuming the driver continues his current action \NB{not clear. Please exaplin clearly what you mean here}. A pictorial representation of this is taken from our MATLAB simulation and shown in Fig.\ref{fig:riskway}.\NB{simulations should not appear here}
 
 \begin{figure}[ht]
-    \includegraphics[height = 250,width=0.5\textwidth]{lanesandrisk.JPG}
+    \includegraphics[height = 250,width=0.5\textwidth]{lanesandrisk.jpg}
     \caption{Future position estimates of other vehicles. The vehicle in the center is the host vehicle, in which our reachable location in 5 future time-steps are indicated by the path lines. The dotted vehicles are future estimates, and the solid lined vehicles are current locations.}
     \label{fig:riskway}
 \end{figure}
 The distance from each of our reachable lines at time-steps $t+1 \to t+5$ is measured and used to calculate the risk in future time-steps.
 
-The number of future steps for which action will be taken is a user parameter. A very conservative driver could select five future time-steps, whereas an aggressive driver would select one future time-step for autonomous intervention and correction. If the user selects five time-steps as a baseline, and the system detects an unexpected peak in risk in any of the lower time-steps, action will still take place. Mathematically, the risk, $\rho$, is the inverse of the distance between two predictions,
+The number of future steps for which action will be taken is a user parameter. A very conservative driver could select five future time-steps, whereas an aggressive driver would select one future time-step for autonomous intervention and correction \NB{when descriving this, let's avoid to use numbers. We need to keep the theory more general. We should simply states that we are predicting N future steps ahead, or over a finite horizon of N steps}. If the user selects five time-steps as a baseline, and the system detects an unexpected peak in risk in any of the lower time-steps, action will still take place. Mathematically, the risk, $\rho$, is the inverse of the distance between two predictions,
 
 \begin{equation}
 \rho = k_{sc}\frac{1}{\Delta d},
 \end{equation}
 
-where $k_{sc}$ is a scaling constant that sets $0 \leq \rho \leq 10$. In our work, we set three time-steps as the user parameter for risk assessment.
+where $k_{sc}$ is a scaling constant that sets $0 \leq \rho \leq 10$ \NB{how is this possible? the equation and explanation are incorrect. Also, again, do not put absolute numbers here. We need to have general approaches}. In our work, we set three time-steps as the user parameter for risk assessment.
 
 \subsection{Assistive Autonomous Control}
 
-Given the range for $\rho$, a quadratic polynomial was set up in order to assign levels of autonomy, $u_{\alpha}$, to levels of risk,
+Given the range for $\rho$, a quadratic polynomial was set up in order to assign levels of autonomy, $u_{\alpha}$, to levels of risk, \NB{This needs to be revised. How did you find this. What are these numbers? We need to discuss the procedure. I need more information here. The math that you have presented so far don't make sense.}
 \begin{equation}
 u_{\alpha} = -0.0103\rho^{2} + 0.1989\rho + 0.0214
 \end{equation}
 
-Human control, $u_{h}$, which comprised of the rest of the control input is found using $1-u_{\alpha}$. The control of velocity is adjusted when the risk surpasses a certain threshold, $\lambda_{r}$, but minimum impact is made on the driver's intentions. This is done by calculating a $v_{max}$ and $v_{min}$ that minimize the risk. Because the risk is a function of distance, these values are set as a static distance, $\delta$ from potential obstacles on either side. In Fig.\ref{fig:vehiclepos}
+Human control, $u_{h}$, which comprised of the rest of the control input is found using $1-u_{\alpha}$. The control of velocity is adjusted when the risk surpasses a certain threshold, $\lambda_{r}$, but minimum impact is made on the driver's intentions. This is done by calculating a $v_{max}$ and $v_{min}$ that minimize the risk. Because the risk is a function of distance, these values are set as a static distance, $\delta$ from potential obstacles on either side. In Fig.\ref{fig:vehiclepos}. \NB{no simulations here. Simulations should be presented in the simulation section}
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{vehiclepos.JPG}
     \caption{The dotted black lines represent positions that are associated with $v_{min}$ and $v_{max}$. The vehicle is minimally adjusted until the vehicle's position begins to violate either of these lines, after which point $u_{\alpha}$ increases to 1, and full control is assumed.}
@@ -551,6 +555,8 @@ Human control, $u_{h}$, which comprised of the rest of the control input is foun
 \end{figure}
 
 As levels of autonomy exceed 0.5, the system begins to adjust the human's actions. This adjustment, however, is limited by $\lambda_{D}$. This is because an integral part of this system is that it is assistive, rather than fully autonomous. As $u_{\alpha}$ increases to 1.0, $\lambda_{d}$ approaches infinity, as in the limit on deviation no longer exists. This is set in order to guarantee safety in the unexpectedly dangerous situations.
+
+\NB{the approach needs to be rewritten.}
 
 
 \section{Simulations}
