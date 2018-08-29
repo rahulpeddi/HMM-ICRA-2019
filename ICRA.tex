@@ -451,22 +451,35 @@ Email: rp3cy@virginia.edu}}
     
 \section{Problem Formulation}
  
-    In this work, we are interested in developing a system that assists a human-operated vehicle in predicting and adapting to the future states of surrounding agents in a dynamic environment. The problem can be formally laid out as follows:
+    In this work, we are interested in developing a technique that assists a human-operated vehicle in predicting and adapting to the future states of neighboring vehicles in a dynamic environment. The problem can be formally laid out as follows:
     
-    \textbf{Problem 1: \textit{Predicting the future states of other vehicles}:}
-	A large roadway is very busy and many vehicles are performing typical highway \NB{let's remove highway} behaviors; adjusting speeds, changing lanes, and passing. These vehicles' positions are detected using on-board sensors and an online method using pre-trained models is used to predict and estimate the future positions and behaviors of each vehicle \NB{here you are giving the solution. This is a problem statement! What is the problem and what are the assumptions? }. Given that the future positions have been estimated, the host vehicle (where our system is operating) needs to avoid possible dangerous situations. Formally:
-	
-	\textbf{Problem 2: \textit{Minimizing dangerous situations}:} Given the future positions of the agents around the host vehicles \NB{what's the host vehicle?}, risky situations need to be minimized \NB{what are these risky situations?}. The risk is minimized by maintaining a certain distance from other vehicles for up to five \NB{why five?} future time-steps. This is governed by the equation \NB{the following equation doesn't make any sense}
-	\begin{equation}
-	argmin_{u}(\rho_{t+3})    
-	\end{equation}
-	where $\rho$ denotes the risk and $u$ describes the control input. It is important to note that this adjustment only occurs in relation to what the human-operator indicates is their intent. This introduces the third problem. Formally:
-
-	\textbf{Problem 3: \textit{Ensuring the system minimizes the deviation from the driver's intended action}:} The action that is taken by the system to correct the human driver's action should only deviate a certain threshold $\lambda_{d}$ from the driver's intended action. This deviation, however, is dynamic and increases as risk increases. When the level of autonomous input $u_{\alpha}$ approaches one, the deviation threshold approaches infinity, meaning that full autonomy is allowed: \NB{not clear. what's the problem here?}
+    A manned vehicle is moving in an environment in the presence of stationary obstacles and other vehicles. The goal ensure safe operation in cluttered environments.
+    
+    %To determine a policy that predicts the future states of neighboring vehicles and the likelihood that those states will occur, while also determining the risk - wasn't sure where exactly this should go.
+    
+    
+    
+    \textbf{Problem 1: \textit{Predicting the future states of neighboring vehicles}:}
+	Given a dynamic environment with multiple vehicles, a manned vehicle $\mathcal{R}$, has the objective operative in a safe manner. The aim is to find a policy that predicts the future states of neighboring vehicles and stationary obstacles within a certain sensing range of $\delta$. The neighboring vehicles are identified in 1.
 	
 	\begin{equation}
-	    \lim_{u_{\alpha}\xrightarrow{}1}(\lambda_{d}) = \infty
+	    i\in S \text{ if } \rVert x_{i}-x_{\mathcal{R}}\rVert \leq \delta 
 	\end{equation}
+	
+	where $i$ represents a single vehicle in $S$, the set of all neighboring vehicles. The condition indicates that this vehicle, $i$, has a position, $x_{i}$, within the sensing range of the user's position at $x_{\mathcal{R}}$. The future states of the neighboring vehicle $i$ should range up to time horizon $T$, such that a predicted state is returned for each future time-step up to this horizon: 
+	
+	\begin{equation}
+    	    x_{i,t\rightarrow T} = \{x_{i,t}, x_{i,t+1}, x_{i,t+1}, ..., x_{i,t+T}\}
+	\end{equation}
+	
+	In addition to calculating these future states, it is imperative that the accuracy of these future positions is known. As a result the probability that each of the future positions is correct should be determined:
+	
+	\begin{equation}
+    	    P_{x_{i,t\rightarrow T}} = \{P_{x_{i,t}}, P_{x_{i,t+1}}, P_{x_{i,t+2}}, ..., P_{x_{i,t+T}}\}
+	\end{equation}
+	
+	
+	\textbf{Problem 2: \textit{Adapting and Assisting In Dangerous Situations}:} Given the future states of $i$ and the likelihood of each state $x_{i,t\rightarrow T}$, we want to find a policy that adjusts the input,$u_{\alpha}$ provided to vehicle $\mathcal{R}$
 	
 \section{Proposed Method}
 \subsection{Intent and Behavior Prediction}
