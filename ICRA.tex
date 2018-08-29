@@ -308,6 +308,7 @@
 
 % *** Pseudocode PACKAGES ***
 \usepackage{amsmath}
+\DeclareMathOperator*{\argmin}{arg\,min}
 \usepackage{algorithm}
 \usepackage{varwidth}
 \usepackage[noend]{algpseudocode}
@@ -472,14 +473,31 @@ Email: rp3cy@virginia.edu}}
     	    x_{i,t\rightarrow T} = \{x_{i,t}, x_{i,t+1}, x_{i,t+1}, ..., x_{i,t+T}\}
 	\end{equation}
 	
-	In addition to calculating these future states, it is imperative that the accuracy of these future positions is known. As a result the probability that each of the future positions is correct should be determined:
+	In addition to calculating these future states, it is imperative that the accuracy of these future positions is known. As a result the probability, $P$, that each of the future positions is correct should be determined:
 	
 	\begin{equation}
     	    P_{x_{i,t\rightarrow T}} = \{P_{x_{i,t}}, P_{x_{i,t+1}}, P_{x_{i,t+2}}, ..., P_{x_{i,t+T}}\}
 	\end{equation}
 	
 	
-	\textbf{Problem 2: \textit{Adapting and Assisting In Dangerous Situations}:} Given the future states of $i$ and the likelihood of each state $x_{i,t\rightarrow T}$, we want to find a policy that adjusts the input,$u_{\alpha}$ provided to vehicle $\mathcal{R}$
+	\textbf{Problem 2: \textit{Identifying and adapting to dangerous situations}:} Given the future states of $i$ and the likelihood of each state $x_{i,t\rightarrow T}$, we want to find a policy that identifies dangerous situations. A risk profile, $
+	\rho$, should be calculated for $t\rightarrow T$ across all possible actions, $a_{n}$, where $n$ is the total number of actions:
+	
+	\begin{equation}
+	    \rho_{a_{1\rightarrow n}} = \{\rho_{a_{1}}, \rho_{a_{i,1+1}}, \rho_{a_{i,1+2}}, ..., \rho_{a_{i,1+n}}\}
+	\end{equation}
+	
+	In addition to calculating this risk, we aim to adjust the assistive input, $u_{\alpha}$ to the manned vehicle to minimize $\rho$
+	
+	\begin{equation}
+    	    u_{\alpha} = \argmin_{a}(\rho_{a_{1\rightarrow n}})
+	\end{equation}
+	
+	Lastly, we should ensure that any input- human, $u_{h}$, or assistive, $u_{\alpha}$, ensure that this safety condition is met
+	
+	\begin{equation}
+	    \forall i\in S: \lVert x_{i,t}-x_{\mathcal{R,t}}\rVert \geq \epsilon
+	\end{equation}
 	
 \section{Proposed Method}
 \subsection{Intent and Behavior Prediction}
