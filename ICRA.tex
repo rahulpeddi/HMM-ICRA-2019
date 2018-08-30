@@ -309,6 +309,7 @@
 % *** Pseudocode PACKAGES ***
 \usepackage{amsmath}
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 \usepackage{algorithm}
 \usepackage{varwidth}
 \usepackage[noend]{algpseudocode}
@@ -318,6 +319,7 @@
 
 
 \newcommand\NB[1]{$\spadesuit$\footnote{NB: #1}}
+\newcommand\RP[1]{$\clubsuit$\footnote{RP: #1}}
 % reference package for bibtex
 
 %\usepackage{biblatex}
@@ -452,142 +454,135 @@ Email: rp3cy@virginia.edu}}
     
 \section{Problem Formulation}
  
-    In this work, we are interested in developing a technique that assists a human-operated vehicle in predicting and adapting to the future states of neighboring vehicles in a dynamic environment. The problem can be formally laid out as follows:
+\textbf{Problem 1: \textit{Proactive Safe Assisted Planning and Control}:} 
     
-    A manned vehicle is moving in an environment in the presence of stationary obstacles and other vehicles. The goal ensure safe operation in cluttered environments.
-    
-    %To determine a policy that predicts the future states of neighboring vehicles and the likelihood that those states will occur, while also determining the risk - wasn't sure where exactly this should go.
-    
-    
-    
-    \textbf{Problem 1: \textit{Predicting the future states of neighboring vehicles}:}
-	Given a dynamic environment with multiple vehicles, a manned vehicle $\mathcal{R}$, has the objective operative in a safe manner. The aim is to find a policy that predicts the future states of neighboring vehicles and stationary obstacles within a certain sensing range of $\delta$. The neighboring vehicles are identified in 1.
-	
-	\begin{equation}
-	    i\in S \text{ if } \rVert x_{i}-x_{\mathcal{R}}\rVert \leq \delta 
-	\end{equation}
-	
-	where $i$ represents a single vehicle in $S$, the set of all neighboring vehicles. The condition indicates that this vehicle, $i$, has a position, $x_{i}$, within the sensing range of the user's position at $x_{\mathcal{R}}$. The future states of the neighboring vehicle $i$ should range up to time horizon $T$, such that a predicted state is returned for each future time-step up to this horizon: 
-	
-	\begin{equation}
-    	    x_{i,t\rightarrow T} = \{x_{i,t}, x_{i,t+1}, x_{i,t+1}, ..., x_{i,t+T}\}
-	\end{equation}
-	
-	In addition to calculating these future states, it is imperative that the accuracy of these future positions is known. As a result the probability, $P$, that each of the future positions is correct should be determined:
-	
-	\begin{equation}
-    	    P_{x_{i,t\rightarrow T}} = \{P_{x_{i,t}}, P_{x_{i,t+1}}, P_{x_{i,t+2}}, ..., P_{x_{i,t+T}}\}
-	\end{equation}
-	
-	
-	\textbf{Problem 2: \textit{Identifying and adapting to dangerous situations}:} Given the future states of $i$ and the likelihood of each state $x_{i,t\rightarrow T}$, we want to find a policy that identifies dangerous situations. A risk profile, $
-	\rho$, should be calculated for $t\rightarrow T$ across all possible actions, $a_{n}$, where $n$ is the total number of actions:
-	
-	\begin{equation}
-	    \rho_{a_{1\rightarrow n}} = \{\rho_{a_{1}}, \rho_{a_{i,1+1}}, \rho_{a_{i,1+2}}, ..., \rho_{a_{i,1+n}}\}
-	\end{equation}
-	
-	In addition to calculating this risk, we aim to adjust the assistive input, $u_{\alpha}$ to the manned vehicle to minimize $\rho$
-	
-	\begin{equation}
-    	    u_{\alpha} = \argmin_{a}(\rho_{a_{1\rightarrow n}})
-	\end{equation}
-	
-	Lastly, we should ensure that any input- human, $u_{h}$, or assistive, $u_{\alpha}$, ensure that this safety condition is met
-	
-	\begin{equation}
-	    \forall i\in S: \lVert x_{i,t}-x_{\mathcal{R,t}}\rVert \geq \epsilon
-	\end{equation}
-	
-\section{Proposed Method}
-\subsection{Intent and Behavior Prediction}
-The intent inference model is based on a Hidden Markov Model (HMM). In the implementation outlined in this work, the observations are\\
+    A human-operated vehicle $i$ is moving in an environment in the presence of stationary obstacles and other vehicles $j \in S_i(t)$, where $S_i(t)$ is a time varying set of vehicles in sensing/communication range with $i$. The goal is to find a policy to:
+    \begin{enumerate}
+        \item  predict online future states of the surrounding vehicles:
+    \begin{equation}
+    X_j={x_j(t), x_j(t+1),..., x_j(t+T)} \text{ with } j \in S_i(t)
+    \end{equation}
+    and assess their likelihood:
+    \begin{equation}
+    P_j={p_j(t), p_j(t+1),..., p_j(t+T)}
+    \end{equation}
+    \item assess the risk $0<= r_i <=1$ of a collision during $T$ and
+    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall j \in S$ and for 
+    \begin{equation}
+    t<=T |x_i(t)-x_j(t)|>=d_{min} \text{ where } x_i(t)
+    \end{equation}
+    is the state of the human-operated vehicle at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance.
 
-\begin{varwidth}{\textwidth}
+    \end{enumerate}
+
+\section{Approach}
+
+
+\subsection{System Model}
+Include Dynamics? 
+
+Block Diagram
+
+\subsection{Training Models Using Hidden Markov Model}
+In this section, we outline the Hidden Markov Model and training procedures used to obtain the models, with which we are able to make predictions about the future states of $j$.
+
+A Hidden Markov Model (HMM) is an effective way to model sequential data where future states are generally unknown. HMMs consist of a set of $n$ states, $Q = q_1,q_2,...q_n$, a $n\times n$ \RP{Is this the best way to say this?} transition probability matrix, $A = a_{11},a_{12},...a_{n1},...a_{nn}$, where $n$ is the total number of states, a sequence of $m$ observations, $O = o_1,o_2,...o_m$, and a $n\times m$ matrix of observation likelihoods, $B = b_n(o_m)$. 
+
+The general pictorial representation of an HMM is shown in Fig.\ref{fig:hmm}.
+\begin{figure}[ht]
+    \includegraphics[width=0.5\textwidth]{hmmwiki.png}
+    \caption{General Representation of a Hidden Markov Model. In this image, nodes labeled $x$ represent the states ($Q$), while those labeled $y$ represent the observations ($O$). The lines with the label $a$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.}
+    \label{fig:hmm}
+\end{figure}
+\RP{I HAVE TO REBUILD THIS PICTURE SO THE VARIABLE ARE THE SAME}
+In our implementation, we employ two separate HMMs in order to capture the different behaviors performed by the vehicle. In the first HMM, the observations are as follows:
 \begin{enumerate}
-  \item Speeding Up
-  \item Slowing Down
-  \item Maintaining
+    \item Speeding Up
+    \item Slowing Down
+    \item Maintaining
 \end{enumerate}
-\end{varwidth}\\
-\NB{what about left right turns?}
 
-The states are the velocities of the moving vehicle to the left of the host vehicle, and the transition and observation probabilities are generated by using the probability model below.
-\begin{equation}
-P(X, O \mid \mu) = \prod_{t=1}^{N} a[x_{t-1},x_{t}]b[o_{t},x_{t}]
+These observations are made using distances obtained from sensor data. In this HMM, the states are $n$ velocities $v_1,v_2,...v_{n}$ The transition matrix is a square matrix with dimension $n$ that describes how likely it is to transition from one velocity to another.
+
+The second HMM captures the fact that vehicles can not only change their speed but also the direction in which they are travelling. In this model, the observations we make relate to the distance, $\delta$ between the vehicle and some obstacle, at which an directional change occurs:
+\begin{enumerate}
+    \item $\delta_1$
+    \item $\delta_2$
+    \item $\delta_3$... $\delta_n$
+\end{enumerate}
+
+The states in this second model, represent the directional change made: left, right, or center. We assume that this vehicle is averse to collisions, and therefore are able to limit the possible directional changes in our training and prediction.
+
+In order to train this model, a large training period is set such that the sample is rich enough for accurate evaluation. The second HMM, in particular, can suffer from lack of enough data. The size of this period is dependent on the size of the evaluation period, which varies based on the implementation. The output of training the models are two matrices, $A$ and $B$. These matrices are built by counting the occurrences of the transition and observations associated with each state change \RP{I need an equation here - I need some help with that. I'm not sure how to show multiple iterations without algorithm}. The transition matrix for the both HMMs is a right-stochastic matrix, and satisfies the condition:
+
+\begin{equation} \label{probsum}
+    \sum_{c=1}^{n}p_{i,j} = 1
 \end{equation}
 
-$X$ represents the sequence of states and $O$ represents the sequence of observations, and $A$ and $B$ represent the transition and observation probabilities, respectively. 
-
-This procedure \NB{what procedure?} generates the transition probabilities that reflected\NB{why past?} the training set. The training set is of a finite length and both the velocities and the sequence of observations are recorded. The transition matrix is built in such a manner that at any velocity, the most likely following velocity can be determined \NB{how? you are not showing how this is computed}. For example, in a training set where the system measures 20 m/s in ten different instances, and in 6 of those instances the velocity jumps to 22 m/s, in 3 of them, the velocity remains at 20 m/s and in the final instance the velocity dips to 19 m/s, the transition matrix will return a 60\% chance that the following velocity is going to be 22 m/s \NB{table this more than using text}. It is possible, however, that the probabilities are equal for multiple values \NB{...and what? This sentence is incomplete. The reviewer here will be left wondering what happens if tehy have teh same prob}. The emission probability matrix illustrates whether the following velocity should be higher, lower, or the same as the current velocity. This serves to help accurately determine the expected behavior and velocity in future steps. For example, if a driver determines they are driving too fast, it's likely that they'll slow down and vice-versa. A diagram of the Hidden Markov Model is depicted in Fig.\ref{fig:hmmdiag} \NB{explain what you are showing in the diagram.}
-
-\begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{hmmdiag.jpg}
-    \caption{This is a visual depiction of the model used to train the prediction for future velocity states based on the observations of speeding up, slowing down, or maintaining speed.}
-    \label{fig:hmmdiag}
-\end{figure}
-
-In addition to velocities, this same method is used after a certain distance behind a slower-moving vehicle to determine the behavior in that situation \NB{what nehavior, not clear}. This, in our example, is the three lanes \NB{???}. The vehicle can remain in its own lane and slow down to match, or traverse to any available adjacent lane. This model is trained similarly, where the lane the vehicle is in is the observation, and the distance after which an action occurred is the state. For both velocity and behavior HMM's, three different models were built \NB{this is not a good information to provide here. We need to be more general and show how to generate models based on training data.}; one with a fast driver, on with a medium speed driver, another with a slow driver, and conservative, medium, and aggressive lane changers; as in the distance between vehicle and obstacle decrease as aggressiveness increases.\NB{this last sentence should be moved to the simualtion section}
-
-The purpose of the HMM is to use it to predict future states \NB{this sentence should be placed before. The sentence is contorted, simply say that the HMM is used to predict the surrounding vehicles future states and their likelihood}. In order to perform this prediction, first, observations and their matching states are compared with those of the three pre-trained models \NB{how do we so this comparison. We need to be formal here}. These models are validated using a Matlab simulation, which is shown in Fig.\ref{fig:trainset} \NB{simulations go in the simulation section}
-
-\begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{trainset.JPG}
-    \caption{This figure shows a period in which training occurs (prior to the appearance of the dashed line), and it also depicts an estimate, which accurately predicts what the actual vehicle does.}
-    \label{fig:trainset}
-\end{figure}
+where $i$ and $j$ are indices of the matrix. The observation, or emission matrices for each model are not square, but each row still meets the condition in (\ref{probsum}). Ultimately, the offline training procedure returns four matrices, $V_{tr}$, $Y_{tr}$, $V_{em}$, $Y_{em}$, representing the transition matrices for velocity and position, respectively, and the emission/observation matrices for velocity and position.
 
 
-The best match is found using
 
-\begin{equation}
-    min dist math
+\subsubsection{Adapting Method for Online Training}
+The transition and emission matrices are best returned using a large an comprehensive offline training set, but the technique can still be leveraged for online use. This is done in exactly the same manner using equation [Reference to equation I'm stuck on]. It is important, however, to note that the data set will likely return incorrect matrices at the start of runtime, as the observed vehicle will likely not have entered every state it will in the evaluation period. In order to alleviate this issue, the evaluation must begin after a certain number of states \RP{Would I call this a user parameter?} have been entered. A drawback to this method is that the prediction procedure must take place on constantly updating HMM parameters (transition and emission matrices). That being said, this capability is useful in situations where offline models do not accurately represent the observations being made, as is discussed later on in Section C. \RP{I'm not sure if this should go here or it should all move to the next section}
+
+\subsection{Online Fitting and Prediction}
+Given the two transition and two emission matrices derived from our equation, we are able to predict the future states of the observed vehicles. This is done by using the same process discussed in the previous section. The fitting process begins after one full iteration, at which point we have a state containing information about both $v$ and position, and observations from HMMs 1 and 2. We then compare these values with each of the matrices resulting from the pre-trained models as follows: Given the first observation, $o_{1}$ and first velocity $v_{1}$, we obtain the first emission probability, $b_{1}$, for each pre-trained model, $k$, we calculate
+
+\begin{equation} \label{probdist}
+   \gamma =  b_{1} - V_{em,k}(v_{1},o_{1})
 \end{equation}
 
-Once the appropriate transition and emission matrices are identified, the following maximization function is used to predict the following velocity \NB{not following, heere it looks liek you are showing in the text the following velocity. use next instead. We need to generalize that we are predicting next states which include both velocity and position}
+Where $\gamma$ represents the difference between the two probabilities. We then find the model $k$ that returns the lowest $\gamma$, denoted as $k^{*}$. Given that $k^{*}$, provides the best model for the system after the first iteration, we then apply it to the transition matrix to identify $v_{t+1}$;
+
+\begin{equation} \label{findmaxvalue}
+    v_{t+1} = \mathbf{find}\max(V_{tr,k^{*}}(v_{1},:))
+\end{equation}   \RP{Not sure how to properly indicate this}
+
+The value returned is the predicted velocity at the next iteration, and the same procedure is done for the directional HMM. However, there is significant uncertainty, as only one iteration had been used to procure this result. In order to account for this uncertainty, we perform a probabilistic assessment of each model for each HMM. For the velocity HMM, we initialize each model to have an initial probability of 
+\begin{equation} \label{initprob}
+    P_{k,t} = \frac{1}{K}    
+\end{equation}
+where $K$ is the total number of pre-trained models. With each iteration, we adjust each model in such a manner that the sum of $K$ probabilities is always equal to 1. For simplicity, we assume we know the total length of the evaluation period, $N$. We are then able to calculate the adjustment made each iteration:
 
 \begin{equation}
-     K_{2}\lbrack j \rbrack \gets arg \max\limits_{j}(K_{1} \lbrack j \rbrack \cdot A_{kj})
+    \beta = \bigg{(}\frac{1}{n}-\frac{1}{KN}\bigg{)}
 \end{equation}
 
-This procedure gives an accurate idea of what the vehicle is going to do next. Using that, we are able to use its future position to assess possible dangers in the future.
+For the $k^{*}$, we adjust:
 
-\subsection{Risk Assessment}
-
-The risk is calculated as a function of distance between future steps of each vehicle. This includes our vehicle, assuming the driver continues his current action \NB{not clear. Please exaplin clearly what you mean here}. A pictorial representation of this is taken from our MATLAB simulation and shown in Fig.\ref{fig:riskway}.\NB{simulations should not appear here}
-
-\begin{figure}[ht]
-    \includegraphics[height = 250,width=0.5\textwidth]{lanesandrisk.jpg}
-    \caption{Future position estimates of other vehicles. The vehicle in the center is the host vehicle, in which our reachable location in 5 future time-steps are indicated by the path lines. The dotted vehicles are future estimates, and the solid lined vehicles are current locations.}
-    \label{fig:riskway}
-\end{figure}
-The distance from each of our reachable lines at time-steps $t+1 \to t+5$ is measured and used to calculate the risk in future time-steps.
-
-The number of future steps for which action will be taken is a user parameter. A very conservative driver could select five future time-steps, whereas an aggressive driver would select one future time-step for autonomous intervention and correction \NB{when descriving this, let's avoid to use numbers. We need to keep the theory more general. We should simply states that we are predicting N future steps ahead, or over a finite horizon of N steps}. If the user selects five time-steps as a baseline, and the system detects an unexpected peak in risk in any of the lower time-steps, action will still take place. Mathematically, the risk, $\rho$, is the inverse of the distance between two predictions,
-
-\begin{equation}
-\rho = k_{sc}\frac{1}{\Delta d},
+\begin{equation} \label{optprobadj}
+    P_{k*,t+1} = P_{k*,t} + \beta
 \end{equation}
 
-where $k_{sc}$ is a scaling constant that sets $0 \leq \rho \leq 10$ \NB{how is this possible? the equation and explanation are incorrect. Also, again, do not put absolute numbers here. We need to have general approaches}. In our work, we set three time-steps as the user parameter for risk assessment.
+For each of the remaining models $k$:
 
-\subsection{Assistive Autonomous Control}
-
-Given the range for $\rho$, a quadratic polynomial was set up in order to assign levels of autonomy, $u_{\alpha}$, to levels of risk, \NB{This needs to be revised. How did you find this. What are these numbers? We need to discuss the procedure. I need more information here. The math that you have presented so far don't make sense.}
-\begin{equation}
-u_{\alpha} = -0.0103\rho^{2} + 0.1989\rho + 0.0214
+\begin{equation} \label{kprobadj}
+    P_{k,t+1} = P_{k,t} - \frac{\beta}{K-1}
 \end{equation}
 
-Human control, $u_{h}$, which comprised of the rest of the control input is found using $1-u_{\alpha}$. The control of velocity is adjusted when the risk surpasses a certain threshold, $\lambda_{r}$, but minimum impact is made on the driver's intentions. This is done by calculating a $v_{max}$ and $v_{min}$ that minimize the risk. Because the risk is a function of distance, these values are set as a static distance, $\delta$ from potential obstacles on either side. In Fig.\ref{fig:vehiclepos}. \NB{no simulations here. Simulations should be presented in the simulation section}
-\begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{vehiclepos.JPG}
-    \caption{The dotted black lines represent positions that are associated with $v_{min}$ and $v_{max}$. The vehicle is minimally adjusted until the vehicle's position begins to violate either of these lines, after which point $u_{\alpha}$ increases to 1, and full control is assumed.}
-    \label{fig:vehiclepos}
-\end{figure}
+The HMM for directional behaviors poses different challenges in probabilistic assessment. This is largely because transitions only occur when the $\delta$ approaches a certain value. As a result, the probabilities are adjusted much less frequently. The initialization is the same method as in (\ref{initprob}), adjustments, however, only occur as transitions occur in the observed vehicle. When an adjustment occurs, the comparison behaves similarly as the procedure in (\ref{probdist}) (\ref{findmaxvalue}). Until an adjustment occurs, this model is limited in its accuracy. As a result, the model that poses the most danger for the user's vehicle $i$ is assumed. This helps guarantee safe operation and will be discussed in more detail in Section D.
 
-As levels of autonomy exceed 0.5, the system begins to adjust the human's actions. This adjustment, however, is limited by $\lambda_{D}$. This is because an integral part of this system is that it is assistive, rather than fully autonomous. As $u_{\alpha}$ increases to 1.0, $\lambda_{d}$ approaches infinity, as in the limit on deviation no longer exists. This is set in order to guarantee safety in the unexpectedly dangerous situations.
 
-\NB{the approach needs to be rewritten.}
+
+\subsubsection{Online HMM Fitting for Uncertain Fits}
+It is possible, however, that, after performing the analyses in (\ref{optprobadj}) and (\ref{kprobadj}) there is no model whose probability exceeds a pre-set confidence level \RP{User parameter or select and justify?}. Another way this problem can arise is if the vehicle enters a state that has not been previously observed by any of the models, which would indicate library of models isn't rich enough to ensure accurate predictions.
+
+In order to retain the fidelity of the operation, the procedure then moves to the online procedure for building a model as discussed in Section B. Because we are attempting to fit the model, rather than build a model, we have the advantage of having some baseline, the current $k^{*}$. The matrices $V_{tr,k^{*}}$, $Y_{tr,k^{*}}$, $V_{em,k^{*}}$, $Y_{em,k^{*}}$ are augmented with new states, as if they were observed in the pre-trained model. These augmented parameters are then used for real-time predictions, and are evaluated in the manner outlined earlier in this section. A drawback to this method is that the computational impact increases, as the dimensions of the parameters of the HMMs are constantly changing, requiring more intensive computation at each iteration. \RP{I think I need some more math here, I'm not sure how to show that yet}
+
+
+\subsection{Risk Estimation based on Online Prediction}
+
+
+
+\subsection{Adaptive User Assistance}
+
+
+ 
+ 
+ 
+	
+
 
 
 \section{Simulations}
