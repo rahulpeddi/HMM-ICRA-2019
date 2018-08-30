@@ -454,6 +454,7 @@ Email: rp3cy@virginia.edu}}
     
 \section{Problem Formulation}
  
+In this work we are interested in ...\NB{complete with a brief discussion of the problem}. Formally: 
 \textbf{Problem 1: \textit{Proactive Safe Assisted Planning and Control}:} 
     
     A human-operated vehicle $i$ is moving in an environment in the presence of stationary obstacles and other vehicles $j \in S_i(t)$, where $S_i(t)$ is a time varying set of vehicles in sensing/communication range with $i$. The goal is to find a policy to:
@@ -472,8 +473,9 @@ Email: rp3cy@virginia.edu}}
     t<=T |x_i(t)-x_j(t)|>=d_{min} \text{ where } x_i(t)
     \end{equation}
     is the state of the human-operated vehicle at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance.
-
     \end{enumerate}
+    
+    \NB{here place a section to reinforce that this approach is meant to let a user operate a vehicle and just intervene in case we predict that certain actions may lead to unsafe conditions.}
 
 \section{Approach}
 
@@ -484,36 +486,38 @@ Include Dynamics?
 Block Diagram
 
 \subsection{Training Models Using Hidden Markov Model}
-In this section, we outline the Hidden Markov Model and training procedures used to obtain the models, with which we are able to make predictions about the future states of $j$.
+In this section, we outline the Hidden Markov Model and training procedures used to obtain the models, with which we are able to make predictions about the future states of $j$ \NB{j is not the universal name for the surrounding vehicles}.
 
-A Hidden Markov Model (HMM) is an effective way to model sequential data where future states are generally unknown. HMMs consist of a set of $n$ states, $Q = q_1,q_2,...q_n$, a $n\times n$ \RP{Is this the best way to say this?} transition probability matrix, $A = a_{11},a_{12},...a_{n1},...a_{nn}$, where $n$ is the total number of states, a sequence of $m$ observations, $O = o_1,o_2,...o_m$, and a $n\times m$ matrix of observation likelihoods, $B = b_n(o_m)$. 
+A Hidden Markov Model (HMM) is an effective way to model sequential data where future states are generally unknown. HMMs \NB{A HMM is described by a tuple...look at my ACC16 paper where I describe MDP and use something similar }consist of a set of $n$ states, $Q = q_1,q_2,...q_n$, a $n\times n$ \RP{Is this the best way to say this?} \NB{check literature on HMM to see how they define and represent these terms} transition probability matrix, $A = a_{11},a_{12},...a_{n1},...a_{nn}$, where $n$ is the total number of states \NB{you have already defined n}, a sequence of $m$ observations, $O = o_1,o_2,...o_m$, and a $n\times m$ matrix of observation likelihoods, $B = b_n(o_m)$. 
 
-The general pictorial representation of an HMM is shown in Fig.\ref{fig:hmm}.
+The general pictorial representation of an HMM is shown in Fig.\ref{fig:hmm}.\NB{please don't use figures from wikipedia}
+\NB{how does it extract a model? What is the theory behind? }
+
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{hmmwiki.png}
     \caption{General Representation of a Hidden Markov Model. In this image, nodes labeled $x$ represent the states ($Q$), while those labeled $y$ represent the observations ($O$). The lines with the label $a$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.}
     \label{fig:hmm}
 \end{figure}
 \RP{I HAVE TO REBUILD THIS PICTURE SO THE VARIABLE ARE THE SAME}
-In our implementation, we employ two separate HMMs in order to capture the different behaviors performed by the vehicle. In the first HMM, the observations are as follows:
+In our implementation, we employ two separate HMMs in order to capture the different behaviors performed by the vehicle. In the first HMM, the observations are as follows \NB{be more specific. What observation? of what? Readers don't know what you are thinking}:
 \begin{enumerate}
     \item Speeding Up
     \item Slowing Down
-    \item Maintaining
+    \item Maintaining \NB{maintaining what}
 \end{enumerate}
 
-These observations are made using distances obtained from sensor data. In this HMM, the states are $n$ velocities $v_1,v_2,...v_{n}$ The transition matrix is a square matrix with dimension $n$ that describes how likely it is to transition from one velocity to another.
+These observations are made using distances \NB{What??? The observations are made by using distances?} obtained from sensor data. In this HMM, the states are $n$ velocities $v_1,v_2,...v_{n}$ \NB{what's n?}The transition matrix is a square matrix with dimension $n$ that describes how likely it is to transition from one velocity to another. \NB{why is this stated again? You have already introduced the transition velocity}
 
-The second HMM captures the fact that vehicles can not only change their speed but also the direction in which they are travelling. In this model, the observations we make relate to the distance, $\delta$ between the vehicle and some obstacle, at which an directional change occurs:
+The second HMM captures the fact that vehicles can not only change their speed but also the direction in which they are traveling. In this model, the observations we make relate to the distance, $\delta$ \NB{why $\delta$. greek letters are used for variables. states usually are with lower case letters. } between the vehicle and some obstacle, at which an directional change occurs \NB{this is again not clear?}:
 \begin{enumerate}
     \item $\delta_1$
     \item $\delta_2$
     \item $\delta_3$... $\delta_n$
 \end{enumerate}
+\NB{what's delta 1 2 3?}
+The states in this second model, represent the directional change made: left, right, or center \NB{what do you mean? }. We assume that this vehicle \NB{what vehicle?} is averse to collisions, and therefore are able to limit the possible directional changes in our training and prediction \NB{what training?}.
 
-The states in this second model, represent the directional change made: left, right, or center. We assume that this vehicle is averse to collisions, and therefore are able to limit the possible directional changes in our training and prediction.
-
-In order to train this model, a large training period is set such that the sample is rich enough for accurate evaluation. The second HMM, in particular, can suffer from lack of enough data. The size of this period is dependent on the size of the evaluation period, which varies based on the implementation. The output of training the models are two matrices, $A$ and $B$. These matrices are built by counting the occurrences of the transition and observations associated with each state change \RP{I need an equation here - I need some help with that. I'm not sure how to show multiple iterations without algorithm}. The transition matrix for the both HMMs is a right-stochastic matrix, and satisfies the condition:
+In order to train this model, a large training period is set such that the sample is rich enough for accurate evaluation. The second HMM, in particular, can suffer from lack of enough data \NB{why?}. The size of this period is dependent on the size of the evaluation period \NB{what???}, which varies based on the implementation. The output of training the models are two matrices, $A$ and $B$ \NB{what are these matrices? How are they calculated?}. These matrices are built by counting the occurrences of the transition and observations associated with each state change \RP{I need an equation here - I need some help with that. I'm not sure how to show multiple iterations without algorithm}. The transition matrix for the both HMMs is a right-stochastic matrix \NB{How is this matrix calculated. How is it used?}, and satisfies the condition:
 
 \begin{equation} \label{probsum}
     \sum_{c=1}^{n}p_{i,j} = 1
