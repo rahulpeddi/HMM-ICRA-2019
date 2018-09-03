@@ -421,24 +421,33 @@ Email: rp3cy@virginia.edu}}
 
 %    Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy. Many of these vehicles to be equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the contrary, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
     
-%    One such example of an environment in which dangers arise rapidly are highways. Highways are often comprised of multiple lanes and many drivers performing different behaviors including lane changes, merges, passing, and reacting to other vehicles. In addition, highways involve traveling at very high velocities, which increase the likelihood that a dangerous situation will arise. \NB{I would keep this more general. We don't want to have a paper about highway safety. The highway should be an example}
     
 %    Because these dangerous situations can occur so rapidly \NB{need citation here}, there is a need to increase the ability to guarantee safety when developing new systems \NB{what do you mean with new systems?} for human drivers. This can be done by increasing the ability to predict and adapt to what will happen in the future. A simple depiction of a danger situation is shown in Fig. \ref{fig:hiway}. \NB{figure needs improvements}
+    
+    Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy.
+    
+    Many of these vehicles to be equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the other hand, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
+    
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{highwaysit.JPG}
-    \caption{Potentially dangerous highway situation. The vehicle in the center of the grid is the host vehicle, and the vehicle in front is driving much slower, while the vehicle to the right is approaching very rapidly. It would be safe in the instant to pass on the left, but that leaves the possibility that a dangerous situation will occur very soon.}
+    \caption{A highway: a common situation in which the environment is rapidly changing. The vehicle in the center of the grid is our vehicle, and the vehicle in front is driving much slower, while the vehicle to the right is approaching very rapidly. It would be safe in the instant to pass on the left, but that leaves the possibility that a dangerous situation will occur very soon.}
     \label{fig:hiway}
 \end{figure}
     
-    In terms of the adaptation, the human driver does control the vehicle, but it is important to have to ability to intervene and adjust the driver's actions as a dangerous situation arises. In this work, we aim to provide
+    In Fig.\ref{fig:hiway}, a vehicle is driving in a space where multiple actions appear safe at the moment. If the driver is unaware of the future risk of performing a certain action, an unsafe situation may arise, resulting in a collision.
+    Within this work, we are interested in finding a way to determine whether or not this driver's actions are indeed unsafe, and how the vehicle itself, assuming it is capable of some autonomy, can intervene and adapt to the situation at hand. This type of work can be approached as a type of Markov Chain, which is a commonly used model for many cyber-physical systems. The proposed model in this work is closely related to a Hidden Markov Model, where the states are hidden, but we are able to make observations. In this paper, the proposed model is named \textit{Adjusted Hidden Markov Model}, where we have the benefit of the states no longer being hidden, and being able to draw a direct connection between states and observations at those states, which ultimately will help predict future states. 
+    
+     In this work, we aim to provide
     \begin{itemize}
     \item{a prediction method that can effectively and efficiently estimate the future positions of surrounding agents}
     \item{an adaptive framework that determines the adjustment and severity of such adjustment that should be made at any point in time}
     \end{itemize}
   
-  \NB{we should briefly mention how we solve these problems here}  
-    The rest of this paper is organized as follows: in Section II, we discuss related work, and in Section III, we formally define the problem. The method to predict future behaviors and positions of other vehicles are presented in Section IV. We demonstrate our results with simulations and experiments in Sections V and VI, respectively.Lastly, we discuss our conclusions and discuss future work in Section VII.
+    These problems are solved using our proposed framework, and are specifically implemented in a highway-type situation, where there are multiple vehicles performing different behaviors.
+    
+    
+    The rest of this paper is organized as follows: in Section II, we discuss related work, and in Section III, we formally define the problem. The proposed AHMM framework is presented in Section IV. In Section V, we discuss a specific case study, in which our framework is applied to guarantee safety. We demonstrate our results with MATLAB simulations and real-world experiments in Sections VI and VII, respectively. Lastly, we discuss our conclusions and future work in Section VII.
 
     
 % You must have at least 2 lines in the paragraph with the drop letter
