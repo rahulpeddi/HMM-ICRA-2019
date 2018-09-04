@@ -426,7 +426,7 @@ Email: rp3cy@virginia.edu}}
     
     Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy.
     
-    Many of these vehicles to be equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the other hand, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
+    Many of these vehicles are equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the other hand, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
     
 
 \begin{figure}[ht]
@@ -435,17 +435,19 @@ Email: rp3cy@virginia.edu}}
     \label{fig:hiway}
 \end{figure}
     
-    In Fig.\ref{fig:hiway}, a vehicle is driving in a space where multiple actions appear safe at the moment. If the driver is unaware of the future risk of performing a certain action, an unsafe situation may arise, resulting in a collision.
-    Within this work, we are interested in finding a way to determine whether or not this driver's actions are indeed unsafe, and how the vehicle itself, assuming it is capable of some autonomy, can intervene and adapt to the situation at hand. This type of work can be approached as a type of Markov Chain, which is a commonly used model for many cyber-physical systems. The proposed model in this work is closely related to a Hidden Markov Model, where the states are hidden, but we are able to make observations. In this paper, the proposed model is named \textit{Adjusted Hidden Markov Model}, where we have the benefit of the states no longer being hidden, and being able to draw a direct connection between states and observations at those states, which ultimately will help predict future states. 
+    In Fig.\ref{fig:hiway}, a vehicle is driving in a space where multiple actions appear safe at the moment. If the driver is unaware of the future risk of performing a certain action, an unsafe situation may arise, resulting in a collision. \NB{rephrase}
+    \NB{We are interested in predicting future states of other vehicles, assess risk of collisions, and adapt the system accordingly} \NB{We leverage the HMM theory }
+    Within this work, we are interested in finding a way to determine whether or not this driver's actions are indeed unsafe, and how the vehicle itself, assuming it is capable of some autonomy, can intervene and adapt to the situation at hand. This type of work can be approached as a type of Markov Chain, which is a commonly used model for many cyber-physical systems. The proposed model in this work is closely related to a Hidden Markov Model \NB{no need of name here}, where the states are hidden, but we are able to make observations \NB{still confusing}. In this paper, the proposed model is named \textit{Adjusted Hidden Markov Model}, where we have the benefit of the states no longer being hidden, and being able to draw a direct connection between states and observations at those states, which ultimately will help predict future states \NB{confusing}. 
     
      In this work, we aim to provide
     \begin{itemize}
     \item{a prediction method that can effectively and efficiently estimate the future positions of surrounding agents}
-    \item{an adaptive framework that determines the adjustment and severity of such adjustment that should be made at any point in time}
+    \item{an adaptive framework that determines the adjustment and severity of such adjustment that should be made at any point in time\NB{be specific that we are adjusting actions}}
     \end{itemize}
   
-    These problems are solved using our proposed framework, and are specifically implemented in a highway-type situation, where there are multiple vehicles performing different behaviors.
+    These problems are solved using our proposed framework \NB{no need for these sentences}, and are specifically implemented in a highway-type situation, where there are multiple vehicles performing different behaviors. \NB{Although the proposed approach is applied in the context of autonomous and semi-autonomous vehicles, it is general and applicable to any other CPS}
     
+\NB{stress that we see the user as a disturbance or adversarial effect. We monitor the user behavior and intervene if necessary by predicting future states of our system and the surrounding entities (obstacles and other vehicles)}    
     
     The rest of this paper is organized as follows: in Section II, we discuss related work, and in Section III, we formally define the problem. The proposed AHMM framework is presented in Section IV. In Section V, we discuss a specific case study, in which our framework is applied to guarantee safety. We demonstrate our results with MATLAB simulations and real-world experiments in Sections VI and VII, respectively. Lastly, we discuss our conclusions and future work in Section VII.
 
@@ -466,28 +468,29 @@ Email: rp3cy@virginia.edu}}
     
 \section{Problem Formulation}
  
-In this work we are interested in finding a method to proactively guarantee safety by adapting a human user's actions and inputs into a semi-autonomous mobile system. Formally: 
+In this work we are interested in finding a method to proactively guarantee safety (i.e., something bad will never happen) by adapting a human user's actions and inputs into a semi-autonomous mobile system \NB{remove adapting...and discuss the general problem}. \NB{In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems in which users may perform undesired actions that can compromise the safety of the entire system} Formally: 
+
 \textbf{Problem 1: \textit{Proactive Safe Assisted Planning and Control}:} 
     
-    A human-operated vehicle $i$ is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_i(t)$, where $R_i(t)$ is a time varying set of vehicles in sensing/communication range with $i$. The goal is to find a policy to:
+    A human-operated vehicle $i$ \NB{change $i$ with something else} is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_i(t)$, where $R_i(t)$ is a time varying set of vehicles in sensing/communication range with $i$. The goal is to find a policy to:
     \begin{enumerate}
         \item  predict online the future states of the surrounding vehicles:
     \begin{equation}
-    S_q={s_q(t), s_q(t+1),..., s_q(t+T)} \text{ with } q \in R_i(t)
+    S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\} \text{ with } q \in R_i(t)
     \end{equation}
     and assess their likelihood:
     \begin{equation}
     P_j={p_j(t), p_j(t+1),..., p_j(t+T)}
     \end{equation}
-    \item assess the risk $0<= r_i <=1$ of a collision during time horizon $T_u$ and
-    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in S$ and for 
+    \item assess the risk $0\leq r_i \leq1$ of a collision during time horizon $T_u$ \NB{check} and
+    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in S$ \NB{define $\rho$ here or start the sentence with Given $\rho$ a user defined minimum risk threshold}and for \NB{for all t we can guarantee || x-x|| >dmin} 
     \begin{equation}
     t<=T |x_i(t)-x_q(t)| \geq d_{min}
     \end{equation}
-     where $x_i(t)$ is the state of the human-operated vehicle at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance.
+     where $x_i(t)$ is the state of the human-operated vehicle at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance\NB{add $x_q$ definition}.
     \end{enumerate}
     
-    It is important to note that the vehicle being modified is primarily human operated, in the sense that the approach to solving this problem should allow the user to operate the vehicle as she or he wishes, unless a prediction reveals that the user's action may lead to unsafe conditions, $r_i > \rho$.
+    It is important to note that the vehicle being modified is primarily human operated, in the sense that the approach to solving this problem should allow the user to operate the vehicle as she or he wishes, unless a prediction reveals that the user's action may lead to unsafe conditions, $r_i > \rho$ \NB{rephrase} \NB{we intervene only if necessary. Unless teh user performs actions that we predict could lead to unsafe conditions, we let the user perform his/her desired actions}.
 
 \section{Approach}
 
