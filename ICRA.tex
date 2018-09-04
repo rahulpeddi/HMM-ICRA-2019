@@ -482,7 +482,7 @@ In this work we are interested in finding a method to proactively guarantee safe
     \item assess the risk $0<= r_i <=1$ of a collision during time horizon $T_u$ and
     \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in S$ and for 
     \begin{equation}
-    t<=T |x_i(t)-x_q(t)|>=d_{min}
+    t<=T |x_i(t)-x_q(t)| \geq d_{min}
     \end{equation}
      where $x_i(t)$ is the state of the human-operated vehicle at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance.
     \end{enumerate}
