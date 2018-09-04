@@ -472,30 +472,30 @@ In this work we are interested in finding a method to proactively guarantee safe
 
 \textbf{Problem 1: \textit{Proactive Safe Assisted Planning and Control}:} 
     
-    A human-operated vehicle $i$ \NB{change $i$ with something else} is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_i(t)$, where $R_i(t)$ is a time varying set of vehicles in sensing/communication range with $i$. The goal is to find a policy to:
+    A human-operated vehicle $h$ is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
     \begin{enumerate}
         \item  predict online the future states of the surrounding vehicles:
     \begin{equation}
-    S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\} \text{ with } q \in R_i(t)
+    S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T_u)}\} \text{ with } q \in R_h(t)
     \end{equation}
     and assess their likelihood:
     \begin{equation}
-    P_j={p_j(t), p_j(t+1),..., p_j(t+T)}
+    P_j=\{{p_q(t), p_q(t+1),..., p_q(t+T_u)}\}
     \end{equation}
-    \item assess the risk $0\leq r_i \leq1$ of a collision during time horizon $T_u$ \NB{check} and
-    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in S$ \NB{define $\rho$ here or start the sentence with Given $\rho$ a user defined minimum risk threshold}and for \NB{for all t we can guarantee || x-x|| >dmin} 
+    \item assess the risk $0\leq r_h \leq1$ of a collision during time horizon $T_u$ and
+    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in R_h$, $\rho$ is a user defined minimum risk threshold and for $t\leq T_u$, we can guarantee
     \begin{equation}
-    t<=T |x_i(t)-x_q(t)| \geq d_{min}
+        |x_h(t)-x_q(t)| \geq d_{min}
     \end{equation}
-     where $x_i(t)$ is the state of the human-operated vehicle at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance\NB{add $x_q$ definition}.
+     where $x_h(t)$ and $x_q(t)$ are the positions of the human-operated vehicle and the surrounding agents at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance.
     \end{enumerate}
     
-    It is important to note that the vehicle being modified is primarily human operated, in the sense that the approach to solving this problem should allow the user to operate the vehicle as she or he wishes, unless a prediction reveals that the user's action may lead to unsafe conditions, $r_i > \rho$ \NB{rephrase} \NB{we intervene only if necessary. Unless teh user performs actions that we predict could lead to unsafe conditions, we let the user perform his/her desired actions}.
+    It is important to note that the vehicle being modified is primarily human operated, in the sense that the approach to solving this problem should allow the user to operate the vehicle as she or he wishes, unless a prediction reveals that the user's action may lead to unsafe conditions, $r_i > \rho$ \NB{rephrase} \NB{we intervene only if necessary. Unless the user performs actions that we predict could lead to unsafe conditions, we let the user perform his/her desired actions}.
 
 \section{Approach}
 
 \subsection{Adjusted Hidden Markov Model}
-In this section, we outline the a novel model that can be used to accurately predict the future states of a system. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model. An HMM or QMDP [ref] could be used to solve this problem as well, but those two processes feature unneeded considerations and complications. The AHMM based approach provides a less computationally expensive method to guarantee safe operation.
+In this section, we outline the a novel model that can be used to accurately predict the future states of a system. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model. MPC [ref] or QMDP [ref] could be used to solve this problem as well, but those two processes feature unneeded considerations and complications. The AHMM based approach provides a less computationally expensive method to guarantee safe operation.
 
 \subsubsection{Framework}
 
@@ -570,10 +570,34 @@ First, we begin to observe a system. At this point, the probability that each mo
     M^* = \min_M\big[\lVert p_{s1s2} - a_{M,s1s2})\rVert\big] \newline
 \end{equation}
 
-Where $M^*$ represents the optimal model for the ensuing prediction. We then calculate the next state using (\ref{eq:nextstate}), as was done in the previous sections. While $M^*$ is the model used for the following prediction, a likelihood is associated with this model. As previously mentioned, each model has an initial probability $1/M$. With each iteration, probabilities by adding a constant, $\gamma$, to the optimal model, and subtracting $\frac{\gamma}{M-1}$ from each of the other models. The ensuing probabilities give us an idea of how confident we are that the model is the best fit for the system we are observing. Because the fitting is done as previously outlined, it is important to note that having an expansive and rich set of models is useful in ensuring that the best fit is found.
+Where $M^*$ represents the optimal model for the ensuing prediction. We then calculate the next state using (\ref{eq:nextstate}), as was done in the previous sections. While $M^*$ is the model used for the following prediction, a likelihood is associated with this model. As previously mentioned, each model has an initial probability $P_M = 1/M$. With each iteration, probabilities by adding a constant, $\gamma$, to the optimal model, and subtracting $\frac{\gamma}{M-1}$ from each of the other models. The ensuing probabilities give us an idea of how confident we are that the model is the best fit for the system we are observing. Because the fitting is done as previously outlined, it is important to note that having an expansive and rich set of models is useful in ensuring that the best fit is found.
 
 \subsubsection{Online Fitting for Uncertain Fits}
-If the observed system, however, does not result in an $M^*$ with confidence level, $c_{M^{*}} > c*$, which is a user parameter, the method outlined in the online section is used. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $M^*$. We are able to leverage the parameters of $M^*$, by augmenting and updating $\mathcal{A}$ and $\mathcal{B}$ as we enter new states or observe new transitions or observations. While this solution is viable, there is an increased possibility of having drastically incorrect predictions until the model is rich enough to effectively describe the observed system.
+If the observed system, however, does not result in an $M^*$ with confidence level, $c_{M^{*}} > c*$, which is a user parameter, the method outlined in the online section is used. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $M^*$. We are able to leverage the parameters of $M^*$, by augmenting and updating $\mathcal{A}$ and $\mathcal{B}$ as we enter new states or observe new transitions or observations. The appropriate $M$ is updated at each $t$ and this is shown in Table \ref{tab:probup}.
+
+\begin{table}[ht]
+    \centering
+    \resizebox{0.45\textwidth}{!}
+{\begin{tabular}{ |c||c||c|c|c||c|  }
+ \hline
+ \multicolumn{6}{|c|}{Updating $M^*$} \\
+ \hline
+ Time& $M^*(t)$& $P_{M_1}$& $P_{M_2}$& $P_{M_3}$& $M^*(t+1)$\\
+ \hline
+ $t_1$&$M_3$&$P_{M_1}-\frac{\gamma}{M-1}$& $P_{M_2}-\frac{\gamma}{M-1}$&$P_{M_3}+\gamma$&$M_2$\\
+ \hline
+ $t_2$&$M_2$&$P_{M_1}-\frac{\gamma}{M-1}$&$P_{M_2}+\gamma$&$P_{M_3}-\frac{\gamma}{M-1}$& $M_2$\\
+ \hline
+ \vdots & \vdots & \vdots& \vdots&\vdots&\vdots\\
+ \hline
+ $T_u$&$M_n$&$P_{M_1}$&$P_{M_2}$&$P_{M_3}$&$M_n$\\
+ \hline
+\end{tabular}}
+\caption{This table shows how we update $M^*$ at each $t$}
+ \label{tab:probup}
+\end{table}
+
+While this solution is viable, there is an increased possibility of having drastically incorrect predictions until the model is rich enough to effectively describe the observed system.
 
 \section{Case Study: Semi-autonomous vehicle on a Highway}
 In this section, we describe the case study we use to illustrate the use of the AHMM framework, and we demonstrate how it can be used to guarantee safe operation. The case study in this paper is that of a manned ground vehicle travelling in a typical highway setting.
@@ -628,28 +652,28 @@ where $t$ represents a time within $T_{u}$. The AHMM for lateral position tells 
 
 
 \subsubsection{Risk Estimation based on Online Prediction}
-This section shows how risk is defined given our online prediction over $T_{u}$. Risk is always connected to the host vehicle's actions. For example, if the user is driving the vehicle at a certain velocity $u_s$ with no indication of turning, $u_\omega = \pi/2$, we assume that action will continue for the length $T_{u}$ and a lane change will not occur, and we calculate future forward positions using (\ref{eq:dumpos}). With this, we can estimate the future positions of the host vehicle. In addition, risk will be calculated as a separate entity for each lane.
+This section shows how risk is defined given our online prediction over $T_{u}$. Risk is always connected to the host vehicle's actions. For example, if the user is driving the vehicle at a certain velocity $u_s$ with no indication of turning, $u_\omega = \pi/2$, we assume that action will continue for the length $T_{u}$ and a lane change will not occur, and we calculate future forward positions using (\ref{eq:dumpos}). With this, we can estimate the future positions of the host vehicle. In addition, risk will be calculated as a separate entity for each lane, $l$.
 
 The risk is a function of the distance between estimated future positions of the host vehicle and the agents at each $t$ within time horizon $T_{u}$. The distance is calculated using the following equation:
 \begin{equation}
-    \forall q \in R : \delta_q = y_t - y_{qt}
+    \forall q \in R : d_q = y_t - y_{qt}
 \end{equation}
-where the subscript $q$ indicates that the value relates to a particular agent, and is evaluated: $ \forall t \leq T_u$. The choice to make this distance a simple difference, rather than euclidean or absolute distance was made in order to is the sign to accurately capture the direction of the source of the risk; whether it is coming from in front of or behind our vehicle. This is done because . We will use $r$ to denote this risk, increases as distance decreases. The following equation determines how we calculate risk:
+where the subscript $q$ indicates that the value relates to a particular agent, and is evaluate for all $t \leq T_u$. The choice to make this distance a simple difference, rather than euclidean or absolute distance was made in order to is the sign to accurately capture the direction of the source of the risk; whether it is coming from in front of or behind our vehicle. This is done because. We will use $r$ to denote this risk, increases as distance decreases. The following equation demonstrates how we calculate risk:
 \begin{equation}
     r_{qt}^{f} =
     \begin{cases}
-    1,                      & \text{if } \delta_{qt} < 1 \\
+    1,                      & \text{if } d_{qt} < 1 \\
     \frac{1}{\delta_{qt}},  & \text{otherwise} 
     \end{cases}
 \end{equation}
-where $r_{qt}^{\text{lane}}$ represents the risk of a certain agent $q$ interfering with the user's position in a certain lane $f$ at time $t \leq T_u$. It is important to note that multiple agents affect risk in our analysis, the agent with the highest absolute risk is considered for adaptation. The set of maximum risk values, $(\bar{r}^{L},\bar{r}^{C},\bar{r}^{R})$ for each lane is evaluated for each $t \leq T_u$.
+where $r_{qt}^{\text{lane}}$ represents the risk of a certain agent $q$ interfering with the user's position in a certain lane $f$ at time $t \leq T_u$. It is important to note that multiple agents affect risk in our analysis, the agent with the highest absolute risk is considered for adaptation. The set of maximum risk values, $(\hat{r}^{L},\hat{r}^{C},\hat{r}^{R})$ for each lane is evaluated for each $t \leq T_u$.
 
 \subsubsection{Adaptive User Assistance}
-Given the $\bar{r}$ values for each lane for all $t$ up to $T_u$, we can adapt our system to guarantee safety. In order to adapt to the user's actions, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\rho$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
+Given the $\hat{r}$ values for each lane for all $t$ up to $T_u$, we can adapt our system to guarantee safety. In order to adapt to the user's actions, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\rho$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
 \begin{equation}
-    u_a > u_h \iff \bar r^{f} > b
+    u_a > u_h \iff \hat r^{l^*} > b
 \end{equation}
-where $u_a$ and $u_h$ represent autonomous and human control, while $f$ represents the user's lane. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $f^*$, which is the lane with the lowest risk. However, we do not immediately default to changing the lane. Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user respond with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
+where $u_a$ and $u_h$ represent autonomous and human control, while $l^*$ represents the user's lane. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk. However, we do not immediately default to changing the lane. Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user respond with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
 
  
  
