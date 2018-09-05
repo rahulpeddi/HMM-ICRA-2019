@@ -493,19 +493,21 @@ In this work we are interested in finding a method to proactively guarantee safe
     It is important to note that the vehicle being modified is primarily human operated, in the sense that the approach to solving this problem should allow the user to operate the vehicle as she or he wishes, unless a prediction reveals that the user's action may lead to unsafe conditions, $r_i > \rho$ \NB{rephrase} \NB{we intervene only if necessary. Unless the user performs actions that we predict could lead to unsafe conditions, we let the user perform his/her desired actions}.
 
 \section{Approach}
-
+\NB{add the general approach here}
 \subsection{Adjusted Hidden Markov Model}
-In this section, we outline the a novel model that can be used to accurately predict the future states of a system. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model. MPC [ref] or QMDP [ref] could be used to solve this problem as well, but those two processes feature unneeded considerations and complications. The AHMM based approach provides a less computationally expensive method to guarantee safe operation.
+In this section, we outline a novel model that can be used to accurately predict the future states of a system \NB{rephrase as In this section we propose a novel HMM-based approach to predict future states of other vehicles. We leverage an history of offline observations to build different models that are used online to recognize and predict other vehicles behaviors}. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model. MPC [ref] or QMDP [ref] could be used to solve this problem as well, but those two processes feature unneeded considerations and complications \NB{...be specific talk about the computation complexity}. The AHMM based approach provides a less computationally expensive method to guarantee safe operation. \NB{In comparison to MDP and QMDP that require computationally expensive value iterations, our propose work is more efficient while guaranteeing safety.} \NB{IMPORTANT: Introduce the training set concept: sates are observed offline to extract a model of a vehicle. Multiple vehicles are sampled to extract different models that capture the behavior of the system}
 
 \subsubsection{Framework}
 
-The Adjusted Hidden Markov Model can be described by the tuple $\langle \mathcal{S},\mathcal{O},\mathcal{A},\mathcal{B},\rangle$, where:
+The proposed Adjusted Hidden Markov Model can be described by a tuple $\langle \mathcal{O},\mathcal{E},\mathcal{A},\mathcal{B},\rangle$, \NB{add $\mathcal X$} where:
 \begin{itemize}
-    \item $\mathcal{S}$ is a finite set of $n$ measurable states entered over time horizon $T$, denoted as $s_{i}$ or $s_{j}$, where $i$ and $j$ are in $\mathbb{N} \leq n$. The notation $s_{ij}$ represents the state transition from $i$ to $j$.
+    \item $\mathcal{S}$ is a finite set of states $s_i$ collected over a finite past time horizon $T$, $\mathcal{S} = \{ s_{t-T}, s_{t-T+1}, \ldots, s_{t}\} $ \NB{need to add the $n$ possible values that $s$ can be, pulled from a finite set $\forall s(t)\in\mathcal{S}$, $s(t) \in \mathcal{X}$ where $\mathcal{X}$}
+    
+    denoted as $s_{i}$ or $s_{j}$, where $i$ and $j$ are in $\mathbb{N} \leq n$. The notation $s_{ij}$ represents the state transition from $i$ to $j$.
     \item $\mathcal{O}$ is a finite set of $m$ observations made based on state measurements, denoted as $o_{x}$, where $x$ is in $\mathbb{N} \leq m$.
-    \item $\mathcal{A}$ is a transition probability matrix with dimension $n \times n$. This matrix describes the probability of entering a certain state, $s_{i}$ at the next time-step, while currently in a particular state $s_{j}$, defined by the equation:
+    \item $\mathcal{P}$ is a transition probability matrix with dimension $n \times n$. This matrix describes the probability of entering a certain state, $s_{i}$ at the next time-step, while currently in a particular state $s_{j}$, defined by the equation:
         \begin{equation}
-            a_{ij} = P(s_j \text{ at } t+1 \vert s_i \text{ at } t)
+            p_{ij} = P(s_j \text{ at } t+1 \vert s_i \text{ at } t)
         \end{equation}
         This probability is calculated by counting the occurrences of each state transition over all transitions from that state:
         \begin{equation} \label{eq:transbuild}
@@ -538,11 +540,13 @@ The Adjusted Hidden Markov Model can be described by the tuple $\langle \mathcal
                         b_{n1} &    & b_{nm}
                     \end{bmatrix}
         \end{equation}
-        The matrices $\mathcal{A}$ and $\mathcal{B}$ will be referenced as "the parameters" of the AHMM in the rest of this work. 
+        The matrices $\mathcal{A}$ and $\mathcal{B}$ will be referenced as ``the parameters" of the AHMM in the rest of this work. 
 \end{itemize}
 
+\NB{let's use S for measurements, O for observations, X for state, P for transition prob, B for emission}
 
-This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{A}, \mathcal{B} \rangle$, with implicit parameters $m$ and $n$. The AHMM is adjusted from a traditional Hidden Markov Model because the states are are measurable. The benefit we draw with measurable states is that the connection between states and observations are not hidden, and therefore, predictions can be made with increased accuracy.
+
+\NB{stress about training sets, each training set is about a certain vehicle that you are observing over an horizon T } This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{A}, \mathcal{B} \rangle$, with implicit parameters $m$ and $n$. The AHMM is adjusted from a traditional Hidden Markov Model because the states are are measurable. The benefit we draw with measurable states is that the connection between states and observations are not hidden, and therefore, predictions can be made with increased accuracy. \NB{the only difference is that we have all the states and transitions a priori and can learn a model offline}
 The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}.
 
 \begin{figure}[ht]
@@ -551,18 +555,19 @@ The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}.
     \label{fig:hmm}
 \end{figure}
 
-\subsubsection{Making Predictions with the AHMM}
- Using the framework above, we build a model of a certain system offline. After $T$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i,T}$ and applying the parameters: We start with the assumption that $\mathcal{A}$ will give conclusive results:
+\subsubsection{Making Predictions with the AHMM}\NB{change titles...HMM-based Prediction}
+ Using the framework above, we build a model of a certain system offline. After $T$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i,T}$ \NB{and applying to the transition and emission matrices to obtain the next most likely state and its likelihood...talk about lookup table to find the prediction} and applying the parameters: We start with the assumption that $\mathcal{A}$ will give conclusive results \NB{add this consideration and with more details later }:
 \begin{equation} \label{eq:nextstate}
     s_{i,T+1} = \max_{j}[\mathcal{A}_{(i,T),j}]
 \end{equation}
 There is, however, the possibility that there will be more than one returned states, as the maximum transition probability can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$. Because the relationship between states and observations is not hidden, we can use the expected observation, derived from (\ref{eq:obsref}) to assess which returned state is more accurate. In the event that the prediction is still unclear, we elect the more extreme transition, and update the model parameters online based on the actual observed transition, as will be described in the next section.
+\NB{Using this framework it is possible to predict over any future horizon H asuuming that the prediction is correct at each iteration and considering at every iteration the results from the transition and emission matrices} \NB{add algorithm}
 
-\subsubsection{Online Updating and Training of AHMM Parameters}
+\subsubsection{Online Updating and Training of AHMM Parameters} \NB{add sliding window approach to always have T observations and remove old unneccessary}
 AHMM parameters can be updated online in order to increase the accuracy of the model. This is done by using (\ref{eq:transbuild}) and (\ref{eq:obsbuild}) with another the new transition and associated observation. If the system enters a new state or observation, $n$ or $m$ would increase, respectively. The new parameters will continue to be used for online prediction.
 
 \subsubsection{Online Fitting Models}
-In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process, and also a method to ensure that the correct model is used in the prediction. Let us build 3 models, $M_1,M_2,M_3$ to represent some system that behaves in 3 different ways. Using the method outlined in this section, we are able to determine and apply the best model.
+\NB{Using the framework described in Sections 1 2 and 3  we can extract a model that capture the behavior of a system that we have been observing for T. Multiple models can be extracted using several data sets about different systems under observation. In other words we can obtain add super-set containing all the transition and emission matrices}.\NB{During run-time we observe new measurements about other systems and the challenge consists on fitting the new system observations to the right model} \NB{the challenge here is that until we have enough data the prediction may not be correct and thus we need to tae into account this} In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process, and also a method to ensure that the correct model is used in the prediction \NB{later...explain that the more models the more precise and likely you are to find a good fit}. Let us build 3 models, $M_1,M_2,M_3$ to represent some system that behaves in 3 different ways. Using the method outlined in this section, we are able to determine and apply the best model.
 
 First, we begin to observe a system. At this point, the probability that each model is correct is $c_M = 1/M$, where $M$ is the total number of models - in our case, $M = 3$. With this, we are able to measure the first state, $s_1$, and get the first observation, $o_1$. We then calculate the probability of this occurrence. In the case of the first state, this probability is 1, otherwise the probability will be calculated as in (\ref{eq:obsbuild}). After the first iteration, we obtain a transition as well, and we are able to calculate new transition probabilities, $p_{s1s2}$ using (\ref{eq:transbuild}). In order to determine the best-fit model, we compare this with the transition probabilities in each of the model matrices:
 
