@@ -733,12 +733,6 @@ In addition, we determine the minimum and maximum velocities our vehicle should 
 
  Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user respond with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
 
- 
- 
- 
-	
-
-
 
 \section{Simulations}
 The simulations for this work primarily were done in Matlab. Different simulations were run for each part of the approach and case study shown above. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions. This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the adjustments made to user actions, in order to verify that we are able to guarantee safety.
@@ -775,7 +769,17 @@ In the next simulation, we show that we are able to fit pre-trained models to a 
     \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
     \label{fig:cs1b}
 \end{figure}
+ In addition, we show the error of the fit for each velocity model in \ref{fig:cs1c}.
+ 
+ \begin{figure}[ht]
+    \includegraphics[width=0.5\textwidth]{fit3.png}
+    \caption{The error of the fit between our model and each of the three pretrained models}
+    \label{fig:cs1c}
+\end{figure}
 
+Here we see that the closest fit is that of the medium-speed model.
+ 
+ 
 \subsection{Avoidance}
 In order to show the proactive safety system, we have three specific use-cases.
 
