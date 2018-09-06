@@ -744,38 +744,76 @@ In addition, we determine the minimum and maximum velocities our vehicle should 
 The simulations for this work primarily were done in Matlab. Different simulations were run for each part of the approach and case study shown above. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions. This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the adjustments made to user actions, in order to verify that we are able to guarantee safety.
 
 \subsection{Training Models}
-In this case, the host vehicle in the center lane responds to the actions and future position of a vehicle in the left lane, which is passing a stationary obstacle. The two snapshots of the simulation in Fig.\ref{fig:cs1} and Fig.\ref{fig:cs1b} snapshots indicate the behaviors that are occurring.
+For training the models, we used a workspace featuring $15$ stationary obstacles. A test vehicle drove through a highway setting with these obstacles, and it was observed for a training period of 700 iterations. This is followed by an estimation period of 700 iterations, which were used to validate the parameters.
+
+\begin{figure}[ht]
+    \includegraphics[width=0.5\textwidth]{train1.png}
+    \caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).}
+    \label{fig:cs1}
+\end{figure}
+
+\begin{figure}[ht]
+    \includegraphics[width=0.5\textwidth]{train2.png}
+    \caption{The lane changes of the actual robot (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).}
+    \label{fig:cs1b}
+\end{figure}
+
+In this simulation we find that the root mean squared error (RMSE) between the forward positions is $3.9273$, and the RMSE between lane changes is $2.5912$.  
+
+\subsection{Fitting Models}
+
+In the next simulation, we show that we are able to fit pre-trained models to a randomly generated vehicle moving through the same workspace as the training sets. In this simulation, we begun to fit the parameters after making one full transition and obtaining related emissions. 
+
+\begin{figure}[ht]
+    \includegraphics[width=0.5\textwidth]{fit2.png}
+    \caption{The forward position of the actual robot (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).}
+    \label{fig:cs1}
+\end{figure}
+
+\begin{figure}[ht]
+    \includegraphics[width=0.5\textwidth]{fit1.png}
+    \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
+    \label{fig:cs1b}
+\end{figure}
+
+\subsection{Avoidance}
+In order to show the proactive safety system, we have three specific use-cases.
+
+In the first case, the host vehicle in the center lane responds to the actions and future position of a vehicle in the left lane, which is passing a stationary obstacle. The two snapshots of the simulation in Fig.\ref{fig:cs1} and Fig.\ref{fig:cs1b} indicate the behaviors that are occurring.
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs1.JPG}
-    \caption{In this snapshot, $u_{\alpha} = 0$ and $u_{h} = 1$. This is because the risk in the vehicle's current lane at $t = t+3$ is well below the $\lambda_{r}$.}
+    \caption{In this snapshot, $u_{\alpha} = 0$ and $u_{h} = 1$. This is because the $r^l$ at $T_u$ is below the $\rho$.}
     \label{fig:cs1}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs1b.JPG}
-    \caption{In this snapshot, the risk in the host vehicle's lane at $t+3$ has increased above $\lambda_{r}$, and autonomy has increased rapidly. The reason $u_{alpha}$ has increased to 1, is because this is the instant at which the change begins. The location of minimum risk is determined to be the right lane, and the vehicle will then move to the right lane.}
+    \caption{In this snapshot, the risk in the host vehicle's lane at $T_u$ has increased above $\rho$, and autonomy has increased rapidly. The reason $u_{alpha}$ has increased to 1, is because this is the instant at which the change begins. The location of minimum risk is determined to be the right lane, and the vehicle will then move to the right lane.}
     \label{fig:cs1b}
 \end{figure}
 
 This simulation results in a safe operation, as the minimum risk is easily identified and the solution is offered. In this simulation, the human takes no action, which is another reason fully autonomous intervention occurs, and the risk is still minimized and avoided.
 
-\subsection{Fitting Models}
+
 In the second simulation, the human does take some action and it is evident that autonomy and human-control are fluid and change based on changing surroundings. In addition, there is once again a clear location at which the risk is at a minimum. The snapshot in Fig.\ref{fig:cs2} shows a situation where the user is travelling at a velocity slightly too rapid for the obstacle ahead, and slowing down will not put it at a risky position in relation to the next vehicle that is behind the user. As a result, $u_{\alpha}$ is increased as the level of risk increases.
+
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs2.JPG}
-    \caption{In this snapshot, $u_{\alpha} > u_{h}$. This is because the risk in the vehicle's current lane at $t = t+3$ is slightly above the $\lambda_{r}.$}
+    \caption{In this snapshot, $u_{\alpha} > u_{h}$. This is because the $r^l_u$ at $T_u$ is above $\rho$}
     \label{fig:cs2}
 \end{figure}
-This result also indicates a case of the user's desires being met as closely as possible. The user, by not only adjusting velocity and not adjusting their lane change behavior, indicates that the velocity is the first parameter to adjust. As shown in Fig.\ref{fig:cs2c}, the velocity is only adjusted so that the driver is in a safe position for the selected $t+3$ time and, consequently for times $t+1$ and $t+2$. This is indicated by a velocity that slowly decreases to a safe value. This, however, would only suffice to maximize the time before a collision occurs. Because that is a limitation of only adjusting the velocity, when a collision becomes imminent, $u_\alpha$ increase to 1, and the lane is changed to that of minimum risk.
+
+This result also indicates a case of the user's desires being met as closely as possible. The user, by only adjusting velocity and not adjusting their lane change behavior, indicates that the velocity is the first parameter to adjust. As shown in Fig.\ref{fig:cs2c}, the velocity is only adjusted so that the driver is in a safe position for the selected time $T_u$ and, consequently for times $t,t+1,\ldots,T_u$. This is indicated by a velocity that slowly decreases to a safe value. This, however, would only suffice to maximize the time before a collision occurs. Because that is a limitation of only adjusting the velocity, when a collision becomes imminent, $u_\alpha$ increases to 1, and the lane is changed to that of minimum risk.
+
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs2c.JPG}
     \caption{This figure depicts the velocity of the user's vehicle}
     \label{fig:cs2c}
 \end{figure}
 
-\subsection{Avoidance}
-The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. An adjustment of the velocities in this case are shown in \ref{fig:vehiclepos}. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $\Delta d$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision.
+The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. An adjustment of the velocities in this case are shown in \ref{fig:vehiclepos}. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
+
 
 
 
