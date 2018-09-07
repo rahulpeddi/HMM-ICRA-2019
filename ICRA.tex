@@ -313,7 +313,6 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{algorithm}
-\usepackage[options]{algorithm2e}
 \usepackage{varwidth}
 \usepackage[noend]{algpseudocode}
 \makeatletter
@@ -557,21 +556,21 @@ The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}. 
 \end{equation}
 There is, however, the possibility that there will be more than one returned states, as the maximum transition probability can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$. Because the relationship between states and observations is not hidden, we can use the expected observation, derived from (\ref{eq:obsref}) to assess which returned state is more accurate. In the event that the prediction is still unclear, we elect the more dangerous transition, which is a quantity that depends on the application. For instance, in our case study, the more dangerous transition is one that minimizes the distance between our user's vehicle and the observed vehicle. In addition, we also update the model parameters online based on the actual observed transition, as will be described in the next section. Using this framework, it is possible to predict over any future horizon H, assuming that the prediction is correct at each iteration, the future states using the transition and emission matrices.
 
-\begin{algorithm}[H]
-\SetAlgoLined
-\KwResult{$s(t+1)$}
- \While{$t\leq H$}{
-  \For{$s(t) = s_i$}{
-   $\max_j(\mathcal{P}_{ij})$, where $j = \{1,\ldots,n\}$
-   }
-   \eIf{$j$ is not a singleton}{
-    $\forall j: \mathcal{B}_{jk}$, where $k =\{1,\ldots,m\}$\;
-    }{
-    $s_j = s(t+1)$\;
-    }
-    }
- \caption{Future State Prediction}
-\end{algorithm}
+%\begin{algorithm}[H]
+%\SetAlgoLined
+%\KwResult{$s(t+1)$}
+% \While{$t\leq H$}{
+%  \For{$s(t) = s_i$}{
+%   $\max_j(\mathcal{P}_{ij})$, where $j = \{1,\ldots,n\}$
+%   }
+%   \eIf{$j$ is not a singleton}{
+%    $\forall j: \mathcal{B}_{jk}$, where $k =\{1,\ldots,m\}$\;
+%    }{
+%    $s_j = s(t+1)$\;
+%    }
+%    }
+% \caption{Future State Prediction}
+%\end{algorithm}
 
 
 \subsection{Online Updating and Training of AHMM Parameters}
@@ -746,13 +745,13 @@ For training the models, we used a workspace featuring $15$ stationary obstacles
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{train1.png}
     \caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).}
-    \label{fig:cs1}
+    \label{fig:train1}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{train2.png}
     \caption{The lane changes of the actual robot (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).}
-    \label{fig:cs1b}
+    \label{fig:train2}
 \end{figure}
 
 In this simulation we find that the root mean squared error (RMSE) between the forward positions is $3.9273$, and the RMSE between lane changes is $2.5912$.  
@@ -761,23 +760,23 @@ In this simulation we find that the root mean squared error (RMSE) between the f
 
 In the next simulation, we show that we are able to fit pre-trained models to a certain vehicle, whose behaviors are randomly generated, moving through the same workspace as the training sets. In this simulation, we begun to fit the parameters after making one full transition and obtaining related emissions. 
 
-\begin{figure}[ht]
+\begin{figure}[ht] \label{fwd}
     \includegraphics[width=0.5\textwidth]{fit2.png}
     \caption{The forward position of the actual robot (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).}
-    \label{fig:cs1}
+    \label{fig:fwd}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{fit1.png}
     \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
-    \label{fig:cs1b}
+    \label{fig:lanchan}
 \end{figure}
  In addition, we show the error of the fit for each velocity model in \ref{fig:cs1c}.
  
  \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{fit3.png}
     \caption{The error of the fit between our model and each of the three pretrained models}
-    \label{fig:cs1c}
+    \label{fig:error}
 \end{figure}
 
 Here we see that the closest fit is that of the medium-speed model.
