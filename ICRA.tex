@@ -477,10 +477,11 @@ In this work we are interested in finding an approach to proactively guarantee s
     \begin{equation}
     \forall q \in R_h(t): S=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\}
     \end{equation}
-     where $S$ is the set of all states, $s(t)$, in the time horizon $T$, and assess their likelihood \NB{define P and $p_q$} \NB{$P_q$ $P_j$}:
+     where $S$ is the set of all states, $s(t)$, in the time horizon $T$, and assess their likelihood
     \begin{equation}
-    P_j=\{{p_q(t), p_q(t+1),..., p_q(t+T_u)}\}
+    P=\{{p_q(t), p_q(t+1),..., p_q(t+T)}\}
     \end{equation}
+    where $P$ represents the set of all probabilities, $p_q(t)$ represents the probabilities at each time, $t$.
     \item assess the risk $0\leq r_h \leq1$ of a collision during time horizon $T$ and
     \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if the risk surpasses a certain user defined level,$\rho$, we are able to minimize the risk, and guarantee,
     \begin{equation}
