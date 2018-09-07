@@ -424,8 +424,10 @@ Email: rp3cy@virginia.edu}}
     
     
 %    Because these dangerous situations can occur so rapidly \NB{need citation here}, there is a need to increase the ability to guarantee safety when developing new systems \NB{what do you mean with new systems?} for human drivers. This can be done by increasing the ability to predict and adapt to what will happen in the future. A simple depiction of a danger situation is shown in Fig. \ref{fig:hiway}. \NB{figure needs improvements}
+ 
+\NB{In a not far future, multiple vehicles with different level of autonomy will have to coexist and operate safely. Examples of such vehicles include cars, vessels, aerial vehicles. Different level of autonomy are available 1 to 5 for cars, hobby  } 
     
-    Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy.
+\NB{Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with line changing warning and assisted braking, } Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy.
     
     Many of these vehicles are equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the other hand, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
     
@@ -471,23 +473,23 @@ In this work we are interested in finding an approach to proactively guarantee s
     
     A human-operated vehicle $h$ is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
     \begin{enumerate}
-        \item  predict online the future states of the surrounding vehicles:
+        \item  predict online the future states of the surrounding vehicles \NB{define $T_u$ avoid subscripts as much as possible.} \NB{define S, define s} \NB{be rigorous with math $\forall q \in ....S_q=...$}:
     \begin{equation}
     S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T_u)}\} \text{ with } q \in R_h(t)
     \end{equation}
-    and assess their likelihood:
+    and assess their likelihood \NB{define P and $p_q$} \NB{$P_q$ $P_j$}:
     \begin{equation}
     P_j=\{{p_q(t), p_q(t+1),..., p_q(t+T_u)}\}
     \end{equation}
     \item assess the risk $0\leq r_h \leq1$ of a collision during time horizon $T_u$ and
-    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in R_h$, $\rho$ is a user defined minimum risk threshold and for $t\leq T_u$, we can guarantee
+    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in R_h$ \NB{what is happening here???}, $\rho$ is a user defined minimum risk threshold and for $t\leq T_u$, we can guarantee
     \begin{equation}
         |x_h(t)-x_q(t)| \geq d_{min}
     \end{equation}
-     where $x_h(t)$ and $x_q(t)$ are the positions of the human-operated vehicle and the surrounding agents at time $t$, $\rho$ is a user defined minimum risk threshold and $d_{min}$ is a minimum safe distance.
+     where $x_h(t)$ and $x_q(t)$ are the positions of the human-operated vehicle and the surrounding agents at time $t$, $\rho$ is a user defined minimum risk threshold \NB{again?} and $d_{min}$ is a minimum safe distance.
     \end{enumerate}
     
-    It is important to note that the vehicle being modified is primarily human operated. We should only intervene only when necessary. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_i>\rho$, we let the user perform his/her desired actions.
+    It is important to note that the vehicle being modified is primarily \NB{what does it mean that is primarily human operated} human operated. We should only intervene only \NB{only only} when necessary. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_i>\rho$, we let the user perform his/her desired actions.
 
 \section{Approach}
 
