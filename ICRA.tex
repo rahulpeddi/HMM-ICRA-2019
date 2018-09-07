@@ -604,7 +604,7 @@ Having built multiple models, we observe a new system and begin to execute the f
 In order to determine the model with the lowest error, we minimize the set $\tilde{\sigma}_\mathcal{P}$,
 
 \begin{equation}
-    w^* = \forall\sigma_{\mathcal{P}_w}\in\tilde{\sigma_\mathcal{P}}\text,  \min_{w} \tilde{\sigma_\mathcal{P}_w}
+    w^* = \forall\sigma_{\mathcal{P}_w}\in\tilde{\sigma_\mathcal{P}}\text,  \min_{w} \tilde{\sigma_{\mathcal{P}_w}}
 \end{equation}
 
 The $M^*_{w}$ represents the model with the least error, or the optimal model. In order to make predictions using the optimal model, we use refer to the parameters, $\mathcal{P}_w$ and $\mathcal{B}_w$, where $w$ refers to the optimal model. The procedure to predict future states is as shown in *Algorithm*.
@@ -821,9 +821,6 @@ This result also indicates a case of the user's desires being met as closely as 
 The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. An adjustment of the velocities in this case are shown in \ref{fig:vehiclepos}. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
 
 
-
-
-
 \section{Experiment}
 \section{Conclusions}
 
@@ -854,7 +851,7 @@ The third case is built much like the second case. In this implementation, howev
 
 %\printbibliography
 \bibliographystyle{abbrv}
-\bibliography{mybibliography}
+\bibliography{mybibliography.bib}
 
 
 % that's all folks
