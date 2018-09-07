@@ -473,23 +473,23 @@ In this work we are interested in finding an approach to proactively guarantee s
     
     A human-operated vehicle $h$ is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
     \begin{enumerate}
-        \item  predict online the future states of the surrounding vehicles \NB{define $T_u$ avoid subscripts as much as possible.} \NB{define S, define s} \NB{be rigorous with math $\forall q \in ....S_q=...$}:
+        \item  predict online the future states of the surrounding vehicles:
     \begin{equation}
-    S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T_u)}\} \text{ with } q \in R_h(t)
+    \forall q \in R_h(t): S=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\}
     \end{equation}
-    and assess their likelihood \NB{define P and $p_q$} \NB{$P_q$ $P_j$}:
+     where $S$ is the set of all states, $s(t)$, in the time horizon $T$, and assess their likelihood \NB{define P and $p_q$} \NB{$P_q$ $P_j$}:
     \begin{equation}
     P_j=\{{p_q(t), p_q(t+1),..., p_q(t+T_u)}\}
     \end{equation}
-    \item assess the risk $0\leq r_h \leq1$ of a collision during time horizon $T_u$ and
-    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if $r_i>\rho, \forall q \in R_h$ \NB{what is happening here???}, $\rho$ is a user defined minimum risk threshold and for $t\leq T_u$, we can guarantee
+    \item assess the risk $0\leq r_h \leq1$ of a collision during time horizon $T$ and
+    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if the risk surpasses a certain user defined level,$\rho$, we are able to minimize the risk, and guarantee,
     \begin{equation}
         |x_h(t)-x_q(t)| \geq d_{min}
     \end{equation}
-     where $x_h(t)$ and $x_q(t)$ are the positions of the human-operated vehicle and the surrounding agents at time $t$, $\rho$ is a user defined minimum risk threshold \NB{again?} and $d_{min}$ is a minimum safe distance.
+     where $x_h(t)$ and $x_q(t)$ are the positions of the human-operated vehicle and the surrounding agents at time $t$ and $d_{min}$ is a minimum safe distance.
     \end{enumerate}
     
-    It is important to note that the vehicle being modified is primarily \NB{what does it mean that is primarily human operated} human operated. We should only intervene only \NB{only only} when necessary. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_i>\rho$, we let the user perform his/her desired actions.
+    It is important to note that the vehicle being modified is primarily human operated, in the sense that we should intervene only when necessary. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_h>\rho$, we let the user perform his/her desired actions.
 
 \section{Approach}
 
