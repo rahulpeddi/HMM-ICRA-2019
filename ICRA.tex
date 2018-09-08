@@ -164,24 +164,21 @@ Over the last few years, semi-autonomous and autonomous vehicles have become inc
   
    Although the proposed approach is applied in the context of autonomous and semi-autonomous vehicles, it is general and applicable to any other CPS. In this case, we see the user as a disturbance or an unintentionally adversarial effect. We monitor the user behavior and intervene if necessary by predicting future states of our system and the surrounding entities (obstacles and other vehicles).    
     
-    The rest of this paper is organized as follows: in Section II, we discuss related work, and in Section III, we formally define the problem. The proposed AHMM framework is presented in Section IV. In Section V, we discuss a specific case study, in which our framework is applied to guarantee safety. We demonstrate our results with MATLAB simulations and real-world experiments in Sections VI and VII, respectively. Lastly, we discuss our conclusions and future work in Section VII.
+    The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. The proposed AHMM framework along with our approach to guarantee safety is discussed in Section \ref{sec:approach}. We demonstrate our results with MATLAB simulations and real-world experiments in Sections \ref{sec:sims} and \ref{sec:exps} respectively. Lastly, we discuss our conclusions and future work in Section \ref{sec:conc}.
 
     
 % You must have at least 2 lines in the paragraph with the drop letter
 % (should never be an issue)
 
-\section{Related Work}
+\section{Related Work} \label{sec:relatedwork}
 
-%    This work is tuned a relatively specific situation; one where the host vehicle is driving in the middle lane of a three-lane highway. This was chosen in order to account for a large action space. In this case, there are three possible actions the host vehicle could take, and each of these actions is evaluated for safety. The action space is defined such that it only looks at the immediately adjacent lanes. For example, if the vehicle is in the left lane, the action space consists of forward, and move right. In this case, only those two actions are evaluated for safety at a future time step.
+The study of semi-autonomous and autonomous vehicles has been growing in recent years, as these options have become more available to the average consumer, roadways have become more mixed, meaning that there are vehicles with all levels of autonomous capability. The work in dealing with type of environment is approached from different viewpoints; those of improving the knowledge about the environment (i.e. prediction) and those that involve controlling for such environments.
+
+The authors in \cite{mpc} use velocity predictions derived from artificial neural networks and GPS systems for Model Predictive Control (MPC), which is presented as a highly complicated optimization problem, and is only evaluated for one vehicle at a time. The authors in \cite{velnn} and \cite{veldatadriv} take a data science approach and use large data-sets, along with very specific traffic information, in order to make predictions. The use of a Hidden Markov Model based approach for any kind of prediction is done in \cite{lanhmm}, where the authors develop an approach treating the vehicle as a hybrid state system to predict the trajectory of a certain behavior. In \cite{woohmm}, motivated by previous work in HMMs, the authors discuss using a simplified form of the hybrid state system with an HMM to improve lane change prediction scalability over multiple vehicles. In our work, we consider the problem of predicting velocity and when lane changes are expected by leveraging the theories presented in \cite{mpc} and \cite{woohmm}. 
+
+In terms of controlling vehicles in such environments, the authors in \cite{qmdp} use a Point-Based Markov Decision Process (QMDP) to estimate dangerous situations and react with the appropriate autonomous driving behavior in single-lane situations. The QMDP process contains a robust and computationally intensive value iteration algorithm in order to do this. In \cite{predcost}, the authors present a prediction and cost-based control strategy for autonomous vehicles given a known set of predicted scenarios. In this vein, \cite{vfh+} and \cite{vfh*} discuss reliable obstacle avoidance methods based on artificial physics methods. In \cite{takeover}, with a human-factors based approach, the authors show multiple ways take-over requests can be generated in partially autonomous vehicles, including performance based and environment based constraints. In our work, we leverage the idea of taking over from \cite{takeover}, along with the theories in \cite{vfh*} to control for future unsafe scenarios we detect in our predictions.
     
-    
-%    A Hidden Markov Model is a type of Markov Model, where the states are hidden. A Markov Model examines states and transitions to and from these states. An HMM operates on the assumption that we don't directly know what the state is, but we are able to make observations that can tell us valuable information about the current state. Hidden Markov Models have been used for many human-robot interaction applications \cite{li2016modeling}, including but not limited to speech recognition, motion recognition, and biological analyses \cite{yoon2009hidden}.
-    
-%    In addition to the host vehicle at the center of the road, there are two additional vehicles; one passing on the left lane, and a slowed vehicle ahead in the center lane, as shown in Figure \ref{fig:actionspace}.
-    
-%    The HMM was performed on the blue vehicle to the left (the purple vehicle is a representation of the estimate), from the perspective of the black vehicle, the host vehicle. The testing was done such that only one vehicle was able to make estimations, but in a truly hybrid environment, multiple vehicles will this technique will improve the ability for multiple vehicles to collaborate.
-    
-\section{Problem Formulation}
+\section{Problem Formulation} \label{sec:probform}
  
 In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems. We focus on manned vehicles employing an hybrid autonomy scheme as defined in \cite{} in which the control authority is shared between the human and the on-board computer. For the sake of brevity we denote this class of vehicles as {\em hybrid autonomous vehicles} (HAVs), In our scheme, the on-board computer is used as a supervisory monitor to predict and assess safety and assist by correcting undesired human behaviors that may lead to unsafe situations and compromise system's integrity. 
 % control in which users may perform undesired actions that can compromise the safety of the entire system 
@@ -215,12 +212,13 @@ Formally the problem that we investigate in this work can be stated as:
     \end{equation}
      where $x_h(t)$ and $x_q(t)$ are the positions of the HAV and the $q^{\textrm{th}}$ surrounding vehicle at time $t$ and $d_{min}$ is a minimum safe distance.    
     
-    It is important to note that the vehicle being modified is primarily human operated, in the sense that we should intervene only when necessary \NB{we are not modifying anything, we are adapting and assisting its operation. This sentence needs to be rewritten.}. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_h>\rho$, with $\rho$ a user defined threshold, we let the HAV perform his/her desired actions.
+    It is important to note that the vehicle that we are assisting is primarily human operated, in the sense that we should intervene only when necessary %\NB{we are not modifying anything, we are adapting and assisting its operation. This sentence needs to be rewritten.}.
+    Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_h>\rho$, with $\rho$ a user defined threshold, we let the HAV perform his/her desired actions.
 
-\section{Approach}
+\section{Approach} \label{sec:approach}
 
 In this section we propose a novel HMM-based approach to predict future states of other vehicles. We leverage a history of offline observations to build different models that are used online to recognize and predict other vehicles' behaviors. The technique derived in this work also aims to find a method to guarantee safe operation based the models. %\NB{simplify}
-MPC [ref] or QMDP [ref] could be used to solve this problem as well, but in comparison to MPC and QMDP that require computationally expensive value iterations, this work is more efficient while guaranteeing safety. In this work, we train multiple models offline over a horizon $T$, with training sets that capture the behaviors of vehicles.
+MPC\cite{mpc} or QMDP\cite{qmdp} could be used to solve this problem as well, but in comparison to these methods, which require computationally expensive value iterations, this work is more efficient while guaranteeing safety. In this work, we train multiple models offline over a horizon $T$, with training sets that capture the behaviors of vehicles.
 
 %\NB{In this work we train multiple models offline over an horizon {T}}
 
@@ -501,7 +499,7 @@ This is done so that there is a method for velocity control as well, in the case
 % Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user responds with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
 
 
-\section{Simulations}
+\section{Simulations} \label{sec:exps}
 The simulations for this work primarily were done in Matlab. Different simulations were run for each part of the approach and case study shown above. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions. This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the adjustments made to user actions, in order to verify that we are able to guarantee safety.
 
 \subsection{Training Models}
@@ -536,15 +534,13 @@ In the next simulation, we show that we are able to fit pre-trained models to a 
     \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
     \label{fig:lanchan}
 \end{figure}
- In addition, we show the error of the fit for each velocity model in \ref{fig:cs1c}.
+ In addition, we show the error of the fit for each velocity model in \ref{fig:error}, where we see that the closest fit is that of the medium-speed model.
  
  \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{fit3.png}
     \caption{The error of the fit between our model and each of the three pretrained models}
     \label{fig:error}
 \end{figure}
-
-Here we see that the closest fit is that of the medium-speed model.
  
  
 \subsection{Avoidance}
@@ -586,8 +582,8 @@ This result also indicates a case of the user's desires being met as closely as 
 The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
 
 
-\section{Experiment}
-\section{Conclusions}
+\section{Experiment} \label{sec:exps}
+\section{Conclusions} \label{sec:concs}
 
 \newpage
 % references section
