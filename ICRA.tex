@@ -110,7 +110,6 @@
 
 \usepackage{graphicx}
 
-
 % *** GRAPHICS RELATED PACKAGES ***
 %
 %\ifCLASSINFOpdf
@@ -196,7 +195,7 @@
 
 % *** ALIGNMENT PACKAGES ***
 %
-%\usepackage{array}
+\usepackage{array}
 % Frank Mittelbach's and David Carlisle's array.sty patches and improves
 % the standard LaTeX2e array and tabular environments to provide better
 % appearance and additional user controls. As the default LaTeX2e table
@@ -313,6 +312,7 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{varwidth}
 \usepackage[noend]{algpseudocode}
 \makeatletter
@@ -493,23 +493,27 @@ In this work we are interested in finding an approach to proactively guarantee s
 
 \section{Approach}
 
-In this section we propose a novel HMM-based approach to predict future states of other vehicles. We leverage a history of offline observations to build different models that are used online to recognize and predict other vehicles' behaviors. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model \NB{simplify}. MPC [ref] or QMDP [ref] could be used to solve this problem as well, but in comparison to MPC and QMDP that require computationally expensive value iterations, our proposed work is more efficient while guaranteeing safety. The proposed framework is used over a time horizon $T$ \NB{In this work we train multiple models offline over an horizon {T}} in order to train multiple models offline, with a training set that consists of states that describe a model of a vehicle. In this work, multiple vehicles are sampled to extract different models that capture the behavior of the system.
+In this section we propose a novel HMM-based approach to predict future states of other vehicles. We leverage a history of offline observations to build different models that are used online to recognize and predict other vehicles' behaviors. The technique derived in this work also aims to find a method to guarantee safe operation based the models. %\NB{simplify}
+MPC [ref] or QMDP [ref] could be used to solve this problem as well, but in comparison to MPC and QMDP that require computationally expensive value iterations, this work is more efficient while guaranteeing safety. In this work, we train multiple models offline over a horizon $T$, with training sets that capture the behaviors of vehicles.
 
-\subsection{HMM-based Training Framework}
+%\NB{In this work we train multiple models offline over an horizon {T}}
+
+\subsection{HMM-based Training Framework} \label{sec:fmwk}
 
 The proposed Adjusted Hidden Markov Model can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
 \begin{itemize}
-    \item $\mathcal{O}$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(T)\}$ \NB{change to lower t}.
+    \item $\mathcal{O}$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(t)\}$
+    %\NB{change to lower t}.
     \item  $\mathcal{S}$ is set of $n$ unique values that $\mathcal{O}$ can be, pulled from a finite set $\forall o(t)\in\mathcal{O}$, $s_i \in \mathcal{S}$ denoted as $s_{i}$ or $s_{j}$, where $i,j = \{1,\ldots,n$\}, with $n \in \mathbb{N}$ and $i = \lor \neq j$. The notation $s_{ij}$ represents the state transition from $s_i$ to $s_j$.
-    \item $\mathcal{E}$ is the finite set of emissions, or inferences that relate to each state, $e(t)$ collected over a finite past time horizon $T$, $\mathcal{E} = \{ e(t-T), e(t-T+1), \ldots, e(T)\}$.  
-    \item $\mathcal{G}$ is a finite set of $m$ unique inferences made, pulled from a the finite set $\forall e(t)\in\mathcal{E}$, $g_k \in \mathcal{G}$ denoted as $g_{k}$ where $k = \{1,\ldots,m$\}, with $m \in \mathbb{N}$
+    \item $\mathcal{C}$ is the finite set of emissions, or inferences that relate to each state, $c(t)$ collected over a finite past time horizon $T$, $\mathcal{C} = \{ c(t-T), c(t-T+1), \ldots, c(t)\}$.  
+    \item $\mathcal{G}$ is a finite set of $m$ unique inferences, pulled from a the finite set $\forall c(t)\in\mathcal{C}$, $g_k \in \mathcal{G}$ denoted as $g_{k}$ where $k = \{1,\ldots,m$\}, with $m \in \mathbb{N}$
     \item $\mathcal{P}$ is a transition probability matrix with dimension $n \times n$. This matrix describes the probability of entering a certain state, $s_{j}$ at $t+1$, while currently in a particular state $s_{i}$ at $t$, defined by the equation:
         \begin{equation}
-            p_{ij} = \Pr(s_j(t+1) \vert s_i(t))
+            p_{ij} = P(s_j(t+1) \vert s_i(t))
         \end{equation}
         This probability is calculated by counting the occurrences of each state transition over all transitions from that state:
         \begin{equation} \label{eq:transbuild}
-            p_{ij} = N_{s_{ij}}/N_{s_{i*}}
+            p_{ij} = N_{s_{ij}}/N_{s_{i}*}
         \end{equation}
         where $N$ represents the total occurrences of the ensuing entity, and $N_{s_{ij}} \leq N_{s_{i*}} \leq T$. The state transition matrix is right-stochastic, meaning $\sum_{j=1}^{n}(p_{ij}) = 1$ and is of the form:
         \begin{equation}
@@ -520,7 +524,7 @@ The proposed Adjusted Hidden Markov Model can be described by a tuple $\langle \
                         p_{n1} &    & p_{nn}
                     \end{bmatrix}
         \end{equation}
-    \item $\mathcal{B}$ represents the emission, matrix, which lists the probability that given a state, $s_j$ where $j = 1,\ldots,n$, we can expect a certain emission. This is defined by the equation:
+    \item $\mathcal{B}$ represents the emission, matrix, which lists the probability that given a state, $s_i$ where $i = 1,\ldots,n$, we can expect a certain emission. This is defined by the equation:
         \begin{equation} \label{eq:obsref}
             b_{ik} = P(g_k(t+1) \vert s_i(t))
         \end{equation}
@@ -537,11 +541,13 @@ The proposed Adjusted Hidden Markov Model can be described by a tuple $\langle \
                         b_{n1} &    & b_{nm}
                     \end{bmatrix}
         \end{equation}
-        The matrices $\mathcal{A}$ and $\mathcal{B}$ will be referenced as ``the parameters" of the AHMM in the rest of this work. 
+        The matrices $\mathcal{P}$ and $\mathcal{B}$ will be referenced as ``the parameters" of the AHMM in the rest of this work. 
 \end{itemize}
 
-This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{A}, \mathcal{B} \rangle$, with implicit parameters $m$ and $n$. The AHMM is adjusted from a traditional Hidden Markov Model because the states are measurable \NB{clarify}. As a result, we have all the states and transitions a priori and can learn the parameters of multiple models offline. In addition, because states are measurable, the relationship between states and observations are not hidden, and therefore, predictions can be made with increased accuracy.
-The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}. In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $e$ represent the emissions ($\mathcal{E}$). The lines with the label $a$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.
+This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{P}, \mathcal{B} \rangle$, with implicit parameters $m$ and $n$. The AHMM is different from a traditional HMM because the states are not hidden, and we know exactly the relationship
+%\NB{clarify}
+between states and their corresponding inferences. Because we have all the states and transitions a priori, we can learn the parameters of multiple models offline. In addition, having the knowledge pertaining to the relationship between states and inferences allows predictions to be made with increased accuracy.
+The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}. In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $c$ represent the emissions ($\mathcal{C}$). The lines with the label $p$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{ahmm.png}
@@ -549,109 +555,19 @@ The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}. 
     \label{fig:hmm}
 \end{figure}
 
-\subsection{AHMM-Based Online Prediction} \NB{perhaps combine with next and add Update in the title}
- Using the framework above, we build a model of a certain system offline. After $T$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i,T}$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. We start with the assumption that $\mathcal{P}$ will give conclusive results from which we can predict the future state as follows:
-\begin{equation} \label{eq:nextstate}
-    s_{i}(T+1) = \max_{j}[\mathcal{P}_{i(T),j}]
-\end{equation}
-There is, however, the possibility that there will be more than one returned states, as the maximum transition probability can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$ \NB{equation needed}. Because the relationship between states and observations is not hidden, we can use the expected observation, derived from (\ref{eq:obsref}) to assess which returned state is more accurate. In the event that the prediction is still unclear \NB{clarify}, we elect the more dangerous transition, which is a quantity that depends on the application. For instance, in our case study, the more dangerous transition is one that minimizes the distance between our user's vehicle and the observed vehicle. In addition, we also update the model parameters online based on the actual observed transition, as will be described in the next section. Using this framework, it is possible to predict over any future horizon H, assuming that the prediction is correct at each iteration, the future states using the transition and emission matrices \NB{flip the order} \NB{explain the algorithm}.
-
-%\begin{algorithm}[H]
-%\SetAlgoLined
-%\KwResult{$s(t+1)$}
-% \While{$t\leq H$}{
-%  \For{$s(t) = s_i$}{
-%   $\max_j(\mathcal{P}_{ij})$, where $j = \{1,\ldots,n\}$
-%   }
-%   \eIf{$j$ is not a singleton}{
-%    $\forall j: \mathcal{B}_{jk}$, where $k =\{1,\ldots,m\}$\;
-%    }{
-%    $s_j = s(t+1)$\;
-%    }
-%    }
-% \caption{Future State Prediction}
-%\end{algorithm}
-
-
-\subsection{Online Updating and Training of AHMM Parameters}
-AHMM parameters can be updated online in order to increase the accuracy of the model. This is done by using (\ref{eq:transbuild}) and (\ref{eq:obsbuild}) with another the new transition and associated observation. In addition, we use a sliding window approach such that $T$ always remains the same, such that
-\begin{equation}
- T = t-T+t_l,t,\ldots,t+t_l    
-\end{equation}
-where $t$ represents the end of the training set, $T$ is the time horizon of the training set itself, and $t_l$ is the current time at which the window is being slid. If the system enters a new state or observation, $n$ or $m$ would increase, respectively. The updated parameters, $\mathcal{P'}$ and $\mathcal{B'}$, will continue to be used for online prediction. \NB{rewrite}
-
-\subsection{Online Model Fitting}\label{sec: omf} \NB{label for sections}
-Using the framework described in Sections A,B, and C,  we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models can be extracted using several data sets of different systems under observation. In other words, we can obtain super-sets containing all the transition and emission matrices.
-\begin{equation}
-    \hat{\mathcal{P}} = \{\mathcal{P},\ldots,\mathcal{P}_M\}
-\end{equation}
-\begin{equation}
-    \hat{\mathcal{B}} = \{\mathcal{B},\ldots,\mathcal{B}_M\}
-\end{equation}
-
-During run-time we observe new measurements of other systems and the challenge becomes fitting each new system observations to the right model. However, until we have enough data about this new system, the prediction may not be correct, and thus, we need to take into account error, $\sigma$. In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process. With more models, we are more likely to find a precise fit \NB{put this later}. We use $M_1,M_2,\ldots,M_w$ to represent $w$ different models of some system \NB{unclear}. Using the method outlined in this section, we are able to determine and apply the best model.
-
-Having built multiple models, we observe a new system and begin to execute the framework discussed in Section A for two consecutive measurements, $\left[o(t-1),o(t)\right]$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$. In order to determine the optimal model, we calculate the errors between our model and each of the offline models:
-
-\begin{equation} \label{probdist}
-    \tilde{\sigma}_\mathcal{P} = \{\sigma_{\mathcal{P}_{1}},\ldots,\sigma_{\mathcal{P}_{w}}\} = \forall\mathcal{P}_w\in\hat{\mathcal{P}} \lVert \tilde{\mathcal{P}}-\hat{\mathcal{P}_w} \rVert
-\end{equation}
-
-%\begin{equation} \label{probdist}
-    %\tilde{\sigma}_\mathcal{B} = %\{\sigma_{\mathcal{B}_{1}},\ldots,\sigma_{\mathcal{B}_{w}}\} = %\forall\mathcal{B}_w\in\hat{\mathcal{B}} \lVert %\tilde{\mathcal{B}}-\hat{\mathcal{B}_w} \rVert
-%\end{equation}
-
-In order to determine the model with the lowest error, we minimize the set $\tilde{\sigma}_\mathcal{P}$,
-
-\begin{equation}
-    w^* = \forall\sigma_{\mathcal{P}_w}\in\tilde{\sigma_\mathcal{P}}\text,  \min_{w} \tilde{\sigma_{\mathcal{P}_w}}
-\end{equation}
-\NB{add argmin}
-
-The $M^*_{w}$ represents the model with the least error, or the optimal model. In order to make predictions using the optimal model, we use refer to the parameters, $\mathcal{P}_w$ and $\mathcal{B}_w$, where $w$ refers to the optimal model. The procedure to predict future states is as shown in *Algorithm*.
-
-
-
-\subsection{Online Fitting for Uncertain Fits} \NB{merge with previous and change to explain betetr how new data are going to improve your model...Bellman optimality}
-If the observed system, however, does not result in an $M^*_{w}$ with a high $\sigma$, the method outlined in the online section is used. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $M^*_{w}$. We are able to leverage the parameters of $M^*_{w}$, by augmenting and updating $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$ as we enter new states or observe new transitions or observations, much like how we obtain $\mathcal{P}'$ and $\mathcal{B}'$. With this, we obtain $\tilde{\mathcal{P}}'$ and $\tilde{\mathcal{B}}'$ In the case of a consistently diverging $\sigma$, we use $\tilde{\mathcal{P}}'$ and $\tilde{\mathcal{B}}'$ to make future predictions using *Algorithm*.
-
-\section{Case Study: Semi-autonomous vehicle on a Highway}
-In this section, we describe the case study we use to illustrate the use of the AHMM framework, and we demonstrate how it can be used to guarantee safe operation. The case study in this paper is that of a manned ground vehicle travelling in a typical highway setting.
-
-\subsection{System Model}
-The vehicle we use in our case study is a human-controlled vehicle with autonomous capabilities. The model used for the vehicle is that of a unicycle-type robot:
-\begin{equation}
-    \begin{cases}
-    \dot{x} = u_s\cos{\theta} \\
-    \dot{y} = u_s\sin{\theta} \\
-    \dot{\theta} = u_\omega
-    \end{cases}
-\end{equation}
-where $(x,y,\theta)$ is the robot position and orientation, and $(u_s,u_\omega)$ is the input control pair that represents linear and angular velocities. The inputs consist of autonomous and human controlled parts, $u_a$ and $u_h$. These values always satisfy the criteria $u_a+u_h = 1$. This vehicle will be known as the host vehicle, as it is where the computation takes place. In addition, all vehicles within a certain sensing range of the host vehicle are modeled as follows:
-\begin{equation} \label{eq:agentpos}
-    \forall q \in R:
-    \begin{cases}
-    \dot{x}_q = v_q \\
-    \dot{y}_q = v_q\ \\
-    \theta_q = l
-    \end{cases}
-\end{equation}
-where $q$ represents each vehicle in sensing range $R$, and $l$ represents the lane that the vehicle is in. These vehicles will be known as agents.
-
-\subsection{Environment Setup}
-The highway environment, which we are studying, involves three lanes with multiple vehicles, that can change their velocities and their lanes. Within the highway environment, we are able to set up two AHMMs to capture the behaviors we expect to see. The AHMMs are applied to all of the agents.
+The specific environment we are studying, involves three lanes with multiple vehicles that can change their velocities and their lanes. Within this environment, we are able to set up two AHMMs to capture the behaviors we expect to see. The AHMMs are applied to all of the agents, $q$ in our sensing range $R$.
 
 The first AHMM will aim to predict future velocities of the agents. In this model,
 
 \begin{equation}
-\{s_1,s_2,\ldots s_n\} = \{v_1,\ldots v_n\}
+\{s_1,\ldots s_n\} = \{v_1,\ldots v_n\}
 \end{equation}
-    where $v$ represents velocity. The emissions reflect the relationship between $v_{t+1}$ and $v_t$:
+    where $v$ represents velocity. The emissions reflect the relationship between $v(t)$ and $v(t-1)$:
 
 \begin{enumerate}
-    \item Speeding Up, where $v_{t+1} > v_t$
-    \item Slowing Down, where $v_{t+1} < v_t$
-    \item Maintaining Speed, where $v_{t+1} \approx v_t$
+    \item Speeding Up, where $v(t) > v(t-1)$
+    \item Slowing Down, where $v(t) < v(t-1)$
+    \item Maintaining Speed, where $v(t) \approx v(t-1)$
 \end{enumerate}
 
 The second AHMM will be used to predict the lateral position of the agents. The positions, for our purposes, are modeled as discreet lanes: (Left, Center, Right);
@@ -663,7 +579,7 @@ The second AHMM will be used to predict the lateral position of the agents. The 
 In this model, states represent distances between preceding agents:
 
 \begin{equation}
-\{s_1,s_2,\ldots s_n\} = \{d_1,\ldots d_n\}
+\{s_1,\ldots s_n\} = \{d_1,\ldots d_n\}
 \end{equation}
 
 where $d$ represents the distance between the relevant agent, $q$, and a preceding agent its lane. The emissions reflect reactions to the preceding agent and are as follows:
@@ -674,67 +590,187 @@ where $d$ represents the distance between the relevant agent, $q$, and a precedi
 \end{enumerate}
 In this case, the relationship between states and emissions indicates at what distance $d_n$ we can expect the agent to react to the preceding agent.
 
-Multiple models can be trained using the AHMM framework, yielding $\mathcal{P}$ and $\mathcal{B}$ matrices for each model, and these models can be used for fitting, updating, augmentation, and most importantly, prediction, as discussed in the previous sections. Using the method for fitting models, we are able to identify $M^*$ from a set of pretrained models, which consists of the appropriate AHMM parameters for the optimal model, for both velocity and lateral position.
+\subsection{AHMM-Based Online Prediction and Updating} \label{sec:ahmmpredupdate} %\NB{perhaps combine with next and add Update in the title}
+ Using the framework above, we build a model of a certain system offline. At $t$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i}(t)$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. We start with the assumption that $\mathcal{P}$ will give conclusive results from which we can predict the future state as follows:
+\begin{equation} \label{eq:nextstate}
+    s_{i}(t+1) = \max_{j}[\mathcal{P}_{i(t),j}]
+\end{equation}
+There is, however, the possibility that there will be more than one returned states, as the maximum transition probability can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$:
+\begin{equation} \label{eq:nextemis}
+    g_{k}(t+1) = \max_{k}[\mathcal{B}_{i(t),k}]
+\end{equation}
+%\NB{equation needed}. 
+Because the relationship between states and observations is not hidden, we can use the expected inference, derived from (\ref{eq:nextemis}) to assess which returned state is more accurate. In the event that the prediction is still unclear, meaning that more than one of the states returned from \ref{eq:nextstate} satisfy the expected inference, we elect the more dangerous transition, which depends on the specific application. For instance, in our case study, the more dangerous transition is one that minimizes the distance between our user's vehicle and the observed vehicle. Using this method, it is possible to predict the future states using the transition and emission matrices over any user-set horizon $H$, assuming that the prediction is correct at each iteration. %\NB{flip the order} \NB{explain the algorithm}.
+The algorithm below shows how we carry forward this prediction through $H$, as shown in Algorithm \ref{alg:pred}. In this algorithm, an observed state, $s(t) = s_i$, is used with $\mathcal P$ and $\mathcal B$ to find the most likely next state, $s(t+1) = s_{j*}$. The following state, $s(t+2)$ is calculated using $s_{j*}$ as though it is an observed state. This process is repeated up to $t+H$. 
+
+\begin{algorithm}[ht!]
+\caption{Future State Prediction} \label{alg:pred}
+\begin{algorithmic}[1]
+\WHILE{$t\leq t+H$}
+\STATE $t \gets t+1$
+\FOR{$s(t) = s_i$}
+\STATE $j* \gets \max_j(\mathcal{P}_{i}*)$
+\ENDFOR
+%\IF{$j$ is not a singleton}
+%\FORALL{$j$}
+%\STATE{$k \gets j-i$}
+%\ELSE
+\STATE $s(t+1) \gets s_{j*}$
+%\ENDFOR
+%\ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+In addition, AHMM parameters can be updated online in order to increase the accuracy of the model. This is done by using (\ref{eq:transbuild}) and (\ref{eq:obsbuild}) the new transition and associated observation. In the aforementioned equations, $N_{s_{ij}}$ and $N_{g_{ik}}$, will change, and therefore, $p_{ij}$ and $b_{ij}$ will change. As a result, new parameters $\mathcal{P'}$ and $\mathcal{B'}$ are created to reflect the updates. In addition, we use a sliding window approach such that the size of the training set is always $(t-T)$, where $t$ is the current time, and $T$ is the time horizon of the training set. The training set is kept the same size in order to retain computational efficiency. $\mathcal{P'}$ and $\mathcal{B'}$ will continue to be used for online prediction. %\NB{rewrite}
+
+\subsection{Online Model Fitting}\label{sec:omf} %\NB{label for sections}
+Using the framework described in Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate},  we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models can be extracted using several data sets, and with that we can obtain super-sets containing all the transition and emission matrices: 
+\begin{equation}
+    \hat{\mathcal{P}} = \{\mathcal{P}_{N_{1}},\ldots,\mathcal{P}_{N_{M}}\}
+\end{equation}
+\begin{equation}
+    \hat{\mathcal{B}} = \{\mathcal{B}_{N_{1}},\ldots,\mathcal{B}_{N_{M}}\}
+\end{equation}
+where $\mathcal{N} = \{N_1,\ldots,N_M\}$, where $M$ represents the number of models and $M\in\mathbb{N}$.
+During run-time we observe new measurements of other vehicles and the challenge becomes fitting each new vehicle's observations to the right model. However, until we have enough data about this new system, the prediction may not be correct, and thus, we need to take into account error, $e$. In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process.
+
+Having built multiple models, we observe a new vehicle and begin to execute the framework discussed in Section \ref{sec:fmwk} for two consecutive measurements, $\left[o(t-1),o(t)\right]$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$, which stand for the transition and emission matrices for the system we are currently observing. In order to determine the optimal model, we calculate the set of errors, $\hat{e}_{N_{M}} = \{e_{N_1},\ldots,e_{N_M}$\} between our model and each of the offline models:
+
+\begin{equation}
+    \forall{N_M} \in \mathcal{N}: \hat{e}_{N_M} = \lVert\tilde{\mathcal{P}}-\hat{\mathcal{P}}_{N_M}\rVert_{l1/l2}
+\end{equation}
+
+In order to determine the model with the lowest error, we minimize the set $\hat{e}_{N_M}$,
+
+\begin{equation}
+    N_M^* = \argmin_{M}(\hat{e}_{N_M})
+\end{equation}
+%\NB{add argmin}
+
+where $N_M^*$ represents the model with the least error, or the optimal model. In order to make predictions using the optimal model, we refer to the parameters, $\mathcal{P}_{N_M}$ and $\mathcal{B}_{N_M}$. The procedure to predict future states is shown in Algorithm \ref{alg:pred}.
+
+%\NB{merge with previous and change to explain better how new data are going to improve your model...Bellman optimality}
+If the observed system, however, does not result in an $N_M^*$ with a low error, the model is updated using the method discussed in Section \ref{sec:ahmmpredupdate}. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $N_M^*$. We are able to leverage the parameters of this model, by  updating $\mathcal{P}_{N_M^*}$ and $\mathcal{B}_{N_M^*}$ as we observe new transitions or make new inferences, much like how we obtain $\mathcal{P}'$ and $\mathcal{B}'$ in Section \ref{sec:ahmmpredupdate}. In this case, we obtain $\mathcal{P}'_{N_M^*}$ and $\mathcal{B}'_{N_M^*}$. These models to make future predictions using Algorithm \ref{alg:pred}.
+
+%\subsection{System Model}
+%The vehicle we use in our case study is a human-controlled vehicle with autonomous capabilities. The model used for the vehicle is that of a unicycle-type robot:
+%\begin{equation}
+%    \begin{cases}
+%    \dot{x} = u_s\cos{\theta} \\
+%    \dot{y} = u_s\sin{\theta} \\
+%    \dot{\theta} = u_\omega
+%    \end{cases}
+%\end{equation}
+%where $(x,y,\theta)$ is the vehicle's position and orientation, and $(u_s,u_\omega)$ is the input control pair that represents linear and angular velocities. The inputs consist of autonomous and human controlled parts, $u_a$ and $u_h$. These values always satisfy the criteria $u_a+u_h = 1$. This vehicle will be known as the host vehicle, as it is where the computation takes place. In addition, all vehicles within a certain sensing range of the host vehicle are modeled as follows:
+%\begin{equation} \label{eq:agentpos}
+%    \forall q \in R:
+%    \begin{cases}
+%    \dot{x}_q = v_q\cos{\theta_q} \\
+%    \dot{y}_q = v_q\sin{\theta_q} \\
+%    \dot{\theta}_q = \omega
+%    \end{cases}
+%\end{equation}
+%where $q$ represents each vehicle in sensing range $R$. In our case, however, we modify these models such that actions in the lateral direction are discreet, and there is no angular velocity. This is done because in the scope of this work, we not concerned with the trajectory of the lane change; just the fact that it is going to happen. These vehicles, $q$ will be referred to as agents in the remainder of this work.
+
+%\subsection{Environment Setup}
+
+%Multiple models can be trained using the AHMM framework, yielding $\mathcal{P}$ and $\mathcal{B}$ matrices for each model, and these models can be used for fitting, updating, augmentation, and most importantly, prediction, as discussed in the previous sections. Using the method for fitting models, we are able to identify $N_M^*$ from a set of pretrained models, which consists of the appropriate AHMM parameters for the optimal model, for both velocity and lateral position.
 
 \subsection{Using AHMM Method for Safe Vehicle Operation}
-Using the optimal model for each agent, we are able to predict where an agent will be in the environment for a certain user-defined time horizon, $T_{u}$. This time horizon defines how far ahead the user wants the system to calculate the appropriate action to take.  A sequence of future states for agent $q$, both in terms of velocity and lateral position, are developed using the AHMM parameters. Given a sequence of future expected velocities, we are able to calculate the forward positions for the user-defined forward positions using:
+In this section, we discuss how the AHMM method is used to guarantee safety for a vehicle. In this situation, we have our manned vehicle, $h$, and we have all of the vehicles in our vehicle's sensing range, $R_h$:
+\begin{equation}
+    \forall{q}\in R_h, q = \{1,\ldots,N_{R_h}\},
+\end{equation}
+where $N_{R_h}\in\mathbb{N}$ and represents the total number of vehicles in the sensing range. These vehicles will be referred to as agents in the rest of this work.
 
+Generating and using the optimal model for each vehicle $q$, as discussed in Section \ref{sec:omf}, we are able to predict where an agent will be in the environment for the user-defined time horizon, $H$, as discussed in Section \ref{sec:ahmmpredupdate}. This time horizon defines how far ahead the user wants the system to check, in order to intervene. A sequence of future states for agent $q$, both in terms of velocity and lateral position, are developed for $H$ using the AHMM parameters and Algorithm \ref{alg:pred}. Given a sequence of future predicted velocities,
+\begin{equation}
+    v_q^p = \{v_q(t+1),\ldots,v_q(t+H)\}
+\end{equation}
+we are able to calculate the forward positions for the horizon $H$ using:
 \begin{equation} \label{eq:dumpos}
-    y(t) = v_qt
+    x_q(t) = v_q*\delta
+\end{equation}
+where $\delta$ refers to a sampling time. With this we obtain
+\begin{equation}
+    x_q^p = \{x_q(t+1),\ldots,x_q(t+H)\}
+\end{equation}
+Using this information, we build a risk profile and adapt the host vehicle's input accordingly.
+
+
+\subsection{Risk Estimation based on Online Prediction}
+This section shows how risk is defined given our online prediction over $H$. Generally, risk will be calculated for each possible action the driver could take. In this case, risk will be calculated as a separate entity for each lane, $l$, and $l\in\mathbf{L}$
+
+In this case, we also assume that the driver will continue the behavior he/she is doing at $t$ up to $t+H$. With this assumption, we are able to the estimate the future positions of $h$, obtaining the set:
+\begin{equation}
+    x_h^p = \{x_h(t+1),\ldots,x_h(t+H)\}
 \end{equation}
 
-where $t$ represents a time within $T_{u}$. The AHMM for lateral position tells us what type of lane change action to expect as we observe a certain $d$ between agents. Using this information, we build a risk profile and adapt the host vehicle's input accordingly.
-
-
-\subsubsection{Risk Estimation based on Online Prediction}
-This section shows how risk is defined given our online prediction over $T_{u}$. Risk is always connected to the host vehicle's actions. For example, if the user is driving the vehicle at a certain velocity $u_s$ with no indication of turning, $u_\omega = \pi/2$, we assume that action will continue for the length of $T_{u}$ and a lane change will not occur, and we calculate future forward positions using (\ref{eq:dumpos}). With this, we can estimate the future positions of the host vehicle. In addition, risk will be calculated as a separate entity for each lane, $l$.
-
-The risk is a function of the distance between estimated future positions of the host vehicle and the agents at each $t$ within time horizon $T_{u}$. The distance is calculated using the following equation:
+Risk is a function of the distance between estimated future positions of the host vehicle and those of the agents. The distance is calculated using the following equation:
 
 \begin{equation}
-    \forall q \in R : d_q = y_t - y_{q}(t)
+    \forall q \in R \land \forall t\in H : d_q(t) = \lVert x_h(t)-x_q(t)\rVert
 \end{equation}
 
-where the subscript $q$ indicates a particular agent, and is evaluated for all $t \leq T_u$. The choice to make this distance a simple difference, rather than euclidean or absolute distance was made in order to is the sign to accurately capture the direction of the source of the risk; whether it is coming from in front of or behind our vehicle. We will use $r$ to denote this risk, which increases as distance decreases. The following equation demonstrates how we calculate risk:
+We will use $r$ to denote this risk, which increases as distance decreases. The following equation demonstrates how we calculate risk:
 
 \begin{equation}
-    r_{q}^{f}(t) =
+\forall{t}\in H::
+    r_{q}^{l}(t) =
     \begin{cases}
     1,                      & \text{if } d_{q}(t) < 1 \\
     \frac{1}{d_{q}(t)},  & \text{otherwise} 
     \end{cases}
 \end{equation}
 
-where $r_{q}^{l}(t)$ represents the risk of a certain agent $q$ interfering with the user's position in a certain lane $l$ at time $t \leq T_u$. It is important to note that multiple agents affect risk in our analysis, the agent with the highest absolute risk is considered for adaptation. The set of maximum risk values for each lane is evaluated for each $t \leq T_u$:
+where $r_{q}^{l}(t)$ represents the risk of a certain agent $q$ interfering with the user's position in a certain lane $l$. The set of all risks for each vehicle will be denoted as $\matchal R$, where
+\begin{equation}
+    \forall{q} \in R: \mathcal{R}_q =
+                    \begin{bmatrix}
+                        r_q^L(t+1) & \dots & r_q^R(t+1) \\
+                        \vdots & \ddots & \\
+                        r_q^L(t+H) &    & r_q^R(t+H)
+                    \end{bmatrix}
+\end{equation}
+It is important to note that multiple agents affect risk in our analysis, the agent with the highest risk is considered for adaptation. The set of maximum risk values for each lane at each time is evaluated as follows:
+
+\begin{equation}
+    \forall{l}\in\mathbf{L}, \max_r_q^l(\mathcal{R})
+\end{equation}
+
+Using this, we obtain the maximum risk in each lane in horizon $H$. This is shown in the set:
 
 \begin{equation}
     \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
 \end{equation}
 
-\subsubsection{Adaptive User Assistance}
-Given the $\hat{r}$ values for each lane for all $t \leq T_u$, we can adapt our system to guarantee safety. In order to adapt to the user's actions, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\rho$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
+\subsection{Adaptive User Assistance}
+
+Given the $\hat{r}$ values for each lane for all $t\in H$, we can adapt our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\rho$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
 
 \begin{equation}
-    u_a > u_h \iff \hat r^{l_u} > b
+    u_a > u_h \iff \hat r^{l_u} > \rho
 \end{equation}
 
 where $u_a$ and $u_h$ represent autonomous and human inputs, while $l_u$ represents the user's lane and $l_u \in \mathbb{L}$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
 
 \begin{equation}
-    l^* = \min_l(\mathcal{R})
+    l^* = \min_l(\mathcal{\hat{R}})
 \end{equation}
 
 In addition, we determine the minimum and maximum velocities our vehicle should be driving within one lane. These values are calculated as follows:
 
 \begin{equation}
-    v_min = d_{q,min}/T_u
+    v_{\min} = d_{q,\min}/\delta
 \end{equation}
 
 \begin{equation}
-    v_max = d_{q,\min}/T_u
+    v_{\max} = d_{q,\max}/\delta
 \end{equation}
 
- Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user respond with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
+This is done so that there is a method for velocity control as well, in the case that a lane change is unfeasible, or more risky than maintaining $l_u$.
+% Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user responds with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
 
 
 \section{Simulations}
