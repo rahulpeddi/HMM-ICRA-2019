@@ -164,7 +164,7 @@ Over the last few years, semi-autonomous and autonomous vehicles have become inc
   
    Although the proposed approach is applied in the context of autonomous and semi-autonomous vehicles, it is general and applicable to any other CPS. In this case, we see the user as a disturbance or an unintentionally adversarial effect. We monitor the user behavior and intervene if necessary by predicting future states of our system and the surrounding entities (obstacles and other vehicles).    
     
-    The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. The proposed AHMM framework along with our approach to guarantee safety is discussed in Section \ref{sec:approach}. We demonstrate our results with MATLAB simulations and real-world experiments in Sections \ref{sec:sims} and \ref{sec:exps} respectively. Lastly, we discuss our conclusions and future work in Section \ref{sec:conc}.
+    The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. The proposed AHMM framework along with our approach to guarantee safety is discussed in Section \ref{sec:approach}. We demonstrate our results with MATLAB simulations and real-world experiments in Sections \ref{sec:sims} and \ref{sec:exps} respectively. Lastly, we discuss our conclusions and future work in Section \ref{sec:concs}.
 
     
 % You must have at least 2 lines in the paragraph with the drop letter
@@ -499,7 +499,7 @@ This is done so that there is a method for velocity control as well, in the case
 % Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user responds with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
 
 
-\section{Simulations} \label{sec:exps}
+\section{Simulations} \label{sec:sims}
 The simulations for this work primarily were done in Matlab. Different simulations were run for each part of the approach and case study shown above. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions. This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the adjustments made to user actions, in order to verify that we are able to guarantee safety.
 
 \subsection{Training Models}
