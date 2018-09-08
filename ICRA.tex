@@ -1,312 +1,45 @@
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+\IEEEoverridecommandlockouts
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
 
-%% bare_conf.tex
-%% V1.4b
-%% 2015/08/26
-%% by Michael Shell
-%% See:
-%% http://www.michaelshell.org/
-%% for current contact information.
-%%
-%% This is a skeleton file demonstrating the use of IEEEtran.cls
-%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
-%% conference paper.
-%%
-%% Support sites:
-%% http://www.michaelshell.org/tex/ieeetran/
-%% http://www.ctan.org/pkg/ieeetran
-%% and
-%% http://www.ieee.org/
-
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall the IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%*************************************************************************
-
-
-% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
-% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
-% *** with production work. The IEEE's font choices and paper sizes can   ***
-% *** trigger bugs that do not appear when using other class files.       ***                          ***
-% The testflow support page is at:
-% http://www.michaelshell.org/tex/testflow/
-
-
-
-\documentclass[conference]{IEEEtran}
-% Some Computer Society conferences also require the compsoc mode option,
-% but others use the standard conference format.
+%\usepackage{graphics} % for pdf, bitmapped graphics files
+%\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+%\usepackage{amsmath} % assumes amsmath package installed
+%\usepackage{amssymb}  % assumes amsmath package installed
+%\usepackage{amsthm}
+%\usepackage[style=ieee]{biblatex}
+%\addbibresource{references.bib}
 %
-% If IEEEtran.cls has not been installed into the LaTeX system files,
-% manually specify the path to it like:
-% \documentclass[conference]{../sty/IEEEtran}
+%%\theoremstyle{definition}
+%%\newtheorem{definition}{Definition}[section]
+
+%\usepackage{amssymb}
+%\usepackage{graphicx}
+%\usepackage{epstopdf}
+%\usepackage{amsmath}
+%\usepackage{subfigure}
+%\usepackage{multirow}
+%\usepackage{pbox}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
+%\usepackage{bm}
+%\usepackage{url}
 
 
+%%%%%%
 
-
-
-% Some very useful LaTeX packages include:
-% (uncomment the ones you want to load)
-
-
-% *** MISC UTILITY PACKAGES ***
+%\documentclass[conference]{IEEEtran}
 %
-%\usepackage{ifpdf}
-% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
-% compilation based on whether the output is pdf or dvi.
-% usage:
-% \ifpdf
-%   % pdf code
-% \else
-%   % dvi code
-% \fi
-% The latest version of ifpdf.sty can be obtained from:
-% http://www.ctan.org/pkg/ifpdf
-% Also, note that IEEEtran.cls V1.7 and later provides a builtin
-% \ifCLASSINFOpdf conditional that works the same way.
-% When switching from latex to pdflatex and vice-versa, the compiler may
-% have to be run twice to clear warning/error messages.
-
-
-
-
-
-
-% *** CITATION PACKAGES ***
-%
-%\usepackage{cite}
-% cite.sty was written by Donald Arseneau
-% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
-% \cite{} output to follow that of the IEEE. Loading the cite package will
-% result in citation numbers being automatically sorted and properly
-% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
-% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
-% \cite will automatically add leading space, if needed. Use cite.sty's
-% noadjust option (cite.sty V3.8 and later) if you want to turn this off
-% such as if a citation ever needs to be enclosed in parenthesis.
-% cite.sty is already installed on most LaTeX systems. Be sure and use
-% version 5.0 (2009-03-20) and later if using hyperref.sty.
-% The latest version can be obtained at:
-% http://www.ctan.org/pkg/cite
-% The documentation is contained in the cite.sty file itself.
-
 \usepackage{graphicx}
 
-% *** GRAPHICS RELATED PACKAGES ***
-%
-%\ifCLASSINFOpdf
-  %\usepackage[pdftex]{graphicx}
-  % declare the path(s) where your graphic files are
-  % \graphicspath{{../pdf/}{../jpeg/}}
-  % and their extensions so you won't have to specify these with
-  % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
-%\else
-  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
-  % will default to the driver specified in the system graphics.cfg if no
-  % driver is specified.
-  % \usepackage[dvips]{graphicx}
-  % declare the path(s) where your graphic files are
-  % \graphicspath{{../eps/}}
-  % and their extensions so you won't have to specify these with
-  % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.eps}
-%\fi
-% graphicx was written by David Carlisle and Sebastian Rahtz. It is
-% required if you want graphics, photos, etc. graphicx.sty is already
-% installed on most LaTeX systems. The latest version and documentation
-% can be obtained at: 
-% http://www.ctan.org/pkg/graphicx
-% Another good source of documentation is "Using Imported Graphics in
-% LaTeX2e" by Keith Reckdahl which can be found at:
-% http://www.ctan.org/pkg/epslatex
-%
-% latex, and pdflatex in dvi mode, support graphics in encapsulated
-% postscript (.eps) format. pdflatex in pdf mode supports graphics
-% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
-% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
-% not a bitmapped formats (.jpeg, .png). The IEEE frowns on bitmapped formats
-% which can result in "jaggedy"/blurry rendering of lines and letters as
-% well as large increases in file sizes.
-%
-% You can find documentation about the pdfTeX application at:
-% http://www.tug.org/applications/pdftex
-
-
-
-
-
-% *** MATH PACKAGES ***
-%
 \usepackage{amsmath}
-% A popular package from the American Mathematical Society that provides
-% many useful and powerful commands for dealing with mathematics.
-%
-% Note that the amsmath package sets \interdisplaylinepenalty to 10000
-% thus preventing page breaks from occurring within multiline equations. Use:
-%\interdisplaylinepenalty=2500
-% after loading amsmath to restore such page breaks as IEEEtran.cls normally
-% does. amsmath.sty is already installed on most LaTeX systems. The latest
-% version and documentation can be obtained at:
-% http://www.ctan.org/pkg/amsmath
-
 
 \usepackage{mathrsfs}
 
-
-
-% *** SPECIALIZED LIST PACKAGES ***
-%
-%\usepackage{algorithmic}
-% algorithmic.sty was written by Peter Williams and Rogerio Brito.
-% This package provides an algorithmic environment fo describing algorithms.
-% You can use the algorithmic environment in-text or within a figure
-% environment to provide for a floating algorithm. Do NOT use the algorithm
-% floating environment provided by algorithm.sty (by the same authors) or
-% algorithm2e.sty (by Christophe Fiorio) as the IEEE does not use dedicated
-% algorithm float types and packages that provide these will not provide
-% correct IEEE style captions. The latest version and documentation of
-% algorithmic.sty can be obtained at:
-% http://www.ctan.org/pkg/algorithms
-% Also of interest may be the (relatively newer and more customizable)
-% algorithmicx.sty package by Szasz Janos:
-% http://www.ctan.org/pkg/algorithmicx
-
-
-
-
-% *** ALIGNMENT PACKAGES ***
-%
 \usepackage{array}
-% Frank Mittelbach's and David Carlisle's array.sty patches and improves
-% the standard LaTeX2e array and tabular environments to provide better
-% appearance and additional user controls. As the default LaTeX2e table
-% generation code is lacking to the point of almost being broken with
-% respect to the quality of the end results, all users are strongly
-% advised to use an enhanced (at the very least that provided by array.sty)
-% set of table tools. array.sty is already installed on most systems. The
-% latest version and documentation can be obtained at:
-% http://www.ctan.org/pkg/array
 
-
-% IEEEtran contains the IEEEeqnarray family of commands that can be used to
-% generate multiline equations as well as matrices, tables, etc., of high
-% quality.
-
-
-
-
-% *** SUBFIGURE PACKAGES ***
-%\ifCLASSOPTIONcompsoc
-%  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
-%\else
-%  \usepackage[caption=false,font=footnotesize]{subfig}
-%\fi
-% subfig.sty, written by Steven Douglas Cochran, is the modern replacement
-% for subfigure.sty, the latter of which is no longer maintained and is
-% incompatible with some LaTeX packages including fixltx2e. However,
-% subfig.sty requires and automatically loads Axel Sommerfeldt's caption.sty
-% which will override IEEEtran.cls' handling of captions and this will result
-% in non-IEEE style figure/table captions. To prevent this problem, be sure
-% and invoke subfig.sty's "caption=false" package option (available since
-% subfig.sty version 1.3, 2005/06/28) as this is will preserve IEEEtran.cls
-% handling of captions.
-% Note that the Computer Society format requires a larger sans serif font
-% than the serif footnote size font used in traditional IEEE formatting
-% and thus the need to invoke different subfig.sty package options depending
-% on whether compsoc mode has been enabled.
-%
-% The latest version and documentation of subfig.sty can be obtained at:
-% http://www.ctan.org/pkg/subfig
-
-
-
-
-% *** FLOAT PACKAGES ***
-%
-%\usepackage{fixltx2e}
-% fixltx2e, the successor to the earlier fix2col.sty, was written by
-% Frank Mittelbach and David Carlisle. This package corrects a few problems
-% in the LaTeX2e kernel, the most notable of which is that in current
-% LaTeX2e releases, the ordering of single and double column floats is not
-% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
-% single column figure to be placed prior to an earlier double column
-% figure.
-% Be aware that LaTeX2e kernels dated 2015 and later have fixltx2e.sty's
-% corrections already built into the system in which case a warning will
-% be issued if an attempt is made to load fixltx2e.sty as it is no longer
-% needed.
-% The latest version and documentation can be found at:
-% http://www.ctan.org/pkg/fixltx2e
-
-
-%\usepackage{stfloats}
-% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
-% the ability to do double column floats at the bottom of the page as well
-% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
-% LaTeX2e). It also provides a command:
-%\fnbelowfloat
-% to enable the placement of footnotes below bottom floats (the standard
-% LaTeX2e kernel puts them above bottom floats). This is an invasive package
-% which rewrites many portions of the LaTeX2e float routines. It may not work
-% with other packages that modify the LaTeX2e float routines. The latest
-% version and documentation can be obtained at:
-% http://www.ctan.org/pkg/stfloats
-% Do not use the stfloats baselinefloat ability as the IEEE does not allow
-% \baselineskip to stretch. Authors submitting work to the IEEE should note
-% that the IEEE rarely uses double column equations and that authors should try
-% to avoid such use. Do not be tempted to use the cuted.sty or midfloat.sty
-% packages (also by Sigitas Tolusis) as the IEEE does not format its papers in
-% such ways.
-% Do not attempt to use stfloats with fixltx2e as they are incompatible.
-% Instead, use Morten Hogholm'a dblfloatfix which combines the features
-% of both fixltx2e and stfloats:
-%
-% \usepackage{dblfloatfix}
-% The latest version can be found at:
-% http://www.ctan.org/pkg/dblfloatfix
-
-
-
-
-% *** PDF, URL AND HYPERLINK PACKAGES ***
-%
-%\usepackage{url}
-% url.sty was written by Donald Arseneau. It provides better support for
-% handling and breaking URLs. url.sty is already installed on most LaTeX
-% systems. The latest version and documentation can be obtained at:
-% http://www.ctan.org/pkg/url
-% Basically, \url{my_url_here}.
-
-
-
-
-% *** Do not adjust lengths that control margins, column widths, etc. ***
-% *** Do not use packages that alter fonts (such as pslatex).         ***
-% There should be no need to do such things with IEEEtran.cls V1.6 and later.
-% (Unless specifically asked to do so by the journal or conference you plan
-% to submit to, of course. )
-
-% *** Pseudocode PACKAGES ***
-\usepackage{amsmath}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \usepackage{amssymb}
@@ -322,6 +55,9 @@
 
 \newcommand\NB[1]{$\spadesuit$\footnote{NB: #1}}
 \newcommand\RP[1]{$\clubsuit$\footnote{RP: #1}}
+
+\newcommand*{\Z}{\mathbb{Z}}
+\newcommand*{\N}{\mathbb{N}}
 % reference package for bibtex
 
 %\usepackage{biblatex}
@@ -348,50 +84,28 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Using Hidden Markov Models to Improve Autonomous Vehicle Decision Making - Problem Formulation}
-
-
-% author names and affiliations
-% use a multiple column layout for up to three different
-% affiliations
-\author{\IEEEauthorblockN{Rahul Peddi}
-\IEEEauthorblockA{Systems and Information Engineering\\
-University of Virginia\\
-Charlottesville, Virginia\\
-Email: rp3cy@virginia.edu}}
-
-% conference papers do not typically use \thanks and this command
-% is locked out in conference mode. If really needed, such as for
-% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
-% after \documentclass
-
-% for over three affiliations, or if they all won't fit within the width
-% of the page, use this alternative format:
-% 
-%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
-%Homer Simpson\IEEEauthorrefmark{2},
-%James Kirk\IEEEauthorrefmark{3}, 
-%Montgomery Scott\IEEEauthorrefmark{3} and
-%Eldon Tyrell\IEEEauthorrefmark{4}}
-%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
-%Georgia Institute of Technology,
-%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
-%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
-%Email: homer@thesimpsons.com}
-%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
-%Telephone: (800) 555--1212, Fax: (888) 555--1212}
-%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+%\title{Using Hidden Markov Models to Improve Autonomous Vehicle Decision Making - Problem Formulation}
+%\title{A Hidden Markov Models-based Approach for Automotive Predictive and Assistive Control}
+\title{\LARGE \bf A Hidden Markov Models-based Approach for Predictive and Assistive Control in Semi-Autonomous vehicles}
+\author{Rahul Peddi and Nicola Bezzo%
+\thanks{Rahul Peddi and Nicola Bezzo are with the Department of Systems and Information Engineering and the Charles L. Brown Department of Electrical and Computer Engineering, University of Virginia, Charlottesville, VA 22904, USA. Email: {\tt \{rp3cy, nb6be\}@virginia.edu}}
+%\thanks{$^{2}$Esen Yel is with the Department of Systems and Information Engineering, University of Virginia, Charlottesville, VA 22904, USA. Email: {\tt ey3un@virginia.edu}}
+}
 
 
 
+%\author{\IEEEauthorblockN{Rahul Peddi$^1$ and Nicola Bezzo$^{1,2}$} 
+%\IEEEauthorblockA{
+%\small
+%$^1$Department of Systems and Information Engineering\\
+%\small
+%$^2$Department of Electrical and Computer Engineering\\
+%\small
+%University of Virginia\\
+%Email: \{rp3cy, nbezzo\}@virginia.edu}}
+%\hyphenation{u-sing}
 
-% use for special paper notices
-%\IEEEspecialpapernotice{(Invited Paper)}
 
-
-
-
-% make the title area
 \maketitle
 
 % As a general rule, do not put math, special symbols or citations
@@ -423,10 +137,13 @@ Email: rp3cy@virginia.edu}}
     
     
 %    Because these dangerous situations can occur so rapidly \NB{need citation here}, there is a need to increase the ability to guarantee safety when developing new systems \NB{what do you mean with new systems?} for human drivers. This can be done by increasing the ability to predict and adapt to what will happen in the future. A simple depiction of a danger situation is shown in Fig. \ref{fig:hiway}. \NB{figure needs improvements}
+
+\NB{I'll go back to this later...intro needs a lot of attention!}
  
-\NB{In a not far future, multiple vehicles with different level of autonomy will have to coexist and operate safely. Examples of such vehicles include cars, vessels, aerial vehicles. Different level of autonomy are available 1 to 5 for cars, hobby  } 
-    
-\NB{Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with line changing warning and assisted braking, } Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy.
+\NB{In a not far future, multiple vehicles with different level of autonomy will have to coexist and operate safely. Examples of such vehicles include cars, vessels, aerial vehicles. Different level of autonomy are available 1 to 5 for cars, hobby  }    
+\NB{Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with line changing warning and assisted braking, } 
+\NB{here let's talk about the trolly problem and mention that we see humans as disturbance in this work! discuss about teleoperated robotics that is still big and assistive automation}
+Over the last few years, semi-autonomous and autonomous vehicles have become increasingly popular, but they have not replaced traditional vehicles entirely just yet. This leads to a hybrid environment; one that features vehicles of all levels of autonomy.
     
     Many of these vehicles are equipped with some form of adaptive cruise control (ACC) or advance driver assistance systems (ADAS), both of which help the driver make safe decisions while operating the vehicle. These types of systems are forms of human-robot interaction. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the other hand, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments.
     
@@ -466,30 +183,39 @@ Email: rp3cy@virginia.edu}}
     
 \section{Problem Formulation}
  
-In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems in which users may perform undesired actions that can compromise the safety of the entire system Formally: 
+In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems. We focus on manned vehicles employing an hybrid autonomy scheme as defined in \cite{} in which the control authority is shared between the human and the on-board computer. For the sake of brevity we denote this class of vehicles as {\em hybrid autonomous vehicles} (HAVs), In our scheme, the on-board computer is used as a supervisory monitor to predict and assess safety and assist by correcting undesired human behaviors that may lead to unsafe situations and compromise system's integrity. 
+% control in which users may perform undesired actions that can compromise the safety of the entire system 
+Formally the problem that we investigate in this work can be stated as: 
 
 \textbf{Problem 1: \textit{Proactive Safe Assisted Planning and Control}:} 
-    
-    A human-operated vehicle $h$ is moving in an environment in the presence of stationary obstacles and other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
+      A hybrid autonomous vehicle (HAV) $h$ is moving in an environment in the presence of other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
     \begin{enumerate}
-        \item  predict online the future states of the surrounding vehicles:
+        \item  predict online other vehicles future states $s$ and their likelihood $p$. Formally, $\forall q \in R_h(t)$:
     \begin{equation}
-    \forall q \in R_h(t): S=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\}
+   S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\}
+       \end{equation}
+       \begin{equation}
+   P=\{{p_q(t), p_q(t+1),..., p_q(t+T)}\}
+%     \forall q \in R_h(t), S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\}
     \end{equation}
-     where $S$ is the set of all states, $s(t)$, in the time horizon $T$, and assess their likelihood
-    \begin{equation}
-    P=\{{p_q(t), p_q(t+1),..., p_q(t+T)}\}
-    \end{equation}
-    where $P$ represents the set of all probabilities, $p_q(t)$ represents the probabilities at each time, $t$.
-    \item assess the risk $0\leq r_h \leq1$ of a collision during time horizon $T$ and
-    \item assist and intervene to correct the human-operated actions to guarantee safety, i.e., obtain an input $u_i$ such that if the risk surpasses a certain user defined level,$\rho$, we are able to minimize the risk, and guarantee,
-    \begin{equation}
-        |x_h(t)-x_q(t)| \geq d_{min}
-    \end{equation}
-     where $x_h(t)$ and $x_q(t)$ are the positions of the human-operated vehicle and the surrounding agents at time $t$ and $d_{min}$ is a minimum safe distance.
+     where $S_q$ is the set of all states, $s_q$, and $P$ is the set of all probabilities, $p_q$ over a finite time horizon $T\in\N$.  
+%     assess their likelihood
+%    \begin{equation}
+%    P=\{{p_q(t), p_q(t+1),..., p_q(t+T)}\}
+%    \end{equation}
+%    where $P$ represents the set of all probabilities, $p_q(t)$ represents the probabilities at each time, $t$.
+    \item assess the risk $0\leq r \leq1$ of a collision during $T$ and
+    \item assist and intervene to correct the HAV actions to guarantee safety, i.e., obtain an input policy $U_h=\{{u_h(t), u_h(t+1),..., u_h(t+T)}\}$ such that if the risk $r$ is always minimized. 
     \end{enumerate}
+   In our specific multi-vehicle case, risk is a function of distance between vehicles. Hence minimizing risk is equivalent to guaranteeing the following:
     
-    It is important to note that the vehicle being modified is primarily human operated, in the sense that we should intervene only when necessary. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_h>\rho$, we let the user perform his/her desired actions.
+%    surpasses a certain user defined level,$\rho$, we are able to minimize the risk, and guarantee,
+    \begin{equation}
+        ||{x_h(t)-x_q(t)}|| \geq d_{\textrm{min}}
+    \end{equation}
+     where $x_h(t)$ and $x_q(t)$ are the positions of the HAV and the $q^{\textrm{th}}$ surrounding vehicle at time $t$ and $d_{min}$ is a minimum safe distance.    
+    
+    It is important to note that the vehicle being modified is primarily human operated, in the sense that we should intervene only when necessary \NB{we are not modifying anything, we are adapting and assisting its operation. This sentence needs to be rewritten.}. Unless the user performs actions that we predict could lead to unsafe conditions, which we define as situations where $r_h>\rho$, with $\rho$ a user defined threshold, we let the HAV perform his/her desired actions.
 
 \section{Approach}
 
