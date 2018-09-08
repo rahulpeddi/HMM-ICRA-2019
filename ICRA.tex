@@ -724,7 +724,8 @@ We will use $r$ to denote this risk, which increases as distance decreases. The 
     \end{cases}
 \end{equation}
 
-where $r_{q}^{l}(t)$ represents the risk of a certain agent $q$ interfering with the user's position in a certain lane $l$. The set of all risks for each vehicle will be denoted as $\matchal R$, where
+where $r_{q}^{l}(t)$ represents the risk of a certain agent $q$ interfering with the user's position in a certain lane $l$. The set of all risks for each vehicle will be denoted as $\matchal{R}_q$, where
+
 \begin{equation}
     \forall{q} \in R: \mathcal{R}_q =
                     \begin{bmatrix}
@@ -733,10 +734,11 @@ where $r_{q}^{l}(t)$ represents the risk of a certain agent $q$ interfering with
                         r_q^L(t+H) &    & r_q^R(t+H)
                     \end{bmatrix}
 \end{equation}
+
 It is important to note that multiple agents affect risk in our analysis, the agent with the highest risk is considered for adaptation. The set of maximum risk values for each lane at each time is evaluated as follows:
 
 \begin{equation}
-    \forall{l}\in\mathbf{L}, \max_r_q^l(\mathcal{R})
+    \forall{l}\in\mathbf{L}:\hat{r}^l =  \max_{r_{q}^{l}}(\mathcal{R})
 \end{equation}
 
 Using this, we obtain the maximum risk in each lane in horizon $H$. This is shown in the set:
@@ -753,7 +755,7 @@ Given the $\hat{r}$ values for each lane for all $t\in H$, we can adapt our user
     u_a > u_h \iff \hat r^{l_u} > \rho
 \end{equation}
 
-where $u_a$ and $u_h$ represent autonomous and human inputs, while $l_u$ represents the user's lane and $l_u \in \mathbb{L}$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
+where $u_a$ and $u_h$ represent autonomous and human inputs, while $l_u$ represents the user's lane and $l_u \in \mathbf{L}$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
 
 \begin{equation}
     l^* = \min_l(\mathcal{\hat{R}})
@@ -797,7 +799,7 @@ In this simulation we find that the root mean squared error (RMSE) between the f
 
 In the next simulation, we show that we are able to fit pre-trained models to a certain vehicle, whose behaviors are randomly generated, moving through the same workspace as the training sets. In this simulation, we begun to fit the parameters after making one full transition and obtaining related emissions. 
 
-\begin{figure}[ht] \label{fwd}
+\begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{fit2.png}
     \caption{The forward position of the actual robot (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).}
     \label{fig:fwd}
@@ -855,7 +857,7 @@ This result also indicates a case of the user's desires being met as closely as 
     \label{fig:cs2c}
 \end{figure}
 
-The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. An adjustment of the velocities in this case are shown in \ref{fig:vehiclepos}. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
+The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
 
 
 \section{Experiment}
