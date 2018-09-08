@@ -493,13 +493,13 @@ In this work we are interested in finding an approach to proactively guarantee s
 
 \section{Approach}
 
-In this section we propose a novel HMM-based approach to predict future states of other vehicles. We leverage a history of offline observations to build different models that are used online to recognize and predict other vehicles' behaviors. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model. MPC [ref] or QMDP [ref] could be used to solve this problem as well, but in comparison to MPC and QMDP that require computationally expensive value iterations, our proposed work is more efficient while guaranteeing safety. The proposed framework is used over a time horizon $T$ in order to train multiple models offline, with a training set that consists of states that describe a model of a vehicle. In this work, multiple vehicles are sampled to extract different models that capture the behavior of the system.
+In this section we propose a novel HMM-based approach to predict future states of other vehicles. We leverage a history of offline observations to build different models that are used online to recognize and predict other vehicles' behaviors. The technique derived in this work also aims to find a method to guarantee safe operation based on the state observations and predictions that come from this model \NB{simplify}. MPC [ref] or QMDP [ref] could be used to solve this problem as well, but in comparison to MPC and QMDP that require computationally expensive value iterations, our proposed work is more efficient while guaranteeing safety. The proposed framework is used over a time horizon $T$ \NB{In this work we train multiple models offline over an horizon {T}} in order to train multiple models offline, with a training set that consists of states that describe a model of a vehicle. In this work, multiple vehicles are sampled to extract different models that capture the behavior of the system.
 
-\subsection{Framework}
+\subsection{HMM-based Training Framework}
 
 The proposed Adjusted Hidden Markov Model can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
 \begin{itemize}
-    \item $\mathcal{O}$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(T)\}$.
+    \item $\mathcal{O}$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(T)\}$ \NB{change to lower t}.
     \item  $\mathcal{S}$ is set of $n$ unique values that $\mathcal{O}$ can be, pulled from a finite set $\forall o(t)\in\mathcal{O}$, $s_i \in \mathcal{S}$ denoted as $s_{i}$ or $s_{j}$, where $i,j = \{1,\ldots,n$\}, with $n \in \mathbb{N}$ and $i = \lor \neq j$. The notation $s_{ij}$ represents the state transition from $s_i$ to $s_j$.
     \item $\mathcal{E}$ is the finite set of emissions, or inferences that relate to each state, $e(t)$ collected over a finite past time horizon $T$, $\mathcal{E} = \{ e(t-T), e(t-T+1), \ldots, e(T)\}$.  
     \item $\mathcal{G}$ is a finite set of $m$ unique inferences made, pulled from a the finite set $\forall e(t)\in\mathcal{E}$, $g_k \in \mathcal{G}$ denoted as $g_{k}$ where $k = \{1,\ldots,m$\}, with $m \in \mathbb{N}$
@@ -540,7 +540,7 @@ The proposed Adjusted Hidden Markov Model can be described by a tuple $\langle \
         The matrices $\mathcal{A}$ and $\mathcal{B}$ will be referenced as ``the parameters" of the AHMM in the rest of this work. 
 \end{itemize}
 
-This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{A}, \mathcal{B} \rangle$, with implicit parameters $m$ and $n$. The AHMM is adjusted from a traditional Hidden Markov Model because the states are measurable. As a result, we have all the states and transitions a priori and can learn the parameters of multiple models offline. In addition, because states are measurable, the relationship between states and observations are not hidden, and therefore, predictions can be made with increased accuracy.
+This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{A}, \mathcal{B} \rangle$, with implicit parameters $m$ and $n$. The AHMM is adjusted from a traditional Hidden Markov Model because the states are measurable \NB{clarify}. As a result, we have all the states and transitions a priori and can learn the parameters of multiple models offline. In addition, because states are measurable, the relationship between states and observations are not hidden, and therefore, predictions can be made with increased accuracy.
 The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}. In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $e$ represent the emissions ($\mathcal{E}$). The lines with the label $a$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.
 
 \begin{figure}[ht]
@@ -549,12 +549,12 @@ The general pictorial representation of the AHMM is shown in Fig.\ref{fig:hmm}. 
     \label{fig:hmm}
 \end{figure}
 
-\subsection{AHMM Based Prediction}
- Using the framework above, we build a model of a certain system offline. After $T$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i,T}$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. We start with the assumption that $\mathcal{P}$ will give conclusive results
+\subsection{AHMM-Based Online Prediction} \NB{perhaps combine with next and add Update in the title}
+ Using the framework above, we build a model of a certain system offline. After $T$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i,T}$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. We start with the assumption that $\mathcal{P}$ will give conclusive results from which we can predict the future state as follows:
 \begin{equation} \label{eq:nextstate}
     s_{i}(T+1) = \max_{j}[\mathcal{P}_{i(T),j}]
 \end{equation}
-There is, however, the possibility that there will be more than one returned states, as the maximum transition probability can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$. Because the relationship between states and observations is not hidden, we can use the expected observation, derived from (\ref{eq:obsref}) to assess which returned state is more accurate. In the event that the prediction is still unclear, we elect the more dangerous transition, which is a quantity that depends on the application. For instance, in our case study, the more dangerous transition is one that minimizes the distance between our user's vehicle and the observed vehicle. In addition, we also update the model parameters online based on the actual observed transition, as will be described in the next section. Using this framework, it is possible to predict over any future horizon H, assuming that the prediction is correct at each iteration, the future states using the transition and emission matrices.
+There is, however, the possibility that there will be more than one returned states, as the maximum transition probability can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$ \NB{equation needed}. Because the relationship between states and observations is not hidden, we can use the expected observation, derived from (\ref{eq:obsref}) to assess which returned state is more accurate. In the event that the prediction is still unclear \NB{clarify}, we elect the more dangerous transition, which is a quantity that depends on the application. For instance, in our case study, the more dangerous transition is one that minimizes the distance between our user's vehicle and the observed vehicle. In addition, we also update the model parameters online based on the actual observed transition, as will be described in the next section. Using this framework, it is possible to predict over any future horizon H, assuming that the prediction is correct at each iteration, the future states using the transition and emission matrices \NB{flip the order} \NB{explain the algorithm}.
 
 %\begin{algorithm}[H]
 %\SetAlgoLined
@@ -578,9 +578,9 @@ AHMM parameters can be updated online in order to increase the accuracy of the m
 \begin{equation}
  T = t-T+t_l,t,\ldots,t+t_l    
 \end{equation}
-where $t$ represents the end of the training set, $T$ is the time horizon of the training set itself, and $t_l$ is the current time at which the window is being slid. If the system enters a new state or observation, $n$ or $m$ would increase, respectively. The updated parameters, $\mathcal{P'}$ and $\mathcal{B'}$, will continue to be used for online prediction.
+where $t$ represents the end of the training set, $T$ is the time horizon of the training set itself, and $t_l$ is the current time at which the window is being slid. If the system enters a new state or observation, $n$ or $m$ would increase, respectively. The updated parameters, $\mathcal{P'}$ and $\mathcal{B'}$, will continue to be used for online prediction. \NB{rewrite}
 
-\subsection{Online Model Fitting}
+\subsection{Online Model Fitting}\label{sec: omf} \NB{label for sections}
 Using the framework described in Sections A,B, and C,  we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models can be extracted using several data sets of different systems under observation. In other words, we can obtain super-sets containing all the transition and emission matrices.
 \begin{equation}
     \hat{\mathcal{P}} = \{\mathcal{P},\ldots,\mathcal{P}_M\}
@@ -589,9 +589,9 @@ Using the framework described in Sections A,B, and C,  we can extract a model th
     \hat{\mathcal{B}} = \{\mathcal{B},\ldots,\mathcal{B}_M\}
 \end{equation}
 
-During run-time we observe new measurements of other systems and the challenge becomes fitting each new system observations to the right model. However, until we have enough data about this new system, the prediction may not be correct, and thus, we need to take into account error, $\sigma$. In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process. With more models, we are more likely to find a precise fit. We use $M_1,M_2,\ldots,M_w$ to represent $w$ different models of some system. Using the method outlined in this section, we are able to determine and apply the best model.
+During run-time we observe new measurements of other systems and the challenge becomes fitting each new system observations to the right model. However, until we have enough data about this new system, the prediction may not be correct, and thus, we need to take into account error, $\sigma$. In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process. With more models, we are more likely to find a precise fit \NB{put this later}. We use $M_1,M_2,\ldots,M_w$ to represent $w$ different models of some system \NB{unclear}. Using the method outlined in this section, we are able to determine and apply the best model.
 
-Having built multiple models, we observe a new system and begin to execute the framework discussed in Section A for two measurements, $o(t-1),o(t)$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$. In order to determine the optimal model, we calculate the errors between our model and each of the offline models:
+Having built multiple models, we observe a new system and begin to execute the framework discussed in Section A for two consecutive measurements, $\left[o(t-1),o(t)\right]$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$. In order to determine the optimal model, we calculate the errors between our model and each of the offline models:
 
 \begin{equation} \label{probdist}
     \tilde{\sigma}_\mathcal{P} = \{\sigma_{\mathcal{P}_{1}},\ldots,\sigma_{\mathcal{P}_{w}}\} = \forall\mathcal{P}_w\in\hat{\mathcal{P}} \lVert \tilde{\mathcal{P}}-\hat{\mathcal{P}_w} \rVert
@@ -606,12 +606,13 @@ In order to determine the model with the lowest error, we minimize the set $\til
 \begin{equation}
     w^* = \forall\sigma_{\mathcal{P}_w}\in\tilde{\sigma_\mathcal{P}}\text,  \min_{w} \tilde{\sigma_{\mathcal{P}_w}}
 \end{equation}
+\NB{add argmin}
 
 The $M^*_{w}$ represents the model with the least error, or the optimal model. In order to make predictions using the optimal model, we use refer to the parameters, $\mathcal{P}_w$ and $\mathcal{B}_w$, where $w$ refers to the optimal model. The procedure to predict future states is as shown in *Algorithm*.
 
 
 
-\subsection{Online Fitting for Uncertain Fits}
+\subsection{Online Fitting for Uncertain Fits} \NB{merge with previous and change to explain betetr how new data are going to improve your model...Bellman optimality}
 If the observed system, however, does not result in an $M^*_{w}$ with a high $\sigma$, the method outlined in the online section is used. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $M^*_{w}$. We are able to leverage the parameters of $M^*_{w}$, by augmenting and updating $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$ as we enter new states or observe new transitions or observations, much like how we obtain $\mathcal{P}'$ and $\mathcal{B}'$. With this, we obtain $\tilde{\mathcal{P}}'$ and $\tilde{\mathcal{B}}'$ In the case of a consistently diverging $\sigma$, we use $\tilde{\mathcal{P}}'$ and $\tilde{\mathcal{B}}'$ to make future predictions using *Algorithm*.
 
 \section{Case Study: Semi-autonomous vehicle on a Highway}
