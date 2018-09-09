@@ -6,3 +6,7 @@
 *.pdf
 
 *.gz
+
+*.bbl
+
+*.blg
