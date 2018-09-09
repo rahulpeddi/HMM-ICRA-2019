@@ -549,13 +549,13 @@ In the first case, the host vehicle in the center lane responds to the actions a
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs1.JPG}
-    \caption{In this snapshot, $u_{\alpha} = 0$ and $u_{h} = 1$. This is because the $r^l$ at $T_u$ is below the $\rho$.}
+    \caption{In this snapshot, $u_{\alpha} = 0$ and $u_{h} = 1$. This is because the $r^l$ at $t+H$ is below the $\rho$.}
     \label{fig:cs1}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs1b.JPG}
-    \caption{In this snapshot, the risk in the host vehicle's lane at $T_u$ has increased above $\rho$, and autonomy has increased rapidly. The reason $u_{alpha}$ has increased to 1, is because this is the instant at which the change begins. The location of minimum risk is determined to be the right lane, and the vehicle will then move to the right lane.}
+    \caption{In this snapshot, the risk in the host vehicle's lane at $t+H$ has increased above $\rho$, and autonomy has increased rapidly. The reason $u_{alpha}$ has increased to 1, is because this is the instant at which the change begins. The location of minimum risk is determined to be the right lane, and the vehicle will then move to the right lane.}
     \label{fig:cs1b}
 \end{figure}
 
@@ -566,11 +566,11 @@ In the second simulation, the human does take some action and it is evident that
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs2.JPG}
-    \caption{In this snapshot, $u_{\alpha} > u_{h}$. This is because the $r^l_u$ at $T_u$ is above $\rho$}
+    \caption{In this snapshot, $u_{\alpha} > u_{h}$. This is because the $r^l_u$ at $t+H$ is above $\rho$}
     \label{fig:cs2}
 \end{figure}
 
-This result also indicates a case of the user's desires being met as closely as possible. The user, by only adjusting velocity and not adjusting their lane change behavior, indicates that the velocity is the first parameter to adjust. As shown in Fig.\ref{fig:cs2c}, the velocity is only adjusted so that the driver is in a safe position for the selected time $T_u$ and, consequently for times $t,t+1,\ldots,T_u$. This is indicated by a velocity that slowly decreases to a safe value. This, however, would only suffice to maximize the time before a collision occurs. Because that is a limitation of only adjusting the velocity, when a collision becomes imminent, $u_\alpha$ increases to 1, and the lane is changed to that of minimum risk.
+This result also indicates a case of the user's desires being met as closely as possible. The user, by only adjusting velocity and not adjusting their lane change behavior, indicates that the velocity is the first parameter to adjust. As shown in Fig.\ref{fig:cs2c}, the velocity is only adjusted so that the driver is in a safe position for the selected time $H$ and, consequently for times $t,t+1,\ldots,t+H$. This is indicated by a velocity that slowly decreases to a safe value. This, however, would only suffice to maximize the time before a collision occurs. Because that is a limitation of only adjusting the velocity, when a collision becomes imminent, $u_\alpha$ increases to 1, and the lane is changed to that of minimum risk.
 
 \begin{figure}[ht]
     \includegraphics[width=0.5\textwidth]{cs2c.JPG}
