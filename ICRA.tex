@@ -250,7 +250,7 @@ In this section we formally discuss our framework for training models \NB{In ord
         \end{equation}
         This probability is calculated by counting the occurrences of each state transition over all transitions from that state:
         \begin{equation} \label{eq:transbuild}
-            p_{ij} = N_{ij}/N_{i*}
+            p_{ij} = N_{ij}/N_{i}*
         \end{equation}
         where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$, $N_{i*}$ is the total number of transitions from $s_i$ to any state. Also, $N_{ij} \leq N_{i*} \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
         \begin{equation}
@@ -265,9 +265,9 @@ In this section we formally discuss our framework for training models \NB{In ord
         \begin{equation} \label{eq:obsref}
             b_{ik} = P(g_k(t+1) \vert s_i(t))
         \end{equation}
-        where $i = \{1,\ldots,n\}$. The emission probabilities are calculated in a similar way to (\ref{eq:transbuild}):
+        where $i = 1,\ldots,n$. The emission probabilities are calculated in a similar way to (\ref{eq:transbuild}):
         \begin{equation} \label{eq:obsbuild}
-            b_{ik} = N_{g_{ik}}/N_{g_{i*}}
+            b_{ik} = N_{g_{ik}}/N_{g_{i}}*
         \end{equation} 
         where $N_{g_{ik}} \leq N_{g_{i*}} \leq T$.
         \begin{equation}
@@ -328,7 +328,7 @@ The following 3 emissions are considered:
 \end{enumerate}
 
 
-\section{AHMM-Based Online Prediction and Updating} \label{sec:ahmmpredupdate} %\NB{perhaps combine with next and add Update in the title}
+\section{AHMM-Based Online Prediction and Model Updates} \label{sec:ahmmpredupdate} %\NB{perhaps combine with next and add Update in the title}
   Using the HMM approach outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the available emission and transition matrices, as lookup tables, to obtain the most likely future state. The future state is determined using:
  %\NB{Using the HMM approach outlined in Section...given enough observations, we can extract a model for surround vehicles}. \NB{This model can be used online to predict future states of the system. This is achieved by collecting more observations online. The observed states at time t can then be used in the available emission and transition matrices, as a lookup table, to obtain the most likely next state}At $t$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i}(t)$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. %We start with the assumption that $\mathcal{P}$ will give conclusive results from which we can predict the future state as follows\NB{remove this}:
 %\begin{equation} \label{eq:nextstate}
@@ -344,7 +344,7 @@ The following 3 emissions are considered:
 
 \begin{align} \label{eq:pred}
    s(t+1) &= s_j \vert \{s_j = \argmax_s \mathcal{P}(s(t)\to s_j) \text{ \& } \nonumber \\ 
-   & g(s(t)\to s_j) = \max_g(s(t)\to g_k)
+   & g(s(t)\to s_j) = \max_g(s(t)\to g_k)\}
 \end{align}
 
 %Because the relationship between states and observations is not hidden, we can use the expected inference, derived from \eqref{eq:pred} to assess which returned state is more accurate \NB{not clear, rewrite}.
@@ -384,7 +384,7 @@ The training set is kept the same size in order to retain computational efficien
 $\mathcal{P'}$ and $\mathcal{B'}$ are updated each iteration and will continue to be used for online prediction, making each prediction up-to-date with the online observations.  %\NB{rewrite}
 
 \section{Online Model Fitting}\label{sec:omf}
-Using the framework described in Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}, we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models can be extracted using several data sets, and with that we can obtain super-sets containing all the transition and emission matrices for multiple vehicles. It is important to note that these models capture different behavioral tendencies, and we assume that we have enough different models to fit any new system during run-time. $\mathcal{M} = M_1,\ldots,M_m$ is the set of all models, where $m$ indicates the total number of models. The transition and emission matrices of these models are denoted as follows: %\RP{reorder later} %\NB{here we should probably remind the reader that these models capture different behaviors and we assume that we have enough behaviors to model any system during run-time. This concept should be clear also in the introduction}: 
+Using the framework described in Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}, we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models can be extracted using several data sets, and with that we can obtain super-sets containing all the transition and emission matrices for multiple vehicles. It is important to note that these models capture different behavioral tendencies, and we assume that we have enough different models to fit any new system during run-time. $\mathcal{M} = \{M_1,\ldots,M_m\}$ is the set of all models, where $m$ indicates the total number of models. The transition and emission matrices of these models are denoted as follows: %\RP{reorder later} %\NB{here we should probably remind the reader that these models capture different behaviors and we assume that we have enough behaviors to model any system during run-time. This concept should be clear also in the introduction}: 
 \begin{equation}
     \hat{\mathcal{P}} = \{\mathcal{P}_1,\ldots,\mathcal{P}_m\}
 \end{equation}
@@ -424,7 +424,7 @@ where $i^*$ represents the model with the least error, or the optimal model. In 
 %If the observed system, however, does not result in an $i^*$ with a low error, the model is updated using the method discussed in Section \ref{sec:ahmmpredupdate} \NB{what does it mean....very confusing}. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $N_M^*$ \NB{what is this baseline?}. We are able to leverage the parameters of this model, by  updating $\mathcal{P}_{N_M^*}$ and $\mathcal{B}_{N_M^*}$ as we observe new transitions or make new inferences, much like how we obtain $\mathcal{P}'$ and $\mathcal{B}'$ in Section \ref{sec:ahmmpredupdate} \NB{again very confusing}. In this case, we obtain $\mathcal{P}'_{N_M^*}$ and $\mathcal{B}'_{N_M^*}$. These models can be used to make future predictions using Algorithm \ref{alg:pred}.\NB{this last part is really bad written}
 
 
-\section{Adaptation} \label{sec:adapt}
+\section{Assistive Control} \label{sec:adapt}
 
 
 \subsection{Reachability Analysis}
@@ -434,7 +434,7 @@ In order to assess risk of collision we need to predict:
 \item future states of the surrounding vehicles which are obtained by following the procedure outlined in Section \ref{sec:ahmmpredupdate} and
 \item the reachable states of $h$ over the horizon $H$.
 \end{enumerate}
-In some of our current work, we are using Hamilton-Jacobi reachability analysis to predict future states of a system under uncertainties \cite{esen}. In this paper, we consider a simplified approach for reachability in which we assume that:
+In some of our current work, we are using Hamilton-Jacobi reachability analysis to predict future states of a system under uncertainties \cite{esen}. In this paper, we consider a simplified approach for reachability in which we assume that: \RP{Justify these assumptions}
 \begin{enumerate}[i.]
 \item The vehicle can move to the adjacent lane in one time step $\delta t$
 \item future variations of velocity are bounded $v_h-\delta_v \leq v_h\leq v_h+\delta_v$, with $\delta_v>0$
@@ -448,11 +448,13 @@ Three reachable sets are computed assuming:
 
 [Here let's show 3 figures, with the predictions]
 
-Three reachable sets are obtained at each iteration that contains the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 5 time steps, assuming three velocity case above, then we obtain a total of 45 predictions (15 predictions for every velocity and 3 predictions for every time step, one for each lane/time), as shown in Fig. \ref{fig:reach}
+Three reachable sets are obtained at each iteration that contains the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 45 predictions (15 predictions for every velocity and 3 predictions for every time step, one for each lane/time), as shown in Fig. \ref{fig:reach} \RP{dont forget to add picture}
+
+\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
 
 \subsection{Risk Assessment}
 
- In this section, we discuss how the AHMM method is used to guarantee safety for a manned vehicle, $h$ over a time horizon $H$. 
+ In this section, we discuss how the AHMM method is used to guarantee safety for a HAV, $h$ over a time horizon $H$. 
  
  %\NB{which vehicle? Any?}. In this situation \NB{what situation?}, we have our manned vehicle, $h$, and we have all of the vehicles in our vehicle's sensing range, $R_h$ \NB{$N_{R_h}$ vehicles are in range and can be monitored by $h$ \NB{remember to acknowledge that some vehicles may intermittently enter and exit the range of h}}:
  
@@ -463,6 +465,7 @@ where $n$ is the total number of vehicles in the sensing range.
 
 By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} we can predict future states for all $q$ over an finite horizon $H$ to obtain:
 
+\RP{Change to bar or tilde or hat for predictions}
 \begin{equation}
     v_q^p = \{v_q(t+1),\ldots,v_q(t+H)\}
 \end{equation}
@@ -470,6 +473,8 @@ By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} w
 \begin{equation}
     l_q^p = \{l_q(t+1),\ldots,l_q(t+h)\}
 \end{equation}
+
+\RP{put in text}
 
 where $v_q^p\in S_v$ and $l_q^p\in S_l$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
 With the future velocities, we are able to calculate the forward positions for the horizon $H$ using:
@@ -482,7 +487,7 @@ where $v_q\in v_q^p$ and $\delta$ refers to a sampling time. With this we obtain
 \end{equation}
 Using this information, we are able calculate relative distance,
 \begin{equation}
-    \forall q \in R_h \land \forall t\in H : d_q(t) = \lVert x_h(t)-x_q(t)\rVert
+    \forall q \in R_h: d_q(t) = \lVert x_h(t)-x_q(t)\rVert
 \end{equation}
 
 %Generating and using the optimal model for each vehicle $q$, as discussed in Section \ref{sec:omf}, we are able to predict where an agent will be in the environment for the user-defined time horizon, $H$, as discussed in Section \ref{sec:ahmmpredupdate}\NB{this sentence is confusing: By using the prediction approach presented in Section...we can predict future states for $q$ over an finite horizon $H$. }. This time horizon defines how far ahead the user wants the system to check, in order to intervene \NB{remove}. A sequence of future states for agent $q$, both in terms of velocity and lateral position, are developed for $H$ using the AHMM parameters and Algorithm \ref{alg:pred} \NB{merge this with the previous section}. Given a sequence of future predicted velocities,
@@ -493,10 +498,10 @@ Using this information, we are able calculate relative distance,
 %    x_h^p = \{x_h(t+1),\ldots,x_h(t+H)\}
 %\end{equation}
 
+\RP{Simplify - Risk is a function of D as follows}
 We will use $r_q^l$ to denote this risk, which increases as distance decreases. The following equation demonstrates how we calculate risk:
 
 \begin{equation}
-\forall{t}\in H, \;
     r_{q}^{l}(t) =
     \begin{cases}
     \frac{1}{d_{q}(t)},  & \text{if } l_h=l_q \text{ and } d_{q}(t) > 1  \\
@@ -505,8 +510,9 @@ We will use $r_q^l$ to denote this risk, which increases as distance decreases. 
     \end{cases}
 \end{equation}
 
-where $\xi$ is a function of the lane separation, $r_{q}^{l}(t)$ represents the risk of a certain vehicle, $q$, in a certain lane $l$. The set of all risks for each vehicle will be denoted as $\mathcal{R}_q$, where
+where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$.
 
+%The set of all risks for each vehicle will be denoted as $\mathcal{R}_q$, where
 %\NB{what you mean interfering?}
 
 %\begin{equation}
@@ -518,12 +524,12 @@ where $\xi$ is a function of the lane separation, $r_{q}^{l}(t)$ represents the 
 %                    \end{bmatrix}
 %\end{equation}
 %\NB{rewrite mathematically this}
-It is important to note that multiple agents affect risk in our analysis, the areas with the highest risk are considered for adaptation. The set of maximum risk values for each lane for all other vehicles is evaluated as follows:
+It is important to note that multiple vehicles affect risk in our analysis, and the areas with the highest risk are considered for adaptation. The set of maximum risk values for each lane for all other vehicles is evaluated as follows: \RP{Address that to velocities}
 \begin{equation}
-    \forall q\in R_h,\forall{l}\in{S_l}: r_{hq}^l = \max\{r^l_{h1},r^l_{h2},\ldots,r^l_{hq}\}
+    \forall q\in R_h,\forall{l}\in{S_l}: r_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
 \end{equation}
 %\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using this, we obtain the areas that have the highest risk for our vehicle $h$.
+Using this, we obtain the areas that have the highest risk for our vehicle $h$. \RP{We obtain a distribution of the highest risk}
 
 %\begin{equation}
 %    \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
@@ -548,6 +554,8 @@ where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents 
 \end{equation}
 
 In addition, we consider the fact that a lane change may be unavailable or unfeasible due to environmental constraints. In this case, we determine the minimum and maximum velocities our vehicle should be driving within one lane. In order to calculate these values, we first find a range $[d_{\min},d_{\max}]$ that our vehicle must be within, in order to ensure that the risk stays below $\rho$. After these safe distances are determined, a maximum velocity and minimum velocity are found such that this range is not violated for horizon $H$.
+
+\RP{1. if one of the vs is safe, then we do that}
 
 \begin{equation}
     v_{\min} = d_{\min}/H
