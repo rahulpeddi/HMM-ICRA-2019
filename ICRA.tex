@@ -34,7 +34,6 @@
 %
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage[font=small,skip=1pt]{caption}
 \usepackage{mathrsfs}
 \usepackage{array}
 \usepackage{enumerate}
@@ -148,7 +147,7 @@ Semi-autonomous and autonomous vehicles are finding their way in our society rap
     
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{highway.png}
+    \includegraphics[width=0.48\textwidth]{highway.png}
     \caption{Two possible actions on a highway, where one leads to a dangerous situation in the future(top), and another minimizes risk (bottom)}
     \label{fig:hiway}
 \end{figure}
@@ -217,7 +216,7 @@ Formally the problem that we investigate in this work can be stated as:
 
 \section{Approach} \label{sec:approach}%\NB{We need to define this section in multiple sections: Offline/Online training; Online Prediction; Online Adaptation}
 \begin{figure}[ht!]
-    \includegraphics[width=0.5\textwidth]{approach.png}
+    \includegraphics[width=0.48\textwidth]{approach.png}
     \caption{Pictorial Representation of the Approach}
     \label{fig:app}
 \end{figure}
@@ -284,7 +283,7 @@ The general pictorial representation of the AHMM is shown in Fig.~\ref{fig:hmm} 
 In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $c$ represent the emissions ($\mathcal{C}$). The lines with the label $p$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.
 
 \begin{figure}[ht!]
-    \includegraphics[width=0.5\textwidth]{ahmm.png}
+    \includegraphics[width=0.48\textwidth]{ahmm.png}
     \caption{General Representation of an Adjusted Hidden Markov Model. In this figure, states, emissions, and respective transition and emission probabilities are shown}
     \label{fig:hmm}
 \end{figure}
@@ -440,7 +439,7 @@ Three reachable sets are computed assuming:
     \item $v_h(t+i)=v_h(t)$
     \item $v_{h,\min}(t+i)=v_h(t)-\delta_v$
     \item $v_{h,\max}(t+i)=v_h(t)+\delta_v$
-\end{enumerate} with $i=\{1,...,H\}$. Future reachable positions can be easily computed as $p_h(t+i)=v_h(t+i)*\delta t$ for each of the three aforementioned scenarios.  
+\end{enumerate} with $i=\{1,...,H\}$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)*\delta t$ for each of the three aforementioned scenarios.  
 
 [Here let's show 3 figures, with the predictions]
 
@@ -467,68 +466,69 @@ By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} w
     l_q^p = \{l_q(t+1),\ldots,l_q(t+h)\}
 \end{equation}
 
-where $v_q^p$ and $l_q^p$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
+where $v_q^p\in S_v$ and $l_q^p\in S_l$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
 With the future velocities, we are able to calculate the forward positions for the horizon $H$ using:
 \begin{equation} \label{eq:dumpos}
-    \forall{t}\in t+H: x_q(t) = v_q(t)\delta_t
+    \forall{t}\in H: x_q(t) = v_q(t)\delta_t
 \end{equation}
 where $v_q\in v_q^p$ and $\delta$ refers to a sampling time. With this we obtain future forward positions:
 \begin{equation}
     x_q^p = \{x_q(t+1),\ldots,x_q(t+H)\}
 \end{equation}
-Using this information, we are able build a risk profile and adapt the input of vehicle $h$ accordingly.
+Using this information, we are able calculate relative distance,
+\begin{equation}
+    \forall q \in R_h \land \forall t\in H : d_q(t) = \lVert x_h(t)-x_q(t)\rVert
+\end{equation}
 
 %Generating and using the optimal model for each vehicle $q$, as discussed in Section \ref{sec:omf}, we are able to predict where an agent will be in the environment for the user-defined time horizon, $H$, as discussed in Section \ref{sec:ahmmpredupdate}\NB{this sentence is confusing: By using the prediction approach presented in Section...we can predict future states for $q$ over an finite horizon $H$. }. This time horizon defines how far ahead the user wants the system to check, in order to intervene \NB{remove}. A sequence of future states for agent $q$, both in terms of velocity and lateral position, are developed for $H$ using the AHMM parameters and Algorithm \ref{alg:pred} \NB{merge this with the previous section}. Given a sequence of future predicted velocities,
 
 
-In this case, we also assume that the driver will continue the behavior he/she is doing at $t$ up to $t+H$. With this assumption, we are able to the estimate the future positions of $h$, obtaining the set:
-\begin{equation}
-    x_h^p = \{x_h(t+1),\ldots,x_h(t+H)\}
-\end{equation}
+%In this case, we also assume that the driver will continue the behavior he/she is doing at $t$ up to $t+H$. With this assumption, we are able to the estimate the future positions of $h$, obtaining the set:
+%\begin{equation}
+%    x_h^p = \{x_h(t+1),\ldots,x_h(t+H)\}
+%\end{equation}
 
-Risk is a function of the distance between estimated future positions of the host vehicle and those of the agents. The distance is calculated using the following equation:
-
-\begin{equation}
-    \forall q \in R \land \forall t\in H : d_q(t) = \lVert x_h(t)-x_q(t)\rVert
-\end{equation}
-
-We will use $r$ to denote this risk, which increases as distance decreases. The following equation demonstrates how we calculate risk:
+We will use $r_q^l$ to denote this risk, which increases as distance decreases. The following equation demonstrates how we calculate risk:
 
 \begin{equation}
 \forall{t}\in H, \;
     r_{q}^{l}(t) =
     \begin{cases}
-    \frac{1}{d_{q}(t)},  & \text{if } d_{q}(t) > 1 \\
+    \frac{1}{d_{q}(t)},  & \text{if } l_h=l_q \text{ and } d_{q}(t) > 1  \\
+    \frac{1}{\xi d_{q}(t)},  & \text{if } l_h\neq l_q \text{ and } d_{q}(t) > 1  \\
         1,                     & \text{otherwise}  
     \end{cases}
 \end{equation}
 
-where $r_{q}^{l}(t)$ represents the risk of a certain agent $q$ interfering \NB{what you mean interfering?}with the user's position in a certain lane $l$. The set of all risks for each vehicle will be denoted as $\mathcal{R}_q$, where
+where $\xi$ is a function of the lane separation, $r_{q}^{l}(t)$ represents the risk of a certain vehicle, $q$, in a certain lane $l$. The set of all risks for each vehicle will be denoted as $\mathcal{R}_q$, where
+
+%\NB{what you mean interfering?}
+
+%\begin{equation}
+%    \forall{q} \in R: \mathcal{R}_q =
+%                    \begin{bmatrix}
+%                        r_q^l(t+1) & \dots & r_q^l(t+1) \\
+%                        \vdots & \ddots & \\
+%                        r_q^l(t+H) &    & r_q^l(t+H)
+%                    \end{bmatrix}
+%\end{equation}
+%\NB{rewrite mathematically this}
+It is important to note that multiple agents affect risk in our analysis, the areas with the highest risk are considered for adaptation. The set of maximum risk values for each lane for all other vehicles is evaluated as follows:
 
 \begin{equation}
-    \forall{q} \in R: \mathcal{R}_q =
-                    \begin{bmatrix}
-                        r_q^L(t+1) & \dots & r_q^R(t+1) \\
-                        \vdots & \ddots & \\
-                        r_q^L(t+H) &    & r_q^R(t+H)
-                    \end{bmatrix}
+    \forall q\in R_h,\forall{l}\in{S_l}: r_{hq}^l = \max\{r^l_{h1},r^l_{h2},\ldots,r^l_{hq}\}
 \end{equation}
+%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
+Using this, we obtain the areas that have the highest risk for our vehicle $h$.
 
-It is important to note that multiple agents affect risk in our analysis, the agent with the highest risk is considered for adaptation \NB{rewrite mathematically this}. The set of maximum risk values for each lane at each time is evaluated as follows:
+%\begin{equation}
+%    \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
+%\end{equation}
+%\NB{this doesn't say too much. We can remove it probably}
 
-\begin{equation}
-    \forall{l}\in\mathbf{S_l}:\hat{r}^l =  \max_{r_{q}^{l}}(\mathcal{R})
-\end{equation}
-\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using this, we obtain the maximum risk in each lane in horizon $H$. This is shown in the set:
-
-\begin{equation}
-    \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
-\end{equation}
-\NB{this doesn't say too much. We can remove it probably}
 \subsection{Adaptive User Assistance}
 
-Given the $\hat{r}$ values for each lane for all $t\in H$, we can adapt our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\rho$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
+Given $r_{hq}^l$, we can adapt our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\r_\min$ and $r_\max$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
 
 \begin{equation}
     u_a > u_h \iff \hat r^{l_u} > \rho
@@ -560,13 +560,13 @@ The simulations for this work primarily were done in Matlab. Different simulatio
 For training the models, we used a workspace featuring $15$ stationary obstacles. A test vehicle drove through a highway setting with these obstacles, and it was observed for a training period of 700 iterations. This is followed by an estimation period of 700 iterations, which were used to validate the parameters.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{train1.png}
+    \includegraphics[width=0.48\textwidth]{train1.png}
     \caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).}
     \label{fig:train1}
 \end{figure}
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{train2.png}
+    \includegraphics[width=0.48\textwidth]{train2.png}
     \caption{The lane changes of the actual robot (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).}
     \label{fig:train2}
 \end{figure}
@@ -578,20 +578,20 @@ In this simulation we find that the root mean squared error (RMSE) between the f
 In the next simulation, we show that we are able to fit pre-trained models to a certain vehicle, whose behaviors are randomly generated, moving through the same workspace as the training sets. In this simulation, we begun to fit the parameters after making one full transition and obtaining related emissions. 
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{fit2.png}
+    \includegraphics[width=0.48\textwidth]{fit2.png}
     \caption{The forward position of the actual robot (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).}
     \label{fig:fwd}
 \end{figure}
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{fit1.png}
+    \includegraphics[width=0.48\textwidth]{fit1.png}
     \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
     \label{fig:lanchan}
 \end{figure}
  In addition, we show the error of the fit for each velocity model in \ref{fig:error}, where we see that the closest fit is that of the medium-speed model.
  
  \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{fit3.png}
+    \includegraphics[width=0.48\textwidth]{fit3.png}
     \caption{The error of the fit between our model and each of the three pretrained models}
     \label{fig:error}
 \end{figure}
@@ -603,13 +603,13 @@ In order to show the proactive safety system, we have three specific use-cases.
 In the first case, the host vehicle in the center lane responds to the actions and future position of a vehicle in the left lane, which is passing a stationary obstacle. The two snapshots of the simulation in Fig.\ref{fig:cs1} and Fig.\ref{fig:cs1b} indicate the behaviors that are occurring.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{cs1.JPG}
+    \includegraphics[width=0.48\textwidth]{cs1.JPG}
     \caption{In this snapshot, $u_{\alpha} = 0$ and $u_{h} = 1$. This is because the $r^l$ at $t+H$ is below the $\rho$.}
     \label{fig:cs1}
 \end{figure}
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{cs1b.JPG}
+    \includegraphics[width=0.48\textwidth]{cs1b.JPG}
     \caption{In this snapshot, the risk in the host vehicle's lane at $t+H$ has increased above $\rho$, and autonomy has increased rapidly. The reason $u_{alpha}$ has increased to 1, is because this is the instant at which the change begins. The location of minimum risk is determined to be the right lane, and the vehicle will then move to the right lane.}
     \label{fig:cs1b}
 \end{figure}
@@ -620,7 +620,7 @@ This simulation results in a safe operation, as the minimum risk is easily ident
 In the second simulation, the human does take some action and it is evident that autonomy and human-control are fluid and change based on changing surroundings. In addition, there is once again a clear location at which the risk is at a minimum. The snapshot in Fig.\ref{fig:cs2} shows a situation where the user is travelling at a velocity slightly too rapid for the obstacle ahead, and slowing down will not put it at a risky position in relation to the next vehicle that is behind the user. As a result, $u_{\alpha}$ is increased as the level of risk increases.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{cs2.JPG}
+    \includegraphics[width=0.48\textwidth]{cs2.JPG}
     \caption{In this snapshot, $u_{\alpha} > u_{h}$. This is because the $r^l_u$ at $t+H$ is above $\rho$}
     \label{fig:cs2}
 \end{figure}
@@ -628,7 +628,7 @@ In the second simulation, the human does take some action and it is evident that
 This result also indicates a case of the user's desires being met as closely as possible. The user, by only adjusting velocity and not adjusting their lane change behavior, indicates that the velocity is the first parameter to adjust. As shown in Fig.\ref{fig:cs2c}, the velocity is only adjusted so that the driver is in a safe position for the selected time $H$ and, consequently for times $t,t+1,\ldots,t+H$. This is indicated by a velocity that slowly decreases to a safe value. This, however, would only suffice to maximize the time before a collision occurs. Because that is a limitation of only adjusting the velocity, when a collision becomes imminent, $u_\alpha$ increases to 1, and the lane is changed to that of minimum risk.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.5\textwidth]{cs2c.JPG}
+    \includegraphics[width=0.48\textwidth]{cs2c.JPG}
     \caption{This figure depicts the velocity of the user's vehicle}
     \label{fig:cs2c}
 \end{figure}
