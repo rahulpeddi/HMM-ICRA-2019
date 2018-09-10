@@ -152,7 +152,7 @@ Semi-autonomous and autonomous vehicles are finding their way in our society rap
     \label{fig:hiway}
 \end{figure}
     
-    An example of such environment is a large multi-laned area with multiple vehicles. In Fig.\ref{fig:hiway}, a user is driving a vehicle (yellow car) behind a slower vehicle (blue car). In this case, both actions presented in Fig.\ref{fig:hiway} may appear safe to a driver at the moment, but as can be seen, one of the lane changes is considerably riskier in the future, because a rapidly approaching vehicle (red car) will enter the same space as the user's vehicle. In this case, we see the driver's actions as potentially adversarial, or as a disturbance. In order to prevent a riskier action from taking place, we are interested in predicting future states of other surrounding vehicles, assessing risk of collisions given the user's actions, and intervening and assisting the driver accordingly. This type of work can be approached as a type of Markov Chain, and we leverage Hidden Markov Model (HMM) theory as well, both of which are commonly used models for many cyber-physical systems (CPS).
+    An example of such environment is a large multi-laned area with multiple vehicles. In Fig.\ref{fig:hiway}, a user is driving a vehicle (yellow car) behind a slower vehicle (blue car). In this case, both actions presented in Fig.\ref{fig:hiway} may appear safe to a driver at the moment, but as can be seen by the red circle, one of the lane changes is considerably riskier in the future, because a rapidly approaching vehicle (red car) will enter the same space as the user's vehicle. In this case, we see the driver's actions as potentially adversarial, or as a disturbance, and want to assist the driver. In order to prevent a riskier action from taking place, we are interested in predicting future states of other surrounding vehicles, assessing risk of collisions given the user's actions, and intervening and assisting the driver accordingly. This type of work can be approached as a type of Markov Chain, and we leverage Hidden Markov Model (HMM) theory as well, both of which are commonly used models for many cyber-physical systems (CPS).
     
      In this work, we aim to provide
     \begin{itemize}
@@ -161,7 +161,7 @@ Semi-autonomous and autonomous vehicles are finding their way in our society rap
     \end{itemize}
   
     
-    The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. The proposed AHMM framework along with our approach to guarantee safety is discussed in Section \ref{sec:approach}. We demonstrate our results with MATLAB simulations and real-world experiments in Sections \ref{sec:sims} and \ref{sec:exps} respectively. Lastly, we discuss our conclusions and future work in Section \ref{sec:concs}.
+    The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. The general approach is discussed in Section \ref{sec:approach}. In Section \ref{sec:fmwk}, we discuss the specifics of the HMM-based framework, and how it is used to build models. We then use that framework to make online predictions in Section \ref{sec:ahmmpredupdate}, and show how we can fit the models to a system we are observing in Section \ref{sec:omf}. This is followed by a discussion of we use the framework, along with the predictions and fitting, to assist the user in Section \ref{sec:adapt}. Then we demonstrate our results with MATLAB simulations in Section \ref{sec:sims}. Lastly, we discuss our conclusions and future work in Section \ref{sec:concs}.
 
     
 % You must have at least 2 lines in the paragraph with the drop letter
@@ -419,7 +419,7 @@ where $i^*$ represents the model with the least error, or the optimal model. In 
 %If the observed system, however, does not result in an $i^*$ with a low error, the model is updated using the method discussed in Section \ref{sec:ahmmpredupdate} \NB{what does it mean....very confusing}. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $N_M^*$ \NB{what is this baseline?}. We are able to leverage the parameters of this model, by  updating $\mathcal{P}_{N_M^*}$ and $\mathcal{B}_{N_M^*}$ as we observe new transitions or make new inferences, much like how we obtain $\mathcal{P}'$ and $\mathcal{B}'$ in Section \ref{sec:ahmmpredupdate} \NB{again very confusing}. In this case, we obtain $\mathcal{P}'_{N_M^*}$ and $\mathcal{B}'_{N_M^*}$. These models can be used to make future predictions using Algorithm \ref{alg:pred}.\NB{this last part is really bad written}
 
 
-\section{Adaptation}
+\section{Adaptation} \label{sec:adapt}
 
 
 \subsection{Reachability Analysis}
@@ -638,7 +638,6 @@ This result also indicates a case of the user's desires being met as closely as 
 The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
 
 
-\section{Experiment} \label{sec:exps}
 \section{Conclusions} \label{sec:concs}
 
 \newpage
