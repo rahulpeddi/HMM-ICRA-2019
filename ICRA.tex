@@ -514,7 +514,6 @@ where $\xi$ is a function of the lane separation, $r_{q}^{l}(t)$ represents the 
 %\end{equation}
 %\NB{rewrite mathematically this}
 It is important to note that multiple agents affect risk in our analysis, the areas with the highest risk are considered for adaptation. The set of maximum risk values for each lane for all other vehicles is evaluated as follows:
-
 \begin{equation}
     \forall q\in R_h,\forall{l}\in{S_l}: r_{hq}^l = \max\{r^l_{h1},r^l_{h2},\ldots,r^l_{hq}\}
 \end{equation}
@@ -528,13 +527,16 @@ Using this, we obtain the areas that have the highest risk for our vehicle $h$.
 
 \subsection{Adaptive User Assistance}
 
-Given $r_{hq}^l$, we can adapt our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user parameter, $\r_\min$ and $r_\max$ is used as a threshold for risk. This value must satisfy the condition: $0<\rho<1$. A high $\rho$ would indicate that the user is willing to incur more risk, while a lower $\rho$ would indicate a more conservative driver. Given this value, our system does not interfere with the actions of the vehicle unless the maximum risk in the user's lane surpasses $\rho$, as is shown below:
-
+Given $r_{hq}^l$, we can adapt our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user-set range, $[r_\min,r_\max]$ is used as a threshold for risk. Given these values, our system intervenes as follows:
 \begin{equation}
-    u_a > u_h \iff \hat r^{l_u} > \rho
+    u = \begin{cases}
+    u_h & \text{ if } r\leq r_\min \\
+    (1-r)u_h + r u_a & \text { if } r_\min<r<r_\max \\
+    u_a & \text{ if } r\geq r_\max
+    \end{cases}
 \end{equation}
 
-where $u_a$ and $u_h$ represent autonomous and human inputs, while $l_u$ represents the user's lane and $l_u \in \mathbf{L}$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
+where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
 
 \begin{equation}
     l^* = \min_l(\mathcal{\hat{R}})
