@@ -201,7 +201,7 @@ Formally the problem that we investigate in this work can be stated as:
 %    \end{equation}
 %    where $P$ represents the set of all probabilities, $p_q(t)$ represents the probabilities at each time, $t$.
     \item assess the risk $0\leq r \leq1$ of a collision during $T$ and
-    \item assist and intervene to correct the HAV actions to guarantee safety, i.e., obtain an input policy $U_h=\{{u_h(t), u_h(t+1),..., u_h(t+T)}\}$ such that if the risk $r$ is always minimized. 
+    \item assist and intervene to correct the HAV actions to guarantee safety, i.e., obtain an input policy $U_h=\{{u_h(t), u_h(t+1),..., u_h(t+T)}\}$ such that the risk $r$ is always minimized. 
     \end{enumerate}
    In our specific multi-vehicle case, risk is a function of distance between vehicles. Hence minimizing risk is equivalent to guaranteeing the following:
     
@@ -220,8 +220,13 @@ Formally the problem that we investigate in this work can be stated as:
     \caption{Pictorial Representation of the Approach}
     \label{fig:app}
 \end{figure}
-
-Our general approach, shown in Fig. \ref{fig:app} works to predict future states of other vehicles, $\{s_q(t+1),\ldots s_q(t+H)\}$ over time horizon $H$, thus inferring their behavior to better assess safety and intervene to avoid hazardous situations. We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are used online to recognize and predict other vehicles' behaviors. Based on these predictions, we want to monitor whether our vehicle, $h$, enters an unsafe state based on the user input, $u_h$. If such a state is detected, we use autonomous control, $u_a$, to assist the user.
+\NB{figure is too blurry}
+\NB{that's not a pictorial representation, It's a block diagram.}
+Our general approach, shown in Fig. \ref{fig:app} works to predict future states of other vehicles, $\{s_q(t+1),\ldots s_q(t+H)\}$ over time horizon $H$, thus inferring their behavior to better assess safety and intervene to avoid hazardous situations. We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are used online to recognize and predict new vehicles' behaviors. Based on these predictions, we want to monitor whether our vehicle, $h$, could enter an unsafe state.
+ based on the user input, $u_h$. 
+ If such a unsafe action is detected, an autonomous control action, $u_a$, is deployed to assist and correct the user's intention.
+ \NB{In  the next sections we will go over this framework explaining in details every block presented in Fig.~\ref{fig:app}.}
+ 
 
 %\NB{fix this}. %\NB{simplify}
  %\NB{this should go in the related work}.% In this work, we train multiple models offline over a horizon $T$, with training sets that capture the behaviors of vehicles \NB{what vehicles...this sentence is incomplete.} \NB{also you are repeating too many times the same thing and always not complete. This section should summarize what we are going to see next: using training data to predict future states and infer the behavior model of other vehicles, compare the prediction with our vehicle prediction to asses safety, monitor and intervene if needed by correcting behavior that can lead to unsafe situations}.
@@ -229,12 +234,12 @@ Our general approach, shown in Fig. \ref{fig:app} works to predict future states
 %\NB{In this work we train multiple models offline over an horizon {T}}
 
 \section{HMM-based Training Framework} \label{sec:fmwk}
-In this section we formally discuss our framework for training models. We use an Adjusted Hidden Markov Model which can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
+In this section we formally discuss our framework for training models \NB{In order to predict future states of other vehicles, we perform offline training of data collected over an horizon $T$ to extract and differentiate between different behavioral models. To this end, we propose a modified version of the Hidden Markov Model (HMM) \cite{} which can be described by a tuple... }. We use an Adjusted Hidden Markov Model which can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
 \begin{itemize}
     \item $\mathcal{O}\in\mathbb{R}^T$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(t)\}$. 
 %    In our case $\mathcal{O}$ represent measurements about velocity and positions of surrounding vehicles
     %\NB{change to lower t}.
-    \item  $\mathcal{S}\in\mathbb{R}^n$ is a finite set of $n$ unique values that $\mathcal{O}$ can obtain, and $s_i,s_j \in \mathcal{S} \vert s_i \neq s_j, i\neq j$, where $i = \{1,\ldots,n$\}, with $n \in \mathbb{N}$.
+    \item  $\mathcal{S}\in\mathbb{R}^n$ is a finite set of $n$ unique values that $\mathcal{O}$ can obtain, i.e., $\{s_i,s_j\} \in \mathcal{S} \vert s_i \neq s_j$ with $i\neq j$,and $i = \{1,\ldots,n$\}, with $n \in \mathbb{N}$.
     %\NB{i is equal to OR??? and OR is different to j??? not mathematically correct} The notation $s_{ij}$ represents the state transition from $s_i$ to $s_j$.\NB{there are so many issues in this sentence.}
     \item $\mathcal{C}\in\mathbb{R}^T$ %\NB{what's the dimension of C?}
     is the finite set of emissions, or inferences $c(t)$ that relate to the action taken each state, and $\mathcal{C} = \{ c(t-T), c(t-T+1), \ldots, c(t)\}$. %\NB{what does it mean that it relates to each state? Explain better} $T$, 
