@@ -281,13 +281,13 @@ between states and their corresponding inferences. Because we have all the state
 The general pictorial representation of the AHMM is shown in Fig.~\ref{fig:hmm} %\NB{what's a in the figure?}\NB{figure needs improvement: make it smaller vertically...too much space in between s and c. Increase fonts}.
 In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $c$ represent the emissions ($\mathcal{C}$). The lines with the label $p$ represent the transition probabilities between states, and those labeled $b$ represent the probability that each of the connected observations are associated with connected states.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \includegraphics[width=0.5\textwidth]{ahmm.png}
-    \caption{General Representation of an Adjusted Hidden Markov Model. In this image, states, emissions, and respective transition and emission probabilities are shown}
+    \caption{General Representation of an Adjusted Hidden Markov Model. In this figure, states, emissions, and respective transition and emission probabilities are shown}
     \label{fig:hmm}
 \end{figure}
 
-The specific environment we are studying, involves three lanes with multiple vehicles that can change their velocities and their lanes. Within this environment, we are able to set up two AHMMs to capture the behaviors we expect to see. The AHMMs are applied to all of the agents, $q$ in our sensing range $R$.
+The specific environment we are studying involves multiple lanes with multiple vehicles that can change their velocities and their lanes. Within this environment, we are able to set up two AHMMs to capture the behaviors we expect to see. The AHMMs are applied to all of the agents, $q$ in our sensing range $R$.
 
 The two AHMMs will aim to predict future velocities $v$ and lanes $l$ of the agents. In this model,
 
@@ -295,8 +295,9 @@ The two AHMMs will aim to predict future velocities $v$ and lanes $l$ of the age
     S_v = \{v_1,\ldots, v_n\}
 \end{equation}
 \begin{equation}
-    s_d = \{d_1,\ldots,d_n\}
+    S_d = \{d_1,\ldots,d_n\}
 \end{equation}
+
     where $S_v$ is states pertaining to velocity and $S_d$ is a set of states pertaining to following distance between an agent $q$ and a preceding agent. The emissions reflect the actions performed between two consecutive states. For velocity we consider the following 3 emissions,
 
 \begin{enumerate}
@@ -306,7 +307,13 @@ The two AHMMs will aim to predict future velocities $v$ and lanes $l$ of the age
 \end{enumerate}
 %\NB{if not where}
 
-For the lanes,  the distances in $S_d$ are used to identify when lanes change: $l(t) \neq l(t-1)$. The following 3 emissions are considered:
+For the lanes,  the distances in $S_d$ are used to identify when lanes change: $l(t) \neq l(t-1)$. The lanes themselves are modeled as states as well:
+
+\begin{equation}
+    S_l = \{l_1,\ldots,l_n\}    
+\end{equation}
+
+The following 3 emissions are considered:
 
 \begin{enumerate}
     \item Changing Left
