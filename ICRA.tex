@@ -442,8 +442,8 @@ Assumption \ref{ass:i} is made in order to treat the situation as a worst case s
 Three reachable sets are computed assuming:
 \begin{enumerate}
     \item $v_h(t+i)=v_h(t)$
-    \item $v_{h,\min}(t+i)=v_h(t)-\delta_v$
-    \item $v_{h,\max}(t+i)=v_h(t)+\delta_v$
+    \item $v_{h}^-(t+i)=v_h(t)-\delta_v$
+    \item $v_{h}^+(t+i)=v_h(t)+\delta_v$
 \end{enumerate} with $i=\{1,...,H\}$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)*\delta t$ for each of the three aforementioned scenarios.  
 
 \begin{figure}[ht!]
@@ -452,9 +452,9 @@ Three reachable sets are computed assuming:
     \label{fig:reach}
 \end{figure}
 
-Three reachable sets are obtained at each iteration that contains the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 45 predictions (15 predictions for every velocity and 3 predictions for every time step, one for each lane/time), as shown in Fig. \ref{fig:reach}.
-\RP{dont forget to add picture}
-\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
+Three reachable sets are obtained at each iteration that contains the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
+%\RP{dont forget to add picture}
+%\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
 
 \subsection{Risk Assessment}
 
@@ -468,12 +468,10 @@ where $n$ is the total number of vehicles in the sensing range.
 %These vehicles will be referred to as agents in the rest of this work \NB{why??? What's wrong with vehicles? Please remove}.
 
 By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} we can predict future states for all $q$ over an finite horizon $H$ to obtain:
-
 %\RP{Change to bar or tilde or hat for predictions}
 \begin{equation}
     \tilde{v}_q = \{v_q(t+1),\ldots,v_q(t+H)\}
 \end{equation}
-
 \begin{equation}
     \tilde{l}_q^p = \{l_q(t+1),\ldots,l_q(t+h)\}
 \end{equation}
@@ -551,7 +549,7 @@ Given the risk distribution, we can assist our user's potentially unsafe actions
     \end{cases}
 \end{equation}
 
-where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
+where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to take using the reachable sets. Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
 
 \begin{equation}
     l^* = \min_l(\mathcal{\hat{R}})
