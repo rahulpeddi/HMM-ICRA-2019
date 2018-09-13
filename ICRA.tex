@@ -444,7 +444,7 @@ Three reachable sets are computed assuming:
     \item $v_h(t+i)=v_h(t)$
     \item $v_{h}^-(t+i)=v_h(t)-\delta_v$
     \item $v_{h}^+(t+i)=v_h(t)+\delta_v$
-\end{enumerate} with $i=\{1,...,H\}$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)*\delta t$ for each of the three aforementioned scenarios.  
+\end{enumerate} with $i=\{1,...,H\}$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)*\delta t$ for each of the three aforementioned scenarios. The set of reachable velocities is as follows: $\hat{v} = \{v_h^-,v_h,v_h^+\}$.
 
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{input.png}
@@ -528,10 +528,14 @@ where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents 
 %\NB{rewrite mathematically this}
 It is important to note that multiple vehicles affect risk in our analysis, and the areas with the highest risk are considered for adaptation. The set of maximum risk values in each lane with each velocity for all other vehicles is evaluated as follows: %\RP{Address that to velocities}
 \begin{equation}
-    \forall q\in R_h,\forall{l}\in{S_l}: r_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
+    \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
 \end{equation}
 %\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using this, we obtain a distribution of all of the highest risk values for each velocity.
+\begin{equation}
+    \forall q\in R_h,\forall{v}\in{\hat{v}}: \hat{r}_{q}^v = \max\{r^v_{1},\ldots,r^v_{q}\}
+\end{equation}
+[Can I put a 3D Matrix here? That might be a better way or should I say $\hat{r}\in\mathbb{R}^{l\times v}$]
+Using these expression, we obtain a distribution of all of the highest risk values for each lane and for each velocity. [SHOW FIGURE BELOW and explain]
 
 %\begin{equation}
 %    \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
@@ -540,16 +544,24 @@ Using this, we obtain a distribution of all of the highest risk values for each 
 
 \subsection{Adaptive User Assistance}
 
-Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user-set range, $[r_\min,r_\max]$ is used as a threshold for risk. Given these values, our system intervenes as follows:
+Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation. A user-set threshold, $r_\max$ is used as a threshold for risk. Given these values, our system intervenes as follows:
 \begin{equation}
     u = \begin{cases}
-    u_h & \text{ if } r(t+H)\leq r_\min \\
-    (1-r)u_h + r u_a & \text { if } r_\min<r(t+H)<r_\max \\
+    u_h & \text{ if } r(t+H)\leq r_\max \\
+   % (1-r)u_h + r u_a & \text { if } r_\min<r(t+H)<r_\max \\
     u_a & \text{ if } r(t+H)\geq r_\max
     \end{cases}
 \end{equation}
 
-where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. In the case that the autonomous control input surpasses that of the user input, the system analyzes the correct action to by finding the least risky reachable set.
+where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$. We compute this pair as follows
+\begin{equation} \label{eq:optlane}
+    l^* = \argmin_l(\hat{r}_q^l)
+\end{equation}
+\begin{equation} \label{eq:optvel}
+    v^* = \argmin_v(\hat{r}_q^v)
+\end{equation}
+The output pair $(l^*,v^*)$ represents $u_a$. In a situation where $u=u_a$, the input to the system is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}.
+[insert lemma here where we prove that this always leads to the safest condition]
 
 
 %Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
