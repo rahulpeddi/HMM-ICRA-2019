@@ -484,7 +484,7 @@ By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} w
     \tilde{v}_q = \{v_q(t+1),\ldots,v_q(t+H)\}
 \end{equation}
 \begin{equation}
-    \tilde{l}_q^p = \{l_q(t+1),\ldots,l_q(t+h)\}
+    \tilde{l}_q = \{l_q(t+1),\ldots,l_q(t+h)\}
 \end{equation}
 
 %\RP{put in text}
@@ -539,16 +539,19 @@ where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents 
 %\end{equation}
 %\NB{rewrite mathematically this}
 It is important to note that multiple vehicles affect risk in our analysis, and the areas with the highest risk are considered for adaptation. The set of maximum risk values in each lane with each velocity for all other vehicles is evaluated as follows: %\RP{Address that to velocities}
-\begin{equation} \label{eq:distr} 
+\begin{equation} \label{eq:lanerisk} 
     \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
 \end{equation}
+\begin{equation} \label{eq:velrisk} 
+    \forall q\in R_h,\forall{v}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
+\end{equation}
 %\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using \eqref{eq:distr}, we obtain a distribution of all of the highest risk values for each velocity.
+Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of all of the highest risk values for each velocity. In \ref{fig:riskd}, we show an example of a risk distribution over $H=3$ for velocity $v_h$ at a the road scenario depicted. The color-bar indicates the risk values, and here the risk ranges 
 
 \begin{figure}[ht!]
-    \includegraphics[width=0.48\textwidth]{riskdist.png}
-    \caption{Diagram of each reachable set}
-    \label{fig:reach}
+    \includegraphics[width=0.48\textwidth]{riskdistvsurf.png}
+    \caption{The distribution of risk at $v_h$ with $H = 3$(left) for a certain road scenario(right)}
+    \label{fig:riskd}
 \end{figure}
 
 %\NB{avoid this notation, this what?}
