@@ -315,9 +315,9 @@ where $S_v$ is the set of velocities and $S_d$ the set of distances between vehi
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
 
 \begin{itemize}
-    \item[$b_1^v$] {Increasing Velocity  if  $v(t) > v(t-1)+\delta_v$} 
-    \item $b_2^v \text{ if } v(t) < v(t-1)-\delta_v$ (Decreasing Velocity)
-    \item $b_3^v \text{ if } v(t-1)-\delta_v \geq v(t) \leq v(t-1)+\delta_v$ (Maintaining Velocity)
+    \item[$b_1^v$] {Increasing Velocity if $v(t) > v(t-1)+\delta_v$} 
+    \item[$b_2^v$] {Decreasing Velocity if $v(t) < v(t-1)-\delta_v$}
+    \item[$b_3^v$] {Maintaining Velocity if $v(t-1)-\delta_v \leq v(t) \leq v(t-1)+\delta_v$}
 \end{itemize}
 %\NB{formalize...$v(t-1)+\delta_v$ etc}
 %\NB{give a name to this emissions...i.e. $b_{1}^v, b_{2}^v$}
@@ -457,9 +457,9 @@ In some of our current work, we are using Hamilton-Jacobi reachability analysis 
 Assumption \ref{ass:i} is made in order to treat the situation as a worst case scenario, and assumption \ref{ass:ii} is made to reflect a physical limitation of vehicles.
 Three reachable sets are computed assuming:
 \begin{enumerate}
-    \item $v_h(t+i)=v_h(t)$
-    \item $v_{h}^-(t+i)=v_h(t)-\delta_v$
-    \item $v_{h}^+(t+i)=v_h(t)+\delta_v$
+    \item $v_h(t+1)=v_h(t)$
+    \item $v_{h}^-(t+1)=v_h(t)-\delta_v$
+    \item $v_{h}^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
 \NB{t+1 not i}with $i=1,...,H$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)\delta t$ for each of the three aforementioned scenarios.  
 
@@ -590,7 +590,7 @@ Given the risk distribution, we can assist our user's potentially unsafe actions
     v^* = \argmin_v(\hat{r}_q^v)
 \end{equation}
 The output pair $(l^*,v^*)= u_a$ \NB{this happens only when the risk is above a threshold}. In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. \NB{not clear}
-[insert proof here where we prove that this always leads to the safest condition]
+[insert proof here where we prove that this always leads to the safest condition] - we guarantee that the user action is guaranteed to produce a risk below the threshold. Show that's true by contradiction , show the math.
 
 
 %Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
