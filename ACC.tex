@@ -109,6 +109,7 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
+ Semi-autonomous and autonomous vehicles have been changing the way our roads work...
 \end{abstract}
 
 % no keywords
@@ -245,15 +246,15 @@ Our approach, shown in Fig.~\ref{fig:app}, has several components. By using offl
     \item $\mathcal{C}\in\mathbb{R}^T$ %\NB{what's the dimension of C?}
     is the finite set of emissions, or inferences $c(t)$ that relate to the action taken each state, and $\mathcal{C} = \{ c(t-T), c(t-T+1), \ldots, c(t)\}$. %\NB{what does it mean that it relates to each state? Explain better} $T$, 
     \item $\mathcal{G}\in\mathbb{R}^m$ is a finite set of $m$ unique inferences that $\mathcal{C}$ can obtain. and $g_k \in \mathcal{S}$, where $k = 1,\ldots,m$, with $m \in \mathbb{N}$. 
-    \item $\mathcal{P}\in\mathbb{R}^{n\times n}$ is a transition probability matrix. This matrix describes the probability of entering a certain state, $s_{j}$, while currently in a particular state $s_{i}$, denoted as $s_j \to s_i$, defined by the equation:
+    \item $\mathcal{P}\in\mathbb{R}^{n\times n}$ is a transition probability matrix. This matrix describes the probability of entering a certain state, $s_{j}$, while currently in a particular state $s_{i}$, denoted as $s_j \to s_i$, defined by:
         \begin{equation}
             p_{ij} = P(s_j\to s_i)
         \end{equation}
-        This probability is calculated by counting the occurrences of each state transition over all transitions from that state:
+        These probabilities are initialized as $1/n$. Each transition probability is calculated by counting the occurrences of each state transition over all transitions from that state:
         \begin{equation} \label{eq:transbuild}
             p_{ij} = N_{ij}/N_{i}*
         \end{equation}
-        where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$ and $N_{i*}$ is the total number of transitions from $s_i$ to any state, and $N_{ij} \leq N_{i*} \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
+        where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$ and $N_{i}*$ is the total number of transitions from $s_i$ to any state, and $N_{ij} \leq N_{i}* \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
         \begin{equation}
             \mathcal{P} = 
                     \begin{bmatrix}
@@ -266,7 +267,7 @@ Our approach, shown in Fig.~\ref{fig:app}, has several components. By using offl
         \begin{equation} \label{eq:obsref}
             b_{ik} = P(g_k(t+1) \vert s_i(t))
         \end{equation}
-        where $i = 1,\ldots,n$. The emission probabilities are calculated in a similar way to (\ref{eq:transbuild}):
+        where $i = 1,\ldots,n$. These probabilities are initialized as $1/m$, and are calculated in a similar way to (\ref{eq:transbuild}):
         \begin{equation} \label{eq:obsbuild}
             b_{ik} = N_{g_{ik}}/N_{g_{i}}*
         \end{equation} 
@@ -314,9 +315,9 @@ where $S_v$ is the set of velocities and $S_d$ the set of distances between vehi
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
 
 \begin{enumerate}
-    \item $b_1^v = v(t) > v(t-1)+\delta_v$ (Increasing Velocity)
-    \item $b_2^v = v(t) < v(t-1)-\delta_v$ (Decreasing Velocity)
-    \item $b_3^v = v(t-1)-\delta_v \geq v(t) \leq v(t-1)+\delta_v$ (Maintaining Velocity)
+    \item $b_1^v \text{ if } v(t) > v(t-1)+\delta_v$ (Increasing Velocity)
+    \item $b_2^v \text{ if } v(t) < v(t-1)-\delta_v$ (Decreasing Velocity)
+    \item $b_3^v \text{ if } v(t-1)-\delta_v \geq v(t) \leq v(t-1)+\delta_v$ (Maintaining Velocity)
 \end{enumerate}
 %\NB{formalize...$v(t-1)+\delta_v$ etc}
 %\NB{give a name to this emissions...i.e. $b_{1}^v, b_{2}^v$}
@@ -326,12 +327,12 @@ where $S_v$ is the set of velocities and $S_d$ the set of distances between vehi
 For the lanes, the following 3 emissions are considered:
 
 \begin{enumerate}
-    \item Changing Left
-    \item Changing Right
-    \item Not Changing
+    \item $b_1^l \text{ if } l(t) < l(t-1)$ (Changing left)
+    \item $b_2^l \text{ if } l(t) > l(t-1)$ (Changing right)
+    \item $b_3^1 \text{ if } l(t) = l(t-1)$ (Not changing)
 \end{enumerate}
-\NB{same as before...formalize this}
-\RP{capture that the emission are related to actions}
+%\NB{same as before...formalize this}
+%\RP{capture that the emission are related to actions}
 
 
 \section{AHMM-Based Online Prediction and Model Updates} \label{sec:ahmmpredupdate} %\NB{perhaps combine with next and add Update in the title}
@@ -360,7 +361,7 @@ In the event that \eqref{eq:pred} returns more than one state, we choose the mor
 
 Using this approach, we can predict a series of future states over any horizon $H$ by assuming that each prediction for $t+1$ is correct. We re-use the emission and transition matrices to predict next state at $t+2$ and so on, up to horizon $H$. It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
 %\NB{flip the order} \NB{explain the algorithm}.
-Algorithm \ref{alg:pred}shows how we carry forward this prediction through $H$.%\NB{fix this sentence}.\NB{summarized the steps...}
+Algorithm\ref{alg:pred} shows how we carry forward this prediction through $H$.%\NB{fix this sentence}.\NB{summarized the steps...}
 In this algorithm, an observed state, $s(t) = s_i$, is used in %\NB{in not with} 
 $\mathcal P$ and $\mathcal B$ to find the most likely next state, $s(t+1) = s_{j^*}$ %\NB{$s_j^*$}.
 The following state, $s(t+2)$ is calculated using the previously determined $s_{j^*}$, assuming that it is the next observation. This process is repeated up to $t+H$, such that we have an series $\{s(t+1),\ldots,s(t+H)\}$.
@@ -373,7 +374,7 @@ The following state, $s(t+2)$ is calculated using the previously determined $s_{
 \WHILE{$t\leq t+H$}
 \STATE $t \gets t+1$
 \FOR{$s(t) = s_i$}
-\STATE $j* \gets \max_j(\mathcal{P}_{i}*)$ \RP{change row notation and explain what Pi* is}
+\STATE $j* \gets \max_j(\mathcal{P}_{i})$
 \ENDFOR
 %\IF{$j$ is not a singleton}
 %\FORALL{$j$}
@@ -385,11 +386,13 @@ The following state, $s(t+2)$ is calculated using the previously determined $s_{
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
+[NEEDS TO BE CHANGED]
+%\NB{what's $\mathcal{P}_{i}*$? and $j*$...btw it should be $j^*$}
+%\NB{this is not correct! The prediction is still not sure because we don't know what's going to happen. On the other hand we want to improve the prediction itself and thus we update the model online}.
 
-\NB{what's $\mathcal{P}_{i}*$? and $j*$...btw it should be $j^*$}
-
-As previously discussed, a series of prediction becomes less accurate as $H$ increases \NB{this is not correct! The prediction is still not sure because we don't know what's going to happen. On the other hand we want to improve the prediction itself and thus we update the model online}. In order to alleviate this issue, we propose a method to update $\mathcal{P}$ and $\mathcal{B}$ online. This is achieved by using \eqref{eq:transbuild} and \eqref{eq:obsbuild}, where we adjust $N_{ij}$ and $N_{ik}$, and therefore, $p_{ij}$ and $b_{ij}$ will change. As a result, new parameters $\mathcal{P'}$ and $\mathcal{B'}$ are created to reflect the updates. In addition, we use a sliding window approach such that the size of the training set is always a constant $T$. %\NB{is always constant $T$}\NB{remove this last part}.
-The training set is kept the same size in order to retain computational efficiency and to avoid keeping older and less reliable data. Another option would be to discount older data, however we decide not to use this method in this paper because the transition and emission matrices will grow larger, decreasing the efficiency of the proposed method. $\mathcal{P'}$ and $\mathcal{B'}$ are updated each iteration and will continue to be used for online prediction, making each prediction up-to-date with the online observations. \NB{this last part need to be revised} %\NB{rewrite} %\NB{simplify}
+It is, however, possible that the online predictions are incorrect, indicating that our model does not accurately represent the system we are observing online. In order to alleviate this issue, we propose a method to update $\mathcal{P}$ and $\mathcal{B}$ online. This is achieved by using \eqref{eq:transbuild} and \eqref{eq:obsbuild}, where we adjust $N_{ij}$ and $N_{ik}$, and therefore, $p_{ij}$ and $b_{ij}$ will change. As a result, new transition and emission matrices $\mathcal{P'}$ and $\mathcal{B'}$ are created at each iteration to reflect the updates. In addition, we use a sliding window approach such that the size of the training set is always a constant $T$. %\NB{is always constant $T$}\NB{remove this last part}.
+The training set is kept the same size in order to retain computational efficiency and to avoid keeping older and less reliable data. Another option would be to discount older data, however we decide not to use this method in this paper because the transition and emission matrices will grow larger, decreasing the efficiency of the proposed method. 
+%$\mathcal{P'}$ and $\mathcal{B'}$ are updated each iteration and will continue to be used for online prediction, making each prediction up-to-date with the online observations. \NB{this last part need to be revised} %\NB{rewrite} %\NB{simplify}
 
 \section{Online Model Fitting}\label{sec:omf}
 Using the framework described in Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}, we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models can be extracted using several data sets, and with that we can obtain super-sets containing all the transition and emission matrices for multiple vehicles. It is important to note that these models capture different behaviors, and we assume that we have enough different models to fit any new system during run-time \NB{KEEP THIS - this sentence needs more explanation. If we don't have enough models we need to mention that future work is centered on using existing models to extract new models}. $\mathcal{M} = \{M_1,\ldots,M_m\}$ is the set of $m$ models. %\NB{too many words...M  is the set of m models.}.
@@ -409,8 +412,10 @@ During run-time we observe new measurements of other vehicles. The challenge her
 
 %\NB{We treat any vehicle observed online as a new system and follow the approach outlined in Section...to obtain P and B. At each iteration P and B are updated and compared with the existing Models. The closest model is chosen to predict the behavior of the system. }Having built multiple models, we observe a new vehicle and begin to execute the framework discussed in Section \ref{sec:fmwk} for two consecutive measurements, $\left[o(t-1),o(t)\right]$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$, which stand for the transition and emission matrices for the system we are currently observing. In order to determine the optimal model, we calculate the set of errors, $\hat{e}_{N_{M}} = \{e_{N_1},\ldots,e_{N_M}$\} between our model and each of the offline models:
 
-We treat any vehicle observed online as a new system from which we are interested to compute a model, hence we follow the same procedure in Section to extract P and B \NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...} and follow the approach outlined in Section \ref{sec:fmwk} to obtain $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$. At each iteration, these matrices are updated using the method discussed in \ref{sec:ahmmpredupdate}, and are then compared with those of the existing models, $\hat{\mathcal{P}}$ and $\hat{\mathcal{B}}$. The closest model is chosen to predict the behavior of the system. In order to do this, we calculate the error between each model and our current transition and emission matrices:
+We treat any vehicle observed online as a new system from which we are interested to compute a model, hence we follow the same procedure in Section \ref{sec:fmwk} to extract $\mathcal{P}$ and $\mathcal{B}$ and follow the approach outlined in Section \ref{sec:fmwk} to obtain $\tilde{\mathcal{P}}$, where $\tilde{\mathcal{P}}\in\mathbb{R}^{n\times n}$ and each element is initialized at $\tilde{p}_{ij} = 1/n$, where $i,j = 1,\ldots,n$. We also obtain $\tilde{\mathcal{B}}\in\mathbb{R}^{n\times m}$, where each element is initialized at $\tilde{b}_{ik}= 1/m$, where $i = 1,\ldots,n$ and $k=1,\ldots,m$. At each iteration, these matrices are updated using the method discussed in \ref{sec:ahmmpredupdate}, and are then compared with those of the existing models, $\hat{\mathcal{P}}$ and $\hat{\mathcal{B}}$. The closest model is chosen to predict the behavior of the system. In order to do this, we calculate the error between each model and our current transition and emission matrices:
 
+ %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
+ 
 \begin{equation}
     \forall{P_i} \in \hat{\mathcal{P}}: \hat{e} = \lVert\tilde{\mathcal{P}}-\hat{\mathcal{P}}_{i}\rVert_{l1/l2}
 \end{equation}
@@ -426,8 +431,8 @@ In order to determine the model with the lowest error, we find the model that mi
 %\NB{need to check variables here}
 %\NB{add argmin}
 
-where $M_{i^*}\in\mathcal{M}$ %\NB{i is a index not a model}
-represents the model with the least error, or the optimal model. In order to make predictions using the optimal model, we refer to the parameters, $\mathcal{P}_{i^*}$ and $\mathcal{B}_{i^*}$. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. \NB{something is missing here...we should somehow associate the error to the confidence that we have in that model....bigger errors = more uncertainties. The question becomes what should we do if the error is large or if it is small?? The answer is in the trust. What does it mean to trust mroe or less?}
+and $M_{i^*}\in\mathcal{M}$ %\NB{i is a index not a model}
+represents the model with the least error, which indicates the confidence we have in said model. A higher error indicates more uncertainty that predictions we make will be correct. The model with the lowest error is the one we are most confident in, and therefore, use to make predictions. We refer to $\mathcal{P}_{i^*}$ and $\mathcal{B}_{i^*}$ in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. %\NB{something is missing here...we should somehow associate the error to the confidence that we have in that model....bigger errors = more uncertainties. The question becomes what should we do if the error is large or if it is small?? The answer is in the trust. What does it mean to trust mroe or less?}
 
 
 %\NB{merge with previous and change to explain better how new data are going to improve your model...}
@@ -546,11 +551,11 @@ It is important to note that multiple vehicles affect risk in our analysis, and 
     \forall q\in R_h,\forall{v}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
 \end{equation}
 %\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of all of the highest risk values for each velocity. In \ref{fig:riskd}, we show an example of a risk distribution over $H=3$ for velocity $v_h$ at a the road scenario depicted. The color-bar indicates the risk values, and here the risk ranges 
+Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ for velocity $v_h$ at a the road scenario depicted. The color-bar indicates the risk values.
 
-\begin{figure}[ht!]
-    \includegraphics[width=0.48\textwidth]{riskdistvsurf.png}
-    \caption{The distribution of risk at $v_h$ with $H = 3$(left) for a certain road scenario(right)}
+\begin{figure}[ht]
+    \includegraphics[width=0.55\textwidth]{riskdistvsurf.png}
+    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right)}
     \label{fig:riskd}
 \end{figure}
 
@@ -566,7 +571,7 @@ Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of al
 %\NB{define dangerous condition}
 %\NB{...we propose a policy...}
 
-Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety\NB{formalize}. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. A user-set threshold, $r_\max$ is used as a threshold for risk. Given these values, our system intervenes as follows:
+Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. A user-set threshold, $r_\max$ is used as a threshold for risk. Given $r_max$ and the values in , our system intervenes as follows:
 \begin{equation} \label{eq:inputctrl}
     u = \begin{cases}
     u_h & \text{ if } r(t+H)\leq r_\max \\
@@ -582,8 +587,8 @@ where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents 
 \begin{equation} \label{eq:optvel}
     v^* = \argmin_v(\hat{r}_q^v)
 \end{equation}
-The output pair $(l^*,v^*)= u_a$. In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the vehicle is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}.
-[insert lemma here where we prove that this always leads to the safest condition]
+The output pair $(l^*,v^*)= u_a$. In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}.
+[insert proof here where we prove that this always leads to the safest condition]
 
 
 %Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
@@ -603,7 +608,7 @@ The output pair $(l^*,v^*)= u_a$. In a situation where $u = u_a$, as defined in 
 
 
 \section{Simulations} \label{sec:sims}
-The simulations for this work primarily were done in Matlab. Different simulations were run for each part of the approach shown above. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions. This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the adjustments made to user actions, in order to verify that we are able to guarantee safety.
+The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assitance given to the user actions, in order to verify that we are able to avoid risk of collision.
 
 \subsection{Training Models}
 For training the models, we used a workspace featuring $15$ stationary obstacles. A test vehicle drove through a highway setting with these obstacles, and it was observed for a training period of 700 iterations. This is followed by an estimation period of 700 iterations, which were used to validate the parameters.
@@ -637,7 +642,7 @@ In the next simulation, we show that we are able to fit pre-trained models to a 
     \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
     \label{fig:lanchan}
 \end{figure}
- In addition, we show the error of the fit for each velocity model in \ref{fig:error}, where we see that the closest fit is that of the medium-speed model.
+ In addition, we show the error of the fit for each velocity model in Fig.~\ref{fig:error}, where we see that the closest fit is that of the medium-speed model.
  
  \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fit3.png}
@@ -647,47 +652,40 @@ In the next simulation, we show that we are able to fit pre-trained models to a 
  
  
 \subsection{Assistive Planning and Control}
-In order to show the proactive safety system, we have three specific use-cases.
+In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_\max = 0.8$
 
-In the first case, the host vehicle in the center lane responds to the actions and future position of a vehicle in the left lane, which is passing a stationary obstacle. The two snapshots of the simulation in Fig.\ref{fig:cs1} and Fig.\ref{fig:cs1b} indicate the behaviors that are occurring.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{cs1.JPG}
-    \caption{In this snapshot, $u_{\alpha} = 0$ and $u_{h} = 1$. This is because the $r^l$ at $t+H$ is below the $\rho$.}
-    \label{fig:cs1}
+    \includegraphics[width=0.48\textwidth]{critpt.png}
+    \caption{In this snapshot, $r_h(t+H)$ is approaching $r_\max$. This is a situation where the HAV would assist the user in selecting the least risky action}
+    \label{fig:critpt}
 \end{figure}
+
+In \ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur in $H$. 
+
+
+In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk existed in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{cs1b.JPG}
-    \caption{In this snapshot, the risk in the host vehicle's lane at $t+H$ has increased above $\rho$, and autonomy has increased rapidly. The reason $u_{alpha}$ has increased to 1, is because this is the instant at which the change begins. The location of minimum risk is determined to be the right lane, and the vehicle will then move to the right lane.}
-    \label{fig:cs1b}
+    \includegraphics[width=0.48\textwidth]{noassist.png}
+    \caption{In this snapshot, a user has taken an unsafe action and it has resulted in high risk and a collision}
+    \label{fig:noassist}
 \end{figure}
 
-This simulation results in a safe operation, as the minimum risk is easily identified and the solution is offered. In this simulation, the human takes no action, which is another reason fully autonomous intervention occurs, and the risk is still minimized and avoided.
-
-
-In the second simulation, the human does take some action and it is evident that autonomy and human-control are fluid and change based on changing surroundings. In addition, there is once again a clear location at which the risk is at a minimum. The snapshot in Fig.\ref{fig:cs2} shows a situation where the user is travelling at a velocity slightly too rapid for the obstacle ahead, and slowing down will not put it at a risky position in relation to the next vehicle that is behind the user. As a result, $u_{\alpha}$ is increased as the level of risk increases.
+In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, btu in this case, the assistive input was taken into account, as the risk surpassed $r_\max$. With assistive input, both lane and velocity were changed in order to minimize risk at every future time $t$ up to $t+H$.
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{cs2.JPG}
-    \caption{In this snapshot, $u_{\alpha} > u_{h}$. This is because the $r^l_u$ at $t+H$ is above $\rho$}
-    \label{fig:cs2}
+    \includegraphics[width=0.48\textwidth]{assist.png}
+    \caption{This figure depicts a situation in which assistance occurred and a risky situation was avoided altogether.}
+    \label{fig:assist}
 \end{figure}
 
-This result also indicates a case of the user's desires being met as closely as possible. The user, by only adjusting velocity and not adjusting their lane change behavior, indicates that the velocity is the first parameter to adjust. As shown in Fig.\ref{fig:cs2c}, the velocity is only adjusted so that the driver is in a safe position for the selected time $H$ and, consequently for times $t,t+1,\ldots,t+H$. This is indicated by a velocity that slowly decreases to a safe value. This, however, would only suffice to maximize the time before a collision occurs. Because that is a limitation of only adjusting the velocity, when a collision becomes imminent, $u_\alpha$ increases to 1, and the lane is changed to that of minimum risk.
-
-\begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{cs2c.JPG}
-    \caption{This figure depicts the velocity of the user's vehicle}
-    \label{fig:cs2c}
-\end{figure}
-
-The third case is built much like the second case. In this implementation, however, neither of the two surrounding lanes are available. In this case, the system begins to react much like that of the second case, however, there is a error in the prediction of what the following vehicle will do. This is because the model was trained for a lane change, but it is evident that a lane change will not occur when the actual vehicle (not the estimates) approaches our user's vehicle. In a situation like this, the algorithm does delay the imminent collision, but there is a specific preference to retain a certain following distance, $d_q$ behind the obstacle in front. We assume that the user's vehicle has a responsibility to not directly cause a collision on its own. This does, however, leave the possibility of a rear collision, which is addressed further in the discussion.
+ In the situation depicted in Fig.~\ref{fig:assist}, we are able to minimize risk and avoid collisions, thereby ensuring that our HAV is being operate safely.
 
 
 \section{Conclusions} \label{sec:concs}
+In this work, we have presented an approach for simultaneously predicting the future states of multiple vehicles and assisting the user of an HAV. Our approach uses a Hidden Markov Model based framework to build offline models of different vehicles and fit these models to any number of online observed vehicles. These models are used to make online predictions of the future states of the observed vehicles. We then use a simplified form of reachability analysis to ensure that the user of an HAV does not enter an unsafe state. The HMM based method for prediction is general across any type of system and the assistive control can be used for other vehicles, such as aerial vehicles and underwater vehicles.
 
-\newpage
 % references section
 
 % can use a bibliography generated by BibTeX as a .bbl file
