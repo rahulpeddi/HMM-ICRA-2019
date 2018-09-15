@@ -224,7 +224,7 @@ Formally the problem that we investigate in this work can be stated as:
 %\NB{figure is too blurry}
 %\NB{that's not a pictorial representation, It's a block diagram.}
 %\NB{By using offline training we extract different models representing different vehicle behaviors. These models are then used online to .....}
-Our approach, shown in Fig.~\ref{fig:app}, has several components. By using offline training we extract different models representing different vehicle behaviors. These models are then used online to to predict future states of other vehicles, $\{s_q(t+1),\ldots s_q(t+H)\}$ over time horizon $H$, thus inferring their behavior to better assess safety and intervene to avoid hazardous situations. We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are used online to recognize and predict new vehicles' behaviors. Based on these predictions, we want to monitor whether our vehicle, $h$, could enter an unsafe state.
+Our approach, shown in Fig.~\ref{fig:app}, has several components. \NB{the following components:} By using offline training we extract different models representing different vehicle behaviors. These models are then used online to to predict future states of other vehicles, $\{s_q(t+1),\ldots s_q(t+H)\}$ over time horizon $H$, thus inferring their behavior to better assess safety and intervene to avoid hazardous situations. We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are used online to recognize and predict new vehicles' behaviors. Based on these predictions, we want to monitor whether our vehicle, $h$, could enter an unsafe state.
  based on the user input, $u_h$. 
  If such an unsafe action is detected, an autonomous control action, $u_a$, is deployed to assist and correct the user's intention. In the next sections, we will go over this framework, explaining in detail each block presented in Fig.~\ref{fig:app}.
  
@@ -314,11 +314,11 @@ where $S_v$ is the set of velocities and $S_d$ the set of distances between vehi
     
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
 
-\begin{enumerate}
-    \item $b_1^v \text{ if } v(t) > v(t-1)+\delta_v$ (Increasing Velocity)
+\begin{itemize}
+    \item[$b_1^v$] {Increasing Velocity  if  $v(t) > v(t-1)+\delta_v$} 
     \item $b_2^v \text{ if } v(t) < v(t-1)-\delta_v$ (Decreasing Velocity)
     \item $b_3^v \text{ if } v(t-1)-\delta_v \geq v(t) \leq v(t-1)+\delta_v$ (Maintaining Velocity)
-\end{enumerate}
+\end{itemize}
 %\NB{formalize...$v(t-1)+\delta_v$ etc}
 %\NB{give a name to this emissions...i.e. $b_{1}^v, b_{2}^v$}
 %\NB{if not where}
@@ -460,7 +460,8 @@ Three reachable sets are computed assuming:
     \item $v_h(t+i)=v_h(t)$
     \item $v_{h}^-(t+i)=v_h(t)-\delta_v$
     \item $v_{h}^+(t+i)=v_h(t)+\delta_v$
-\end{enumerate} with $i=1,...,H$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)\delta t$ for each of the three aforementioned scenarios.  
+\end{enumerate} 
+\NB{t+1 not i}with $i=1,...,H$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)\delta t$ for each of the three aforementioned scenarios.  
 
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{input.png}
@@ -499,7 +500,7 @@ With the future velocities, we are able to calculate the forward positions for t
 \begin{equation} \label{eq:dumpos}
     x_q(t) = v_q(t)\delta_t
 \end{equation}
-where $v_q\in v_q^p$ and $\delta$ refers to a sampling time. Using \eqref{eq:dumpos} we obtain future forward positions:
+where $v_q\in v_q^p$ and $\delta_t$ refers to a sampling time. Using \eqref{eq:dumpos} we obtain future forward positions:
 \begin{equation}
     x_q^p = \{x_q(t+1),\ldots,x_q(t+H)\}
 \end{equation}
@@ -559,6 +560,7 @@ Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of al
     \label{fig:riskd}
 \end{figure}
 
+\NB{need explanation about this figure}
 %\NB{avoid this notation, this what?}
 
 %\begin{equation}
@@ -571,7 +573,7 @@ Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of al
 %\NB{define dangerous condition}
 %\NB{...we propose a policy...}
 
-Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. A user-set threshold, $r_\max$ is used as a threshold for risk. Given $r_max$ and the values in , our system intervenes as follows:
+Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. A user-set threshold, $r_\max$ is used as a threshold for risk. Given $r_max$ and the values in , \NB{?}our system intervenes as follows:
 \begin{equation} \label{eq:inputctrl}
     u = \begin{cases}
     u_h & \text{ if } r(t+H)\leq r_\max \\
@@ -580,14 +582,14 @@ Given the risk distribution, we can assist our user's potentially unsafe actions
     \end{cases}
 \end{equation}
 
-where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$. We compute this pair as follows
+\NB{we need to define what are the inputs in our system} where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ represents the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$. We compute this pair as follows
 \begin{equation} \label{eq:optlane}
     l^* = \argmin_l(\hat{r}_q^l)
 \end{equation}
 \begin{equation} \label{eq:optvel}
     v^* = \argmin_v(\hat{r}_q^v)
 \end{equation}
-The output pair $(l^*,v^*)= u_a$. In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}.
+The output pair $(l^*,v^*)= u_a$ \NB{this happens only when the risk is above a threshold}. In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. \NB{not clear}
 [insert proof here where we prove that this always leads to the safest condition]
 
 
