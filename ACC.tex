@@ -351,10 +351,10 @@ For the lanes, the following 3 emissions are considered:
 
 \begin{align} \label{eq:pred}
    s(t+1) = s_j \in S \vert p_{ij}=\max(\mathcal{P}_i) \nonumber \\
-   \text{ if $s(t+1)$ is not a singleton,}  \\ 
+   \text{ if $s(t+1)$ returns multiple values,}  \\ 
     s(t+1)=s_j\vert g_{ij} = \max(\mathcal{B}_i) \nonumber
 \end{align}
-%\NB{change teh symbol for and. I'm also not 100\% sure that this expression is correct}
+%\NB{change the symbol for and. I'm also not 100\% sure that this expression is correct}
 %Because the relationship between states and observations is not hidden, we can use the expected inference, derived from \eqref{eq:pred} to assess which returned state is more accurate \NB{not clear, rewrite}.
 
 In the event that \eqref{eq:pred} returns more than one state, we choose the more dangerous transition, which depends on the specific application. For instance, in our case, the more dangerous transition is one that minimizes the distance between our user's vehicle and the observed vehicle.
@@ -550,10 +550,10 @@ It is important to note that multiple vehicles affect risk in our analysis, and 
     \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
 \end{equation}
 \begin{equation} \label{eq:velrisk} 
-    \forall q\in R_h,\forall{v}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
+    \forall q\in R_h,\forall{v}\in{\hat{v}}: \hat{r}_{q}^v = \max\{r^v_{1},\ldots,r^v_{q}\}
 \end{equation}
 %\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ for velocity $v_h$ at a the road scenario depicted. The color-bar indicates the risk values.
+Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual position of other vehicles on the road. Dashed vehicles are each of the predictions in successive order; $[t+1,t+H]$.
 
 \begin{figure}[ht]
     \includegraphics[width=0.55\textwidth]{riskdnew.png}
@@ -561,7 +561,7 @@ Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of al
     \label{fig:riskd}
 \end{figure}
 
-\NB{need explanation about this figure}
+%\NB{need explanation about this figure}
 %\NB{avoid this notation, this what?}
 
 %\begin{equation}
@@ -580,7 +580,7 @@ Given the risk distribution, we can assist our user's potentially unsafe actions
 u_h = (l_h,v_h), \text{ where } l\in\hat{l}, v_h\in\hat{v}
 \end{equation}
 
-A user-set threshold, $r_\max$ is used as a limit for risk. Given $r_\max$ and the values in the risk distribution for each velocity, as indicated in Figs.~\ref{fig:reach} and ~\ref{fig:riskd}, our system intervenes as follows:
+A user-set threshold, $r_\max$ is used as a limit for risk. Given $r_\max$ and the values in the risk distribution for each velocity, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, our system intervenes as follows:
 \begin{equation} \label{eq:inputctrl}
     u = \begin{cases}
     u_h & \text{ if } r(t+H)\leq r_\max \\
