@@ -45,6 +45,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{varwidth}
+\usepackage{subcaption}
 %\usepackage[noend]{algpseudocode}
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
@@ -623,17 +624,19 @@ The simulations for this work were done in Matlab. Different simulations were ru
 \subsection{Training Models}
 For training the models, we used a workspace featuring $15$ stationary obstacles. A test vehicle drove through a highway setting with these obstacles, and it was observed for a training period of 700 iterations. This is followed by an estimation period of 700 iterations, which were used to validate the parameters.
 
-\begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{train1.png}
-    \caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).}
-    \label{fig:train1}
+\begin{figure}[ht!]
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=\linewidth]{train1.png}
+\caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).} \label{fig:train1}
+\end{subfigure}
+\hspace*{\fill} % separation between the subfigures
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=\linewidth]{train2.png}
+\caption{The lane changes of the actual robot (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).} \label{fig:train2}
+\end{subfigure}
+\caption{Simulation Results from Training Models} \label{fig:1}
 \end{figure}
 
-\begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{train2.png}
-    \caption{The lane changes of the actual robot (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).}
-    \label{fig:train2}
-\end{figure}
 
 In this simulation we find that the root mean squared error (RMSE) between the forward positions is $3.9273$, and the RMSE between lane changes is $2.5912$.  
 
