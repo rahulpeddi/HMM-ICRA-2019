@@ -112,7 +112,7 @@
 \begin{abstract}
  Semi-autonomous and autonomous vehicles have been changing the way our roads work...
 \end{abstract}
-
+\NB{abstract should present the problem with a little motivation and the approach with the technique and briefly mention the results}
 % no keywords
 
 
@@ -143,7 +143,7 @@
 %\NB{In a not far future, multiple vehicles with different level of autonomy will have to coexist and operate safely. Examples of such vehicles include cars, vessels, aerial vehicles. Different levels of autonomy are available 1 to 5 for cars, hobby  }   
 
 %\NB{Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with line changing warning and assisted braking, } 
-%\NB{here let's talk about the trolly problem and mention that we see humans as disturbance in this work! discuss about teleoperated robotics that is still big and assistive automation}
+\NB{here let's talk about the trolly problem and mention that we see humans as disturbance in this work! discuss about teleoperated robotics that is still big and assistive automation}
 
 Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. As these vehicles proliferate the roadways, we get a mixed environment, meaning that different levels of autonomy are available. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with systems such as adaptive cruise control (ACC) \cite{acc} or advanced driver assistance systems (ADAS) \cite{adas}, these systems are far from perfect. ACC performs actions autonomously and works at the command of a human who determines a target velocity and a safe following distance. ADAS, on the other hand, acts as an information system for human drivers. These systems, however, are limited in their capabilities as they require constant monitoring from the driver and are unable to predict if the driver will enter a dangerous situation in the future. In addition, these systems can fail to guarantee safety in rapidly transitioning environments \cite{accfail}.
     
@@ -222,6 +222,7 @@ Formally the problem that we investigate in this work can be stated as:
     \caption{Block Diagram of the Approach}
     \label{fig:app}
 \end{figure}
+\NB{let's revise this figure and add what I showed in the board yesterday}
 %\NB{figure is too blurry}
 %\NB{that's not a pictorial representation, It's a block diagram.}
 %\NB{By using offline training we extract different models representing different vehicle behaviors. These models are then used online to .....}
@@ -284,7 +285,7 @@ Our approach, shown in Fig.~\ref{fig:app}, has the following components: We use 
  %       The matrices $\mathcal{P}$ and $\mathcal{B}$ will be referenced as ``the parameters" of the AHMM in the rest of this work. \NB{no let's use their name in the paper}
 \end{itemize}
 
-This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{P}, \mathcal{B} \rangle$. The AHMM is different from a traditional HMM because the states are not hidden, and we know exactly the relationship
+This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{P}, \mathcal{B} \rangle$. The AHMM is different from a traditional HMM because the states are not hidden, and we know exactly the relationship \NB{not sure about this and we should not add AHMM, We haven't defined it yet and it seems unnecessary to give a name to this unless we have really major changes to the way it computes states and transitions}
 %\NB{clarify}
 %with implicit parameters $m$ and $n$ \NB{this sentence is confusing}
 between states and their corresponding inferences. Because we have all the states and transitions a priori, we can learn the parameters of multiple models offline. %In addition, having the knowledge pertaining to the relationship between states and inferences allows predictions to be made with increased accuracy.\NB{how? This sentence is telling everything and nothing}
@@ -310,8 +311,8 @@ The two AHMMs will aim to predict future velocities $v$ and lanes $l$ of the veh
 \begin{equation}
     S_l = \{l_1,\ldots,l_n\}    
 \end{equation}
-
-where $S_v$ is the set of velocities and $S_d$ the set of distances between vehicles. The emissions reflect the actions performed between two consecutive states. For velocity we consider the following 3 emissions,
+\NB{the previous expressions are not that important to keep them in separate lines. Put them inline with the text}
+where $S_v$ is the set of velocities and $S_d$ the set of distances between vehicles. The emissions reflect the actions performed between two consecutive states. \NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes} For velocity we consider the following 3 emissions,
     
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
 
@@ -332,6 +333,7 @@ For the lanes, the following 3 emissions are considered:
     \item[$b_2^l$] Changing Right if $l(t) > l(t-1)$
     \item[$b_3^1$] Not changing if  $l(t) = l(t-1)$
 \end{enumerate}
+\NB{what does it mean $lane < lane$?}
 %\NB{same as before...formalize this}
 %\RP{capture that the emission are related to actions}
 
@@ -355,6 +357,7 @@ For the lanes, the following 3 emissions are considered:
    \text{ if $s(t+1)$ returns multiple values,}  \\ 
     s(t+1)=s_j\vert g_{ij} = \max(\mathcal{B}_i) \nonumber
 \end{align}
+\NB{s(t+1) doesn't return multiple values....if there are multiple states that satisfy equation 13. You should go to another line and state that not in an equation environment}
 %\NB{change the symbol for and. I'm also not 100\% sure that this expression is correct}
 %Because the relationship between states and observations is not hidden, we can use the expected inference, derived from \eqref{eq:pred} to assess which returned state is more accurate \NB{not clear, rewrite}.
 
@@ -421,7 +424,7 @@ We treat any vehicle observed online as a new system from which we are intereste
 \begin{equation}
     \forall{P_i} \in \hat{\mathcal{P}}: \hat{e} = \lVert\tilde{\mathcal{P}}-\hat{\mathcal{P}}_{i}\rVert_{l1/l2}
 \end{equation}
-
+\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
 where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$
 
 %\NB{revise this}
@@ -561,7 +564,7 @@ Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of al
     \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right)}
     \label{fig:riskd}
 \end{figure}
-
+\NB{as mentioned during last meeting use solid filled shapes to show the current position and empty shape (not necessary to have a dashed line) for future states. No need to paint future states with different colors, just use the same color that you used to paint the shape of the vehicle. i.e., if the car on your left is blue, the future states are also blue}
 %\NB{avoid this notation, this what?}
 
 %\begin{equation}
@@ -597,6 +600,7 @@ where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the inpu
 \begin{equation} \label{eq:optvel}
     v_h^* = v_h\in\hat{v}\vert v_h = \min(\hat{v})
 \end{equation}
+\NB{what do you mean that you pick the minimum lane and velocity??? Please critique each expression that you write on the paper}
 In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize. By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
 [insert proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce a risk below the threshold. Show the math]
 
