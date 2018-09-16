@@ -589,15 +589,15 @@ A user-set threshold, $r_\max$ is used as a limit for risk. Given $r_\max$ and t
 \end{equation}
 
 %\NB{we need to define what are the inputs in our system}
-where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$, in the even that $r(t+H)\geq r_\max$. We compute this pair as follows
+where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$, in the event that $r(t+H)\geq r_\max$. We compute this pair as follows
 \begin{equation} \label{eq:optlane}
     l^* = l_i\in\hat{l}\vert l_i = \min(\hat{l})
 \end{equation}
 \begin{equation} \label{eq:optvel}
     v_h^* = v_h\in\hat{v}\vert v_h = \min(\hat{v})
 \end{equation}
-In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}
-[insert proof here where we prove that this always leads to the safest condition] - we guarantee that the user action is guaranteed to produce a risk below the threshold. Show that's true by contradiction , show the math.
+In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize. By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
+[insert proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce a risk below the threshold. Show that's true by contradiction , show the math]
 
 
 %Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
@@ -658,8 +658,6 @@ In the next simulation, we show that we are able to fit pre-trained models to a 
     \caption{The error of the fit between our model and each of the three pretrained models}
     \label{fig:error}
 \end{figure}
- \NB{explain this figure}
- 
  
 \subsection{Assistive Planning and Control}
 In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_\max = 0.8$
