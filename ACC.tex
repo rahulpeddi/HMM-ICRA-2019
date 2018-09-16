@@ -622,12 +622,12 @@ In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to
 
 
 \section{Simulations} \label{sec:sims}
-The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assitance given to the user actions, in order to verify that we are able to avoid risk of collision.
+The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user actions, in order to verify that we are able to avoid risk of collision.
 
 \subsection{Training Models}
 For training the models, we used a workspace featuring $15$ stationary obstacles. A test vehicle drove through a highway setting with these obstacles, and it was observed for a training period of 700 iterations. This is followed by an estimation period of 700 iterations, which were used to validate the parameters.
 
-\begin{figure}[ht!]
+\begin{figure}[h!]
 \begin{subfigure}{0.48\textwidth}
 \includegraphics[width=\linewidth]{train1.png}
 \caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).} \label{fig:train1}
