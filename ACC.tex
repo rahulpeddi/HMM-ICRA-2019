@@ -549,20 +549,19 @@ r^{l_1}(t+1) &    & r^{l_n}(t+1)
 %                    \end{bmatrix}
 %\end{equation}
 %\NB{rewrite mathematically this}
-It is important to note that while multiple vehicles affect risk in our analysis, we are most concerned with the vehicle that causes the highest risk at any reachable point, as shown in Fig.~\ref{fig:reach}. As a result, we identify the vehicle and its associated risk at each of these points as follows:
+It is important to note that while multiple vehicles affect risk in our analysis, we are most concerned with the vehicle that causes the highest risk at any reachable point, as shown in Fig.~\ref{fig:reach}. As a result, we identify the vehicle and its associated risk at each of these points as follows:%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
 \begin{equation} \label{eq:lanerisk} 
-    \forall q\in R_h,\forall{l}\in{S_l}: \hat{r_v} = max_(r_q')
+    \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_v = max(r_q')
 \end{equation}
-
-
-%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.
+ where $\hat{r}_v \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes. Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{riskdnew.png}
     \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right)}
     \label{fig:riskd}
 \end{figure}
+
+It is important to note that \eqref{eq:riskcalc} and \eqref{eq:lanerisk} are calculated for each $v\in\hat{v}$ to obtain three different risk distributions; one for each velocity.
 %\NB{as mentioned during last meeting use solid filled shapes to show the current position and empty shape (not necessary to have a dashed line) for future states. No need to paint future states with different colors, just use the same color that you used to paint the shape of the vehicle. i.e., if the car on your left is blue, the future states are also blue}
 %\NB{avoid this notation, this what?}
 
@@ -576,7 +575,7 @@ Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk v
 %\NB{define dangerous condition}
 %\NB{...we propose a policy...}
 
-Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. User actions, in this case, are limited to selecting a reachable lane and velocity,
+Given the risk distributions, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. User actions, in this case, are limited to selecting a reachable lane and velocity,
 
 \begin{equation}
 u_h = (l_h,v_h), \text{ where } l\in\hat{l}, v_h\in\hat{v}
