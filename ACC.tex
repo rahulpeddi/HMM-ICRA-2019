@@ -414,11 +414,11 @@ We treat any vehicle observed online as a new system from which we are intereste
 
  %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
  
-\begin{equation}
+\begin{equation} \label{eq:pnorm}
     \forall{P_i} \in \hat{\mathcal{P}}: \hat{e} = \lVert\tilde{\mathcal{P}}-\mathcal{P}_{i}\rVert_{l2}
 \end{equation}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
-where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$.
+where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm
 
 %\NB{revise this}
 In order to determine the model with the lowest error, we find the model that minimizes $\hat{e}$,
