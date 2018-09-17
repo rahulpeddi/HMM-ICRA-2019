@@ -460,7 +460,7 @@ Three reachable velocities are computed using:
     \item $v_{h}^-(t+1)=v_h(t)-\delta_v$
     \item $v_{h}^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
-and $\hat{v} = \{v_h^-,v_h,v_h^+\}$. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)\delta t$ for each of the three aforementioned scenarios. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
+and $\hat{v} = \{v_h^-,v_h,v_h^+\}$\NB{this set is time varying and depends on the current velocity}. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)\delta t$ for each of the three aforementioned scenarios. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
 
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{input.png}
@@ -468,7 +468,7 @@ and $\hat{v} = \{v_h^-,v_h,v_h^+\}$. Future reachable positions can be easily co
     \label{fig:reach}
 \end{figure}
 
-Three reachable sets are obtained at each iteration that contains the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
+Three reachable sets are obtained at each iteration that contains \NB{the iteration contains?}the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
 %\RP{dont forget to add picture}
 %\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
 
@@ -479,7 +479,7 @@ Three reachable sets are obtained at each iteration that contains the possible s
  %\NB{which vehicle? Any?}. In this situation \NB{what situation?}, we have our manned vehicle, $h$, and we have all of the vehicles in our vehicle's sensing range, $R_h$ \NB{$N_{R_h}$ vehicles are in range and can be monitored by $h$ \NB{remember to acknowledge that some vehicles may intermittently enter and exit the range of h}}:
  
  Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$. It is important to note that some vehicles may intermittently enter and exit the range $R_h$, and $q\in\mathbb{N}^n$
-where $n$ is the total number of vehicles in the sensing range.
+where $n$ is the total number of vehicles in the sensing range. \NB{and what? What's the solution here? }
 
 %These vehicles will be referred to as agents in the rest of this work \NB{why??? What's wrong with vehicles? Please remove}.
 
@@ -495,7 +495,7 @@ By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} w
 %\RP{put in text}
 
 where $\tilde{v}_q\in S_v$ and $\tilde{l}_q\in S_l$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
-With the future velocities, we are able to calculate the forward positions for the horizon $H$ using %\NB{no need to use the $\forall$ here}: 
+With the future velocities, we are able to calculate the forward positions for the horizon $H$ \NB{what you mean the position for the horizon? } using %\NB{no need to use the $\forall$ here}: 
 \begin{equation} \label{eq:dumpos}
     x_q(t) = v_q(t)\delta_t
 \end{equation}
@@ -518,7 +518,7 @@ Using this information, we are able calculate relative distance,
 
 %\RP{Simplify - Risk is a function of D as follows}
 Risk is a function of $d_q(t)$ and $l_q(t)$ %\NB{and the lane}
-such that risk increases as distance decreases and is calculated as follows:
+such that risk increases as distance decreases \NB{what about the lanes?} and is calculated as follows:
 
 \begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
@@ -529,7 +529,7 @@ such that risk increases as distance decreases and is calculated as follows:
     \end{cases}
 \end{equation}
 
-where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. As a result, \eqref{eq:riskcalc} returns risk values for each vehicle that are arranged as follows:
+where $\xi$ is a function of the lane separation \NB{what is this function?}, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. As a result, \eqref{eq:riskcalc} returns risk values for each vehicle that are arranged as follows \NB{the vehicle are arranged as follows?}:
 \begin{equation}r_q'=
 \begin{bmatrix}
 r^{l_1}(t+H) & \dots & r^{l_n}(t+H) \\
@@ -549,11 +549,12 @@ r^{l_1}(t+1) &    & r^{l_n}(t+1)
 %                    \end{bmatrix}
 %\end{equation}
 %\NB{rewrite mathematically this}
-It is important to note that while multiple vehicles affect risk in our analysis, we are most concerned with the vehicle that causes the highest risk at any reachable point, as shown in Fig.~\ref{fig:reach}. As a result, we identify the vehicle and its associated risk at each of these points as follows:%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
+It is important to note that while multiple vehicles affect risk in our analysis, we are most concerned with the vehicle that causes the highest risk at any reachable point, as shown in Fig.~\ref{fig:reach} \NB{any reachable point shown in Fig.}. As a result, we identify the vehicle \NB{What you mean you identify the vehicle?} and its associated risk at each of these points as follows:%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
 \begin{equation} \label{eq:lanerisk} 
     \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_{v_h} = max(r_q')
 \end{equation}
- where $\hat{r}_{v_h} \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes. Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. It is important to note that \eqref{eq:riskcalc} and \eqref{eq:lanerisk} are calculated for each $v\in\hat{v}$ to obtain three different risk distributions; one for each velocity, $\hat{r} = \{\hat{r}_{v_h^-},\hat{r}_{v_h},\hat{r}_{v_h^+}\}$. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.
+\NB{$\hat{r}_{v_h}$ is one value if I have to look this expression. why???}
+ where $\hat{r}_{v_h} \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes. Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. It is important to note\NB{don't use this expression too much} that \eqref{eq:riskcalc} and \eqref{eq:lanerisk} are calculated for each $v\in\hat{v}$ to obtain three different risk distributions; one for each velocity, $\hat{r} = \{\hat{r}_{v_h^-},\hat{r}_{v_h},\hat{r}_{v_h^+}\}$ \NB{how are you combining these risks in one risk?}. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.\NB{???}
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{riskdnew.png}
@@ -581,7 +582,7 @@ Given the risk distributions, we can assist our user's potentially unsafe action
 u_h = (l_h,v_h), \text{ where } l\in\hat{l}, v_h\in\hat{v}
 \end{equation}
 
-A user-set threshold, $r_\max$ is used as a limit for risk. Given $r_\max$ and the values in the risk distribution for each velocity, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, our system intervenes as follows:
+A user-set threshold, $r_\max$ is used as a limit for risk \NB{what does it mean? A limit for risk for what? Be clear}. Given $r_\max$ and the values in the risk distribution for each velocity, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, our system intervenes as follows:
 \begin{equation} \label{eq:inputctrl}
     u = \begin{cases}
     u_h & \text{ if } r(t+H)\leq r_\max \\
@@ -589,18 +590,20 @@ A user-set threshold, $r_\max$ is used as a limit for risk. Given $r_\max$ and t
     u_a & \text{ if } r(t+H)\geq r_\max
     \end{cases}
 \end{equation}
-
+\NB{this is not what we are implementing...you are looking if any risk between now and H is above the maximum: if yes you switch to autonomous and send the vehicle toward the lane and velocity with the minimum risk associated}
 %\NB{we need to define what are the inputs in our system}
-where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$, in the event that $r(t+H)\geq r_\max$. We compute this pair by identifying the velocity and lane that produce the lowest risk based on our risk distributions $\hat{r}_v$:
+where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the input to the vehicle $h$ \NB{super confusing. You should simply say that the input $u$ is going to be either the user input or the autonomous input as follows...and then show the equation above.}. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$, in the event that $r(t+H)\geq r_\max$ \NB{fix this}. We compute this pair by identifying the velocity and lane that produce the lowest risk based on our risk distributions $\hat{r}_v$:
 \begin{equation} \label{eq:optlane}
     l^* = l_i\in\hat{l}\vert l_i = \argmin_{l}(\hat{r})
 \end{equation}
+\NB{so you pick the lane of the minimum risk even if the minimum risk is on t=3?} \NB{you should pick the lane such that the risk on that lane and for the next iteration is minimized.}
 %\NB{what is the dimension of $\hat{r}_q^l$? From (22) it's one value} \NB{Why argmin with respect to $l_i$ and not $l$? Is it just $l_i$?}\NB{this expression is not correct! You need to pick the l and v associated to the minimum risk!}
 \begin{equation} \label{eq:optvel}
     v_h^* = v_h\in\hat{v}\vert v_h = \argmin_{v_{h}}(\hat{r})
 \end{equation}
+\NB{what do you mean that you are picking $v_h$? What about if you have $v_h^-$ that is the best one?}
 %\NB{what do you mean that you pick the minimum lane and velocity??? Please critique each expression that you write on the paper}
-In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize. By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
+In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize \NB{I'm confused on the approach}. By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
 [insert proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce a risk below the threshold. Show the math]
 
 
