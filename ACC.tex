@@ -419,7 +419,7 @@ We treat any vehicle observed online as a new system from which we are intereste
 \end{equation}
 %\NB{is it $\hat{e}$ that you are computing? or each element?}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
-where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm, which is defined as the sum of the absolute squares of the elements of the matrix, which in our case, represents the difference between transition matrices of the observed model and the offline models. \NB{l2 of a matrix doesn't make sense if you are interested in obtaining only one element. Is there result of this operation a vector or 1 scalar? }
+where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm, which is defined as the sum of the absolute squares of the elements of the matrix, which in our case, represents the difference between transition matrices of the observed model and the offline models. \NB{What's the l2 of a matrix? Is it a scalar or a vector?}
 
 %\NB{revise this}
 In order to determine the model with the lowest error, we find the model that minimizes $\hat{e}$,
