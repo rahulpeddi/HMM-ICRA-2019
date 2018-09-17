@@ -415,9 +415,9 @@ We treat any vehicle observed online as a new system from which we are intereste
  %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
  
 \begin{equation} \label{eq:pnorm}
-    \forall{P_i} \in \hat{\mathcal{P}}: \hat{e} = \lVert\tilde{\mathcal{P}}-\mathcal{P}_{i}\rVert_{l2}
+    \forall{P_i} \in \hat{\mathcal{P}}: e_i = \lVert\tilde{\mathcal{P}}-\mathcal{P}_{i}\rVert_{l2}
 \end{equation}
-\NB{is it $\hat{e}$ that you are computing? or each element?}
+%\NB{is it $\hat{e}$ that you are computing? or each element?}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
 where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm, which is defined as the sum of the absolute squares of the elements of the matrix, which in our case, represents the difference between transition matrices of the observed model and the offline models. \NB{l2 of a matrix doesn't make sense if you are interested in obtaining only one element. Is there result of this operation a vector or 1 scalar? }
 
@@ -520,7 +520,7 @@ Using this information, we are able calculate relative distance,
 Risk is a function of $d_q(t)$ and $l_q(t)$ %\NB{and the lane}
 such that risk increases as distance decreases and is calculated as follows:
 
-\begin{equation}
+\begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
     \begin{cases}
     \frac{1}{d_{q}(t)},  & \text{if } l_h=l_q \text{ and } d_{q}(t) > 1  \\
@@ -529,8 +529,14 @@ such that risk increases as distance decreases and is calculated as follows:
     \end{cases}
 \end{equation}
 
-where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$.
-
+where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. As a result, \eqref{eq:riskcalc} returns risk values for each vehicle that are arranged as follows:
+\begin{equation}r_q'=
+\begin{bmatrix}
+r^{l_1}(t+H) & \dots & r^{l_n}(t+H) \\
+\vdots & \ddots & \\
+r^{l_1}(t+1) &    & r^{l_n}(t+1)
+\end{bmatrix}
+\end{equation}
 %The set of all risks for each vehicle will be denoted as $\mathcal{R}_q$, where
 %\NB{what you mean interfering?}
 
@@ -543,15 +549,14 @@ where $\xi$ is a function of the lane separation, and $r_{q}^{l}(t)$ represents 
 %                    \end{bmatrix}
 %\end{equation}
 %\NB{rewrite mathematically this}
-It is important to note that multiple vehicles affect risk in our analysis, and the areas with the highest risk are considered for adaptation. The set of maximum risk values in each lane with each velocity for all other vehicles is evaluated as follows: %\RP{Address that to velocities}
+It is important to note that while multiple vehicles affect risk in our analysis, we are most concerned with the vehicle that causes the highest risk at any reachable point, as shown in Fig.~\ref{fig:reach}. As a result, we identify the vehicle and its associated risk at each of these points as follows:
 \begin{equation} \label{eq:lanerisk} 
-    \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_{q}^l = \max\{r^l_{1},\ldots,r^l_{q}\}
+    \forall q\in R_h,\forall{l}\in{S_l}: \hat{r_v} = max_(r_q')
 \end{equation}
-\begin{equation} \label{eq:velrisk} 
-    \forall q\in R_h,\forall{v}\in{\hat{v}}: \hat{r}_{q}^v = \max\{r^v_{1},\ldots,r^v_{q}\}
-\end{equation}
+
+
 %\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-Using \eqref{eq:lanerisk} and \eqref{eq:velrisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.
+Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for each velocity. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{riskdnew.png}
