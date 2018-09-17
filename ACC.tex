@@ -418,7 +418,7 @@ We treat any vehicle observed online as a new system from which we are intereste
     \forall{P_i} \in \hat{\mathcal{P}}: \hat{e} = \lVert\tilde{\mathcal{P}}-\mathcal{P}_{i}\rVert_{l2}
 \end{equation}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
-where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm
+where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm, which is defined as the sum of the absolute squares of the elements of the matrix, which in our case, represents the difference between transition matrices of the observed model and the offline models.
 
 %\NB{revise this}
 In order to determine the model with the lowest error, we find the model that minimizes $\hat{e}$,
@@ -588,10 +588,10 @@ A user-set threshold, $r_\max$ is used as a limit for risk. Given $r_\max$ and t
 %\NB{we need to define what are the inputs in our system}
 where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the input to the vehicle $h$. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$, in the event that $r(t+H)\geq r_\max$. We compute this pair as follows
 \begin{equation} \label{eq:optlane}
-    l^* = l_i\in\hat{l}\vert l_i = \min(\hat{r}_q^l)
+    l^* = l_i\in\hat{l}\vert l_i = \argmin_{l_{i}}(\hat{r}_q^l)
 \end{equation}
 \begin{equation} \label{eq:optvel}
-    v_h^* = v_h\in\hat{v}\vert v_h = \min(\hat{r}_q^v)
+    v_h^* = v_h\in\hat{v}\vert v_h = \argmin_{v_{h}}(\hat{r}_q^v)
 \end{equation}
 %\NB{what do you mean that you pick the minimum lane and velocity??? Please critique each expression that you write on the paper}
 In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize. By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
