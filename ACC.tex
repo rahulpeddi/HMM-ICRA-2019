@@ -457,49 +457,49 @@ Assumption \ref{ass:i} is made in order to treat the situation as a worst case s
 Three reachable velocities are computed using:
 \begin{enumerate} %\NB{t+1 not i}
     \item $v_h(t+1)=v_h(t)$
-    \item $v_{h}^-(t+1)=v_h(t)-\delta_v$
-    \item $v_{h}^+(t+1)=v_h(t)+\delta_v$
+    \item $v^-(t+1)=v_h(t)-\delta_v$
+    \item $v^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
-and $\hat{v} = \{v_h^-(t),v_h(t),v_h^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
+and $\hat{v} = \{v^-(t),v_h(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
 %\NB{this set is time varying and depends on the current velocity}
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{input.png}
     \caption{Diagram of each reachable set}
     \label{fig:reach}
 \end{figure}
-
-Three reachable sets are obtained contain \NB{the iteration contains?}the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
+%\NB{the iteration contains?}
+Three reachable sets obtained contain the all the possible states that can be reached by $h$. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
 %\RP{dont forget to add picture}
 %\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
 
 \subsection{Risk Assessment}
 
- In this section, we discuss how the AHMM method is used to guarantee safety for a HAV, $h$ over a time horizon $H$. 
+ In this section, we discuss how the our framework is used to guarantee safety for a HAV, $h$, over a time horizon $H$.
  
  %\NB{which vehicle? Any?}. In this situation \NB{what situation?}, we have our manned vehicle, $h$, and we have all of the vehicles in our vehicle's sensing range, $R_h$ \NB{$N_{R_h}$ vehicles are in range and can be monitored by $h$ \NB{remember to acknowledge that some vehicles may intermittently enter and exit the range of h}}:
  
- Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$. It is important to note that some vehicles may intermittently enter and exit the range $R_h$, and $q\in\mathbb{N}^n$
-where $n$ is the total number of vehicles in the sensing range. \NB{and what? What's the solution here? }
+ Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$, and $q\in\mathbb{N}^m$ where $m$ is the total number of vehicles in the sensing range.
+ %\NB{and what? What's the solution here? }
 
 %These vehicles will be referred to as agents in the rest of this work \NB{why??? What's wrong with vehicles? Please remove}.
 
 By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} we can predict future states for all $q$ over an finite horizon $H$ to obtain:
 %\RP{Change to bar or tilde or hat for predictions}
 \begin{equation}
-    \tilde{v}_q = \{v_q(t+1),\ldots,v_q(t+H)\}
+    V_q = \{v_q(t+1),\ldots,v_q(t+H)\}
 \end{equation}
 \begin{equation}
-    \tilde{l}_q = \{l_q(t+1),\ldots,l_q(t+h)\}
+    L_q = \{l_q(t+1),\ldots,l_q(t+h)\}
 \end{equation}
 
 %\RP{put in text}
 
-where $\tilde{v}_q\in S_v$ and $\tilde{l}_q\in S_l$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
-With the future velocities, we are able to calculate the forward positions for the horizon $H$ \NB{what you mean the position for the horizon? } using %\NB{no need to use the $\forall$ here}: 
+where $V_q\in S_v$ and $L_q\in S_l$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
+With the future velocities, we are able to calculate the forward positions over the horizon $H$ using %\NB{what you mean the position for the horizon? } using %\NB{no need to use the $\forall$ here}: 
 \begin{equation} \label{eq:dumpos}
     x_q(t) = v_q(t)\delta_t
 \end{equation}
-where $v_q\in v_q^p$ and $\delta_t$ refers to a sampling time. Using \eqref{eq:dumpos} we obtain future forward positions:
+where $v_q\in V_q$ and $\delta_t$ refers to a sampling time. Using \eqref{eq:dumpos} we obtain future forward positions:
 \begin{equation}
     x_q^p = \{x_q(t+1),\ldots,x_q(t+H)\}
 \end{equation}
@@ -518,7 +518,7 @@ Using this information, we are able calculate relative distance,
 
 %\RP{Simplify - Risk is a function of D as follows}
 Risk is a function of $d_q(t)$ and $l_q(t)$ %\NB{and the lane}
-such that risk increases as distance decreases \NB{what about the lanes?} and is calculated as follows:
+such that risk increases as distance decreases and as lane separation decreases and is calculated as follows: %\NB{what about the lanes?}
 
 \begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
@@ -529,36 +529,49 @@ such that risk increases as distance decreases \NB{what about the lanes?} and is
     \end{cases}
 \end{equation}
 
-where $\xi$ is a function of the lane separation \NB{what is this function?}, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. As a result, \eqref{eq:riskcalc} returns risk values for each vehicle that are arranged as follows \NB{the vehicle are arranged as follows?}:
-\begin{equation}r_q'=
+where $\xi$ is a function of the lane separation \NB{what is this function?}, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. The values obtained from \eqref{eq:riskcalc} are calculated for each reachable velocity and position of vehicle $h$. The risk values are arranged as follows: %\NB{the vehicle are arranged as follows?}:
+
+\begin{equation} \label{eq:riskmat}
+\mathcal{R}_{q}^{v}=
 \begin{bmatrix}
-r^{l_1}(t+H) & \dots & r^{l_n}(t+H) \\
+r_q^{l_1}(t+H) & \dots & r_q^{l_n}(t+H) \\
 \vdots & \ddots & \\
-r^{l_1}(t+1) &    & r^{l_n}(t+1)
+r_q^{l_1}(t+1) &    & r_q^{l_n}(t+1)
 \end{bmatrix}
 \end{equation}
-%The set of all risks for each vehicle will be denoted as $\mathcal{R}_q$, where
 %\NB{what you mean interfering?}
+where $q = 1,\ldots,m$ and $v\in\hat{v}$ and $\mathcal{R}_q^v\in\mathbb{R}^{H\times{n}}$. The matrices obtained from \eqref{eq:riskmat} build the superset $\mathcal{R}$ as follows:
 
-%\begin{equation}
-%    \forall{q} \in R: \mathcal{R}_q =
-%                    \begin{bmatrix}
-%                        r_q^l(t+1) & \dots & r_q^l(t+1) \\
-%                        \vdots & \ddots & \\
-%                        r_q^l(t+H) &    & r_q^l(t+H)
-%                    \end{bmatrix}
-%\end{equation}
-%\NB{rewrite mathematically this}
-It is important to note that while multiple vehicles affect risk in our analysis, we are most concerned with the vehicle that causes the highest risk at any reachable point, as shown in Fig.~\ref{fig:reach} \NB{any reachable point shown in Fig.}. As a result, we identify the vehicle \NB{What you mean you identify the vehicle?} and its associated risk at each of these points as follows:%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
-\begin{equation} \label{eq:lanerisk} 
-    \forall q\in R_h,\forall{l}\in{S_l}: \hat{r}_{v_h} = max(r_q')
+\begin{equation} \label{eq:superrisk}
+\mathcal{R} =
+\begin{bmatrix}
+\mathcal{R}_{1}^{v^-} & \ldots & \mathcal{R}_{m}^{v^-} \\
+\mathcal{R}_{1}^{v} & \ldots & \mathcal{R}_{m}^{v} \\
+\mathcal{R}_{1}^{v^+} & \ldots   & \mathcal{R}_{m}^{v^+}
+\end{bmatrix}
 \end{equation}
-\NB{$\hat{r}_{v_h}$ is one value if I have to look this expression. why???}
- where $\hat{r}_{v_h} \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes. Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. It is important to note\NB{don't use this expression too much} that \eqref{eq:riskcalc} and \eqref{eq:lanerisk} are calculated for each $v\in\hat{v}$ to obtain three different risk distributions; one for each velocity, $\hat{r} = \{\hat{r}_{v_h^-},\hat{r}_{v_h},\hat{r}_{v_h^+}\}$ \NB{how are you combining these risks in one risk?}. In Fig.~\ref{fig:riskd}, we show an example of a risk distribution over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right). The magenta vehicle is the user's HAV, while the red and black vehicles are the actual positions of other vehicles on the road. Unfilled vehicles are each of the predictions in successive order; $[t+1,t+H]$.\NB{???}
+The representation in \eqref{eq:superrisk} suggests that multiple vehicles affect risk in our analysis. However, we are most concerned with the highest risk at each reachable point, which is evaluated as follows %\NB{any reachable point shown in Fig.}.
+\begin{equation}
+ \hat{\mathcal{R}}_{ij} = \max\begin{pmatrix}
+ \begin{bmatrix}
+\mathcal{R}_{1,ij}^{v^-} & \ldots & \mathcal{R}_{m,ij}^{v^-} \\
+\mathcal{R}_{1,ij}^{v} & \ldots & \mathcal{R}_{m,ij}^{v} \\
+\mathcal{R}_{1,ij}^{v^+} & \ldots   & \mathcal{R}_{m,ij}^{v^+}
+\end{bmatrix}\end{pmatrix}
+\end{equation}
+%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
+
+%\NB{$\hat{r}_{v_h}$ is one value if I have to look this expression. why???}
+ where $i = 1,\ldots,H$, $j = 1,\ldots,n$, and $\hat{\mathcal{R}} \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes.
+ 
+ %Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. % \NB{how are you combining these risks in one risk?}. 
+ In Fig.~\ref{fig:riskd}, we show an example of a risk distribution, or $\hat{\mathcal{R}}$, over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right).
+ 
+
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{riskdnew.png}
-    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right)}
+    \includegraphics[width=0.48\textwidth]{assist.png}
+    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right). The magenta shape is the user's HAV, while the blue and black shapes are the actual positions of other vehicles on the road. Unshaded/outline shapes are predictions for vehicles in successive order; $[t+1,t+H]$. The lines coming out of the user's HAV are a visual depiction of the reachable set at the current velocity $v_h$.}
     \label{fig:riskd}
 \end{figure}
 
@@ -585,9 +598,8 @@ u_h = (l_h,v_h), \text{ where } l\in\hat{l}, v_h\in\hat{v}
 A user-set threshold, $r_\max$ is used as a limit for risk \NB{what does it mean? A limit for risk for what? Be clear}. Given $r_\max$ and the values in the risk distribution for each velocity, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, our system intervenes as follows:
 \begin{equation} \label{eq:inputctrl}
     u = \begin{cases}
-    u_h & \text{ if } r(t+H)\leq r_\max \\
-   % (1-r)u_h + r u_a & \text { if } r_\min<r(t+H)<r_\max \\
-    u_a & \text{ if } r(t+H)\geq r_\max
+    u_h & \text{ if } \nexists~\hat{\mathcal{R}}_{ij} > r_\max \\
+    u_a & \text{ if } \exists~\hat{\mathcal{R}}_{ij} > r_\max
     \end{cases}
 \end{equation}
 \NB{this is not what we are implementing...you are looking if any risk between now and H is above the maximum: if yes you switch to autonomous and send the vehicle toward the lane and velocity with the minimum risk associated}
@@ -680,9 +692,9 @@ Using the selected model, we are able to make predictions for every iteration of
 In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_{\max} = 0.85$.
 
 
-\begin{figure}[ht] \label{fig:critpt}
+\begin{figure}[ht] 
     \includegraphics[width=0.48\textwidth]{critpt.png}
-    \caption {In this snapshot, $r_h(t+H)$ is approaching $r_{\max}$. This is a situation where the HAV would assist the user in selecting the least risky action}
+    \caption {In this snapshot, $r_h(t+H)$ is approaching $r_{\max}$. This is a situation where the HAV would assist the user in selecting the least risky action} \label{fig:critpt}
 \end{figure}
 
 In \ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur in $H$. 
@@ -690,16 +702,16 @@ In \ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to
 
 In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk existed in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
 
-\begin{figure}[ht] \label{fig:noassist}
-    \includegraphics[width=0.48\textwidth]{noassist.png}
-    \caption{In this snapshot, a user has taken an unsafe action and it has resulted in high risk and a collision} 
+\begin{figure}[ht] 
+    \includegraphics[width=0.48\textwidth]{noassist.png} 
+    \caption{In this snapshot, a user has taken an unsafe action and it has resulted in high risk and a collision} \label{fig:noassist} 
 \end{figure}
 
 In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account, as the risk surpassed $r_{\max}$. With assistive input, both lane and velocity were changed in order to minimize risk at every future time $t$ up to $t+H$.
 
-\begin{figure}[ht] \label{fig:assist}
-    \includegraphics[width=0.48\textwidth]{assist.png}
-    \caption{This figure depicts a situation in which assistance has occurred and a risky situation was avoided altogether.} 
+\begin{figure}[ht] 
+    \includegraphics[width=0.48\textwidth]{assist.png} 
+    \caption{This figure depicts a situation in which assistance has occurred and a risky situation was avoided altogether.} \label{fig:assist}
 \end{figure}
 
  In the situation depicted in Fig.~\ref{fig:assist}, we are able to minimize risk and avoid collisions, thereby ensuring that our HAV is being operated safely.
