@@ -45,7 +45,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{varwidth}
-\usepackage{subcaption}
+%\usepackage{subcaption}
 %\usepackage[noend]{algpseudocode}
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
@@ -322,7 +322,7 @@ For the lanes, the following 3 emissions are considered:
     \item[$b_2^l$] Changing Right if $l(t) > l(t-1)$
     \item[$b_3^1$] Not changing if  $l(t) = l(t-1)$
 \end{enumerate}
-where we assume that lanes are modeled in creasing order from left to right; i.e. the leftmost lane is $1$ and the rightmost lane is $n$.
+where we assume that lanes are modeled in increasing order from left to right; i.e. the leftmost lane is $1$ and the rightmost lane is $n$.
 %\NB{what does it mean $lane < lane$?}
 %\NB{same as before...formalize this}
 %\RP{capture that the emission are related to actions}
@@ -415,11 +415,11 @@ We treat any vehicle observed online as a new system from which we are intereste
  %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
  
 \begin{equation} \label{eq:pnorm}
-    \forall{P_i} \in \hat{\mathcal{P}}: e_i = \lVert\tilde{\mathcal{P}}-\mathcal{P}_{i}\rVert_{l2}
+    \forall{P_i} \in \hat{\mathcal{P}}: e_i = \lVert\tilde{\mathcal{P}}-\mathcal{P}_{i}\rVert_{2}
 \end{equation}
 %\NB{is it $\hat{e}$ that you are computing? or each element?}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
-where $\hat{e} = \{e_i,\ldots,e_m\}$, and $i\in\mathbb{N}^m$ \NB{why? $e= e_1...e_m$.}. In \eqref{eq:pnorm}, we use the $l2$ matrix norm, which is defined as the sum of the absolute squares of the elements of the matrix, which in our case, represents the difference between transition matrices of the observed model and the offline models. \NB{What's the l2 of a matrix? Is it a scalar or a vector?}
+where $\hat{e} = \{e_1,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm to return a scalar, which in our case, represents the error between transition matrices of the observed model and the offline models. %\NB{What's the l2 of a matrix? Is it a scalar or a vector?}
 
 %\NB{revise this}
 In order to determine the model with the lowest error, we find the model that minimizes $\hat{e}$,
@@ -460,15 +460,15 @@ Three reachable velocities are computed using:
     \item $v_{h}^-(t+1)=v_h(t)-\delta_v$
     \item $v_{h}^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
-and $\hat{v} = \{v_h^-,v_h,v_h^+\}$\NB{this set is time varying and depends on the current velocity}. Future reachable positions can be easily computed as $x_h(t+i)=v_h(t+i)\delta t$ for each of the three aforementioned scenarios. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
-
+and $\hat{v} = \{v_h^-(t),v_h(t),v_h^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
+%\NB{this set is time varying and depends on the current velocity}
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{input.png}
     \caption{Diagram of each reachable set}
     \label{fig:reach}
 \end{figure}
 
-Three reachable sets are obtained at each iteration that contains \NB{the iteration contains?}the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
+Three reachable sets are obtained contain \NB{the iteration contains?}the possible states reached by $h$ assuming different velocities. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
 %\RP{dont forget to add picture}
 %\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
 
@@ -624,58 +624,65 @@ In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to
 
 
 \section{Simulations} \label{sec:sims}
-The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user actions, in order to verify that we are able to avoid risk of collision.
+The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid risk of collision.
 
 \subsection{Training Models}
-For training the models, we used a workspace featuring $15$ stationary obstacles. A test vehicle drove through a highway setting with these obstacles, and it was observed for a training period of 700 iterations. This is followed by an estimation period of 700 iterations, which were used to validate the parameters.
+In order to train the models, we used a workspace featuring $6$ stationary obstacles. A test vehicle drove through this workspace, while avoiding these obstacles, and it was observed for a training period of 700 iterations. In this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated. In order to validate the effectiveness of the generated matrices, we tested the sample over another period of the same length with $9$ obstacles. In verifying the results for velocity, we used forward position, which is calculated using the relationship in \eqref{eq:dumpos}. The resulting root mean squared error (RMSE) for forward position estimates was $1.3927$m. The results for velocity prediction are shown in Fig.~\ref{fig:train1}, where the validation begins after the vertical line labeled ``End Training Set". 
 
-\begin{figure}[h!]
-\begin{subfigure}{0.48\textwidth}
-\includegraphics[width=\linewidth]{train1.png}
-\caption{The forward position of the actual robot (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).} \label{fig:train1}
-\end{subfigure}
-\hspace*{\fill} % separation between the subfigures
-\begin{subfigure}{0.48\textwidth}
-\includegraphics[width=\linewidth]{train2.png}
-\caption{The lane changes of the actual robot (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).} \label{fig:train2}
-\end{subfigure}
-\caption{Simulation Results from Training Models} \label{fig:1}
+\begin{figure}[ht]
+\includegraphics[width=0.48\textwidth]{train1.png}
+\caption{The forward position of the actual vehicle (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).} \label{fig:train1}
+\end{figure}
+
+In addition to velocity, we also measure the accuracy of our predictions regarding lane changes and following distances at which these changes occurred. Based on results shown in Fig.~\ref{fig:train2}, it is evident that the expected lane changes occurred, and to validate the following distances at which the lane changes took place, we used RMSE, which was $1.2564$m. The results for both velocity and lane change distance validation showed that the predictions were very effective when predicting the future states of the same model.
+
+\begin{figure}[ht]
+\includegraphics[width=0.48\textwidth]{train2.png}
+\caption{The lane changes of the actual vehicle (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).} \label{fig:train2}
 \end{figure}
 
 
-In this simulation we find that the root mean squared error (RMSE) between the forward positions is $3.9273$, and the RMSE between lane changes is $2.5912$.  
+
 
 \subsection{Fitting Models}
 
-In the next simulation, we show that we are able to fit pre-trained models to a certain vehicle, whose behaviors are randomly generated, moving through the same workspace as the training sets. In this simulation, we begun to fit the parameters after making one full transition and obtaining related emissions. 
+In this section, we show that we are able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we use \eqref{eq:pnorm} with each of the three pre-trained models. We obtain and display the errors in Fig.~\ref{fig:error}.
 
-\begin{figure}[h!]
+\begin{figure}[ht]
+    \includegraphics[width=0.48\textwidth]{modelerror.png}
+    \caption{The error of the fit between our model and each of the three pretrained models} \label{fig:error}
+\end{figure}
+
+At each iteration, we use the model with the lowest error for future predictions. The selected model changes frequently at the start of run-time and converges to one model by the end of run-time. The selected model at each iteration is shown in Fig.~\ref{fig:select}. In this case, we converge to Model $3$ in approximately 300 iterations.
+
+\begin{figure}[ht]
+    \includegraphics[width=0.48\textwidth]{modelselect.png}
+    \caption{The error of the fit between our model and each of the three pretrained models} \label{fig:select}
+\end{figure}
+
+Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $3.1423$m. In Fig.~\ref{fig:lanchan}, we show the the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.5421$m. The RMSE values obtained for each of these tests suggest that the prediction is reliable. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
+
+
+\begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fit2.png}
-    \caption{The forward position of the actual robot (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).}
-    \label{fig:fwd}
+    \caption{The forward position of the actual vehicle (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).} \label{fig:fwd}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fit1.png}
-    \caption{The lane changes of the actual robot (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).}
-    \label{fig:lanchan}
+    \caption{The lane changes of the actual vehicle (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).} \label{fig:lanchan}
 \end{figure}
- In addition, we show the error of the fit for each velocity model in Fig.~\ref{fig:error}, where we see that the closest fit is that of the medium-speed model.
  
- \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fit3.png}
-    \caption{The error of the fit between our model and each of the three pretrained models}
-    \label{fig:error}
-\end{figure}
+ 
+
  
 \subsection{Assistive Planning and Control}
-In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_\max = 0.8$
+In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_{\max} = 0.85$.
 
 
-\begin{figure}[ht]
+\begin{figure}[ht] \label{fig:critpt}
     \includegraphics[width=0.48\textwidth]{critpt.png}
-    \caption{In this snapshot, $r_h(t+H)$ is approaching $r_\max$. This is a situation where the HAV would assist the user in selecting the least risky action}
-    \label{fig:critpt}
+    \caption {In this snapshot, $r_h(t+H)$ is approaching $r_{\max}$. This is a situation where the HAV would assist the user in selecting the least risky action}
 \end{figure}
 
 In \ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur in $H$. 
@@ -683,21 +690,19 @@ In \ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to
 
 In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk existed in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
 
-\begin{figure}[ht]
+\begin{figure}[ht] \label{fig:noassist}
     \includegraphics[width=0.48\textwidth]{noassist.png}
-    \caption{In this snapshot, a user has taken an unsafe action and it has resulted in high risk and a collision}
-    \label{fig:noassist}
+    \caption{In this snapshot, a user has taken an unsafe action and it has resulted in high risk and a collision} 
 \end{figure}
 
-In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, btu in this case, the assistive input was taken into account, as the risk surpassed $r_\max$. With assistive input, both lane and velocity were changed in order to minimize risk at every future time $t$ up to $t+H$.
+In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account, as the risk surpassed $r_{\max}$. With assistive input, both lane and velocity were changed in order to minimize risk at every future time $t$ up to $t+H$.
 
-\begin{figure}[ht]
+\begin{figure}[ht] \label{fig:assist}
     \includegraphics[width=0.48\textwidth]{assist.png}
-    \caption{This figure depicts a situation in which assistance occurred and a risky situation was avoided altogether.}
-    \label{fig:assist}
+    \caption{This figure depicts a situation in which assistance has occurred and a risky situation was avoided altogether.} 
 \end{figure}
 
- In the situation depicted in Fig.~\ref{fig:assist}, we are able to minimize risk and avoid collisions, thereby ensuring that our HAV is being operate safely.
+ In the situation depicted in Fig.~\ref{fig:assist}, we are able to minimize risk and avoid collisions, thereby ensuring that our HAV is being operated safely.
 
 
 \section{Conclusions} \label{sec:concs}
