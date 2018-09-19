@@ -610,15 +610,15 @@ A user-set threshold, $r_\max$ is used as the level of risk at which the user de
 %\NB{super confusing. You should simply say that the input $u$ is going to be either the user input or the autonomous input as follows...and then show the equation above.}. 
 During run-time, we are monitoring $\hat{\mathcal{R}}$ to find the appropriate pair of actions (velocity and lane) for time $\tau = t+1$ that minimize risk. In order to identify the safest actions, we first find the safest point in the risk distribution:
 \begin{equation} \label{eq:optpt}
-  \mathcal{R}^* = \min\{\hat{\mathcal{R}}_{i1},\ldots,\hat{\mathcal{R}}_{in}\}  
+  r^* = \min\{\hat{\mathcal{R}}_{i1},\ldots,\hat{\mathcal{R}}_{in}\}  
 \end{equation}
-where $i = 1$. In other words, we are only concerned with the first row of $\hat{\mathcal{R}}$, which corresponded to $\tau$.
-The value $\mathcal{R}^*$ gives information about the safest lane to enter and the safest velocity to reach. The optimal pair can be obtained by identifying $\mathcal{R}^*$ in the risk distribution, $\hat{\mathcal{R}}$:
+where $i = 1$. In other words, we are only concerned with the first row of $\hat{\mathcal{R}}$, which corresponds to $\tau$.
+The value $\mathcal{R}^*$ gives information about the safest lane to enter and the safest velocity to reach. The optimal pair can be obtained by identifying $r^*$ in the risk distribution, $\hat{\mathcal{R}}$:
 \begin{align} \label{eq:optpair}
-    l^* =  l_j\in\hat{L}\vert \mathcal{R}^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}} \nonumber \\
-    v^* =  v\in\hat{V}\vert \mathcal{R}^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}}
+    l^* =  l_j\in\hat{L}\vert r^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}} \nonumber \\
+    v^* =  v\in\hat{V}\vert r^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}}
 \end{align}
-where $j$ refers to a particular entry and $v$ refers to a particular velocity associated with $R^*$.
+where $j$ refers to a particular entry and $v$ refers to a particular velocity associated with $r^*$.
 %\NB{so you pick the lane of the minimum risk even if the minimum risk is on t=3?} %\NB{you should pick the lane such that the risk on that lane and for the next iteration is minimized.}
 %\NB{what is the dimension of $\hat{r}_q^l$? From (22) it's one value} \NB{Why argmin with respect to $l_i$ and not $l$? Is it just $l_i$?}\NB{this expression is not correct! You need to pick the l and v associated to the minimum risk!}
 
