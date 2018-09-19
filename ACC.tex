@@ -612,7 +612,7 @@ During run-time, we are monitoring $\hat{\mathcal{R}}$ to find the appropriate p
 \begin{equation} \label{eq:optpt}
   \mathcal{R}^* = \min\{\hat{\mathcal{R}}_{i1},\ldots,\hat{\mathcal{R}}_{in}\}  
 \end{equation}
-where $i = \tau$.
+where $i = 1$. In other words, we are only concerned with the first row of $\hat{\mathcal{R}}$, which corresponded to $\tau$.
 The value $\mathcal{R}^*$ gives information about the safest lane to enter and the safest velocity to reach. The optimal pair can be obtained by identifying $\mathcal{R}^*$ in the risk distribution, $\hat{\mathcal{R}}$:
 \begin{align} \label{eq:optpair}
     l^* =  l_j\in\hat{L}\vert \mathcal{R}^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}} \nonumber \\
@@ -630,7 +630,7 @@ At every iteration, the optimal pair $(l^*,v^*)$ is being calculated, but in thi
 u_a = (l^*,v^*)    
 \end{equation}
 By minimizing the risk at $\tau$, we ensure that the immediate action of our vehicle $h$ is the always safest option.
-[insert proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce the lowest attainable risk, assuming predictions are correct.
+[insert lemma/proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce the lowest attainable risk, assuming predictions are correct]
 
 
 
