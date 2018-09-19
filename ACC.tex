@@ -230,7 +230,7 @@ Our approach, shown in Fig.~\ref{fig:app}, has the following components: We use 
  based on the user input, $u_h$. 
  If such an unsafe action is detected, an autonomous control action, $u_a$, is deployed to assist and correct the user's intention. In the next sections, we will go over this framework, explaining in detail each block presented in Fig.~\ref{fig:app}.
  
-\NB{be consistent and formal with symbols: variable should be italic, vector should be bold, matrices should bebold upper case etc }
+\NB{be consistent and formal with symbols: variable should be italic, vector should be bold, matrices should be bold upper case etc }
 %\NB{fix this}. %\NB{simplify}
  %\NB{this should go in the related work}.% In this work, we train multiple models offline over a horizon $T$, with training sets that capture the behaviors of vehicles \NB{what vehicles...this sentence is incomplete.} \NB{also you are repeating too many times the same thing and always not complete. This section should summarize what we are going to see next: using training data to predict future states and infer the behavior model of other vehicles, compare the prediction with our vehicle prediction to asses safety, monitor and intervene if needed by correcting behavior that can lead to unsafe situations}.
 
@@ -419,10 +419,8 @@ We treat any vehicle observed online as a new system from which we are intereste
 \end{equation}
 %\NB{is it $\hat{e}$ that you are computing? or each element?}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
-where $\hat{e} = \{e_1,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm to return a scalar, which in our case, represents the error between transition matrices of the observed model and the offline models. %\NB{What's the l2 of a matrix? Is it a scalar or a vector?}
-
+where $\hat{e} = \{e_1,\ldots,e_m\}$, and $i\in\mathbb{N}^m$. In \eqref{eq:pnorm}, we use the $l2$ matrix norm to return a scalar, which in our case, represents the error between transition matrices of the observed model and the offline models.This error indicates the confidence we have in said model. A higher error indicates more uncertainty that our predictions will be correct. The model with the lowest error is the one we are most confident in, and therefore, use to make predictions. We find this model, $M^*$, as follows: %\NB{What's the l2 of a matrix? Is it a scalar or a vector?}
 %\NB{revise this}
-In order to determine the model with the lowest error, we find the model that minimizes $\hat{e}$,
 
 \begin{equation}
     M^*=M_i\in\mathcal{M}\vert e_i = \min(\hat{e})
@@ -431,7 +429,8 @@ In order to determine the model with the lowest error, we find the model that mi
 %\NB{add argmin}
 
 and $M^*$ %\NB{i is a index not a model}
-is the model with the least error,\NB{this is unnecessary. Say this before, above...we find the model $M^*$ that minimizes the error...} which indicates the confidence we have in said model. A higher error indicates more uncertainty that predictions we make will be correct. The model with the lowest error is the one we are most confident in, and therefore, use to make predictions. We refer to $\mathcal{P}_{i^*}$ and $\mathcal{B}_{i^*}$ in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. %\NB{something is missing here...we should somehow associate the error to the confidence that we have in that model....bigger errors = more uncertainties. The question becomes what should we do if the error is large or if it is small?? The answer is in the trust. What does it mean to trust mroe or less?}
+%\NB{this is unnecessary. Say this before, above...we find the model $M^*$ that minimizes the error...}
+  Given this model, we refer to its transition and emission matrices, $\mathcal{P}_{i^*}$ and $\mathcal{B}_{i^*}$, in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. %\NB{something is missing here...we should somehow associate the error to the confidence that we have in that model....bigger errors = more uncertainties. The question becomes what should we do if the error is large or if it is small?? The answer is in the trust. What does it mean to trust mroe or less?}
 
 
 %\NB{merge with previous and change to explain better how new data are going to improve your model...}
@@ -460,7 +459,7 @@ Three reachable velocities are computed using:
     \item $v^-(t+1)=v_h(t)-\delta_v$
     \item $v^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
-and $\hat{v} = \{v^-(t),v_h(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{l} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
+and $\hat{V} = \{v^-(t),v_h(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
 %\NB{this set is time varying and depends on the current velocity}
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{input.png}
@@ -529,14 +528,16 @@ such that risk increases as distance decreases and as lane separation decreases 
     \end{cases}
 \end{equation}
 
-where $\xi$ is a function of the lane separation \NB{what is this function?}, and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. The values obtained from \eqref{eq:riskcalc} are calculated for each reachable velocity and position of vehicle $h$. The risk values are arranged as follows: %\NB{the vehicle are arranged as follows?}:
+where $\xi$ is the difference in lanes between $h$ and a vehicle $q$,
+% \NB{what is this function?} 
+and $r_{q}^{l}(t)$ represents the risk associated with vehicle $q$, evaluated at lane $l$ at time $t$. The values obtained from \eqref{eq:riskcalc} are calculated for each reachable velocity and position of vehicle $h$. The risk values are arranged as follows: %\NB{the vehicle are arranged as follows?}:
 
 \begin{equation} \label{eq:riskmat}
 \mathcal{R}_{q}^{v}=
 \begin{bmatrix}
-r_q^{l_1}(t+H) & \dots & r_q^{l_n}(t+H) \\
+r_q^{l_1}(t+1) & \dots & r_q^{l_n}(t+1) \\
 \vdots & \ddots & \\
-r_q^{l_1}(t+1) &    & r_q^{l_n}(t+1)
+r_q^{l_1}(t+H) &    & r_q^{l_n}(t+H)
 \end{bmatrix}
 \end{equation}
 %\NB{what you mean interfering?}
@@ -551,7 +552,7 @@ where $q = 1,\ldots,m$ and $v\in\hat{v}$ and $\mathcal{R}_q^v\in\mathbb{R}^{H\ti
 \end{bmatrix}
 \end{equation}
 The representation in \eqref{eq:superrisk} suggests that multiple vehicles affect risk in our analysis. However, we are most concerned with the highest risk at each reachable point, which is evaluated as follows %\NB{any reachable point shown in Fig.}.
-\begin{equation}
+\begin{equation} \label{eq:riskdistribution}
  \hat{\mathcal{R}}_{ij} = \max\begin{pmatrix}
  \begin{bmatrix}
 \mathcal{R}_{1,ij}^{v^-} & \ldots & \mathcal{R}_{m,ij}^{v^-} \\
@@ -565,7 +566,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
  where $i = 1,\ldots,H$, $j = 1,\ldots,n$, and $\hat{\mathcal{R}} \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes.
  
  %Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. % \NB{how are you combining these risks in one risk?}. 
- In Fig.~\ref{fig:riskd}, we show an example of a risk distribution, or $\hat{\mathcal{R}}$, over $H=3$ (left) for velocity $v_h$ at a the road scenario depicted (right).
+ In Fig.~\ref{fig:riskd}, we show an example of a risk distribution, or $\hat{\mathcal{R}}$, over $H=3$ for velocity $v_h$ (left) at the road scenario depicted (right).
  
 
 
@@ -592,31 +593,50 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
 Given the risk distributions, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation, or in this case, a collision. User actions, in this case, are limited to selecting a reachable lane and velocity,
 
 \begin{equation}
-u_h = (l_h,v_h), \text{ where } l\in\hat{l}, v_h\in\hat{v}
+u_h = (l_h,v_h), \text{ where } l\in\hat{L}, v_h\in\hat{V}
 \end{equation}
 
-A user-set threshold, $r_\max$ is used as a limit for risk \NB{what does it mean? A limit for risk for what? Be clear}. Given $r_\max$ and the values in the risk distribution for each velocity, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, our system intervenes as follows:
+A user-set threshold, $r_\max$ is used as the level of risk at which the user desires assistance from the HAV. Given $r_\max$ and the values in the risk distribution, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, the input $u$ is going to be either the user input $u_h$ or the autonomous input $u_a$ as follows:
+% \NB{what does it mean? A limit for risk for what? Be clear}.
+ 
 \begin{equation} \label{eq:inputctrl}
     u = \begin{cases}
     u_h & \text{ if } \nexists~\hat{\mathcal{R}}_{ij} > r_\max \\
     u_a & \text{ if } \exists~\hat{\mathcal{R}}_{ij} > r_\max
     \end{cases}
 \end{equation}
-\NB{this is not what we are implementing...you are looking if any risk between now and H is above the maximum: if yes you switch to autonomous and send the vehicle toward the lane and velocity with the minimum risk associated}
+%\NB{this is not what we are implementing...you are looking if any risk between now and H is above the maximum: if yes you switch to autonomous and send the vehicle toward the lane and velocity with the minimum risk associated}
 %\NB{we need to define what are the inputs in our system}
-where $u_a$ and $u_h$ represent autonomous and human inputs, and $u$ is the input to the vehicle $h$ \NB{super confusing. You should simply say that the input $u$ is going to be either the user input or the autonomous input as follows...and then show the equation above.}. During run-time, we are monitoring $r(t+1),...,r(t+H)$ in order to find the appropriate pair of actions (velocity and lane) for $t+1$ that minimizes risk $r(t+H)$, in the event that $r(t+H)\geq r_\max$ \NB{fix this}. We compute this pair by identifying the velocity and lane that produce the lowest risk based on our risk distributions $\hat{r}_v$:
-\begin{equation} \label{eq:optlane}
-    l^* = l_i\in\hat{l}\vert l_i = \argmin_{l}(\hat{r})
+%\NB{super confusing. You should simply say that the input $u$ is going to be either the user input or the autonomous input as follows...and then show the equation above.}. 
+During run-time, we are monitoring $\hat{\mathcal{R}}$ to find the appropriate pair of actions (velocity and lane) for time $\tau = t+1$ that minimize risk. In order to identify the safest actions, we first find the safest point in the risk distribution:
+\begin{equation} \label{eq:optpt}
+  \mathcal{R}^* = \min\{\hat{\mathcal{R}}_{i1},\ldots,\hat{\mathcal{R}}_{in}\}  
 \end{equation}
-\NB{so you pick the lane of the minimum risk even if the minimum risk is on t=3?} \NB{you should pick the lane such that the risk on that lane and for the next iteration is minimized.}
+where $i = \tau$.
+The value $\mathcal{R}^*$ gives information about the safest lane to enter and the safest velocity to reach. The optimal pair can be obtained by identifying $\mathcal{R}^*$ in the risk distribution, $\hat{\mathcal{R}}$:
+\begin{align} \label{eq:optpair}
+    l^* =  l_j\in\hat{L}\vert \mathcal{R}^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}} \nonumber \\
+    v^* =  v\in\hat{V}\vert \mathcal{R}^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}}
+\end{align}
+where $j$ refers to a particular entry and $v$ refers to a particular velocity associated with $R^*$.
+%\NB{so you pick the lane of the minimum risk even if the minimum risk is on t=3?} %\NB{you should pick the lane such that the risk on that lane and for the next iteration is minimized.}
 %\NB{what is the dimension of $\hat{r}_q^l$? From (22) it's one value} \NB{Why argmin with respect to $l_i$ and not $l$? Is it just $l_i$?}\NB{this expression is not correct! You need to pick the l and v associated to the minimum risk!}
-\begin{equation} \label{eq:optvel}
-    v_h^* = v_h\in\hat{v}\vert v_h = \argmin_{v_{h}}(\hat{r})
-\end{equation}
-\NB{what do you mean that you are picking $v_h$? What about if you have $v_h^-$ that is the best one?}
+
+%\NB{what do you mean that you are picking $v_h$? What about if you have $v_h^-$ that is the best one?}
 %\NB{what do you mean that you pick the minimum lane and velocity??? Please critique each expression that you write on the paper}
-In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize \NB{I'm confused on the approach}. By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
-[insert proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce a risk below the threshold. Show the math]
+
+At every iteration, the optimal pair $(l^*,v^*)$ is being calculated, but in this work, we place an emphasis on the user's risk threshold $r_\max$. The autonomous input $u_a$ is only implemented when the condition described in \eqref{eq:inputctrl} is met. In order to control the vehicle in the right direction, we set
+\begin{equation}
+u_a = (l^*,v^*)    
+\end{equation}
+By minimizing the risk at $\tau$, we ensure that the immediate action of our vehicle $h$ is the always safest option.
+[insert proof here where we prove that this always leads to the safest condition - we guarantee that the user action is guaranteed to produce the lowest attainable risk, assuming predictions are correct.
+
+
+
+
+%In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize \NB{I'm confused on the approach}.
+%By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
 
 
 %Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
