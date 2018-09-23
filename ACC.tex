@@ -481,7 +481,7 @@ Three reachable sets obtained contain the all the possible states that can be re
 
 %These vehicles will be referred to as agents in the rest of this work \NB{why??? What's wrong with vehicles? Please remove}.
 
-By using the prediction approach presented in Section \ref{sec:ahmmpredupdate} we can predict future states for all $q$ over an finite horizon $H$ to obtain:
+By using the prediction approach presented in Section \ref{sec:ahmmpredupdate}, we can predict future states for all $q$ over an finite horizon $H$ to obtain:
 %\RP{Change to bar or tilde or hat for predictions}
 \begin{equation}
     V_q = \{v_q(t+1),\ldots,v_q(t+H)\}
@@ -516,7 +516,7 @@ Using this information, we are able calculate relative distance,
 
 %\RP{Simplify - Risk is a function of D as follows}
 Risk is a function of $d_q(t)$,$l_q(t)$, and $\rho^*$ %\NB{and the lane}
-such that risk increases as distance decreases and as lane separation decreases, and risk decreases as trust increases: follows: %\NB{what about the lanes?}
+such that risk increases as distance decreases and as lane separation decreases, and as trust decreases, as follows: %\NB{what about the lanes?}
 
 \begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
@@ -540,7 +540,7 @@ r_q^{l_1}(t+H) &    & r_q^{l_n}(t+H)
 \end{bmatrix}
 \end{equation}
 %\NB{what you mean interfering?}
-where $q = 1,\ldots,m$ and $v\in\hat{v}$ and $\mathcal{R}_q^v\in\mathbb{R}^{H\times{n}}$. The matrices obtained from \eqref{eq:riskmat} build the superset $\mathcal{R}$ as follows:
+where $q = 1,\ldots,m$ and $v\in\hat{v}$ and $\mathcal{R}_q^v\in\mathbb{R}^{H\times{n}}$. The matrices obtained from \eqref{eq:riskmat} constitute the superset $\mathcal{R}$ as follows:
 
 \begin{equation} \label{eq:superrisk}
 \mathcal{R} =
@@ -550,7 +550,7 @@ where $q = 1,\ldots,m$ and $v\in\hat{v}$ and $\mathcal{R}_q^v\in\mathbb{R}^{H\ti
 \mathcal{R}_{1}^{v^+} & \ldots   & \mathcal{R}_{m}^{v^+}
 \end{bmatrix}
 \end{equation}
-The representation in \eqref{eq:superrisk} suggests that multiple vehicles affect risk in our analysis. However, we are most concerned with the highest risk at each reachable point, which is evaluated as follows %\NB{any reachable point shown in Fig.}.
+The representation in \eqref{eq:superrisk} suggests that multiple vehicles affect risk in our analysis, but are most concerned with the highest risk at each reachable point, which can be due to any vehicle, and is evaluated as follows: %\NB{any reachable point shown in Fig.}.
 \begin{equation} \label{eq:riskdistribution}
  \hat{\mathcal{R}}(i,j) = \max\begin{pmatrix}
  \begin{bmatrix}
@@ -565,12 +565,11 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
  where $i = 1,\ldots,H$, $j = 1,\ldots,n$, and $\hat{\mathcal{R}} \in \mathbb{R}^{H\times n}$, where $H$ is the length of the time horizon and $n$ is the number of lanes. 
  
  %Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. % \NB{how are you combining these risks in one risk?}. 
- In Fig.~\ref{fig:riskd}, we show an example of a risk distribution, or $\hat{\mathcal{R}}$, over $H=3$ for velocity $v_h$ (left). The x and y axes of the risk distribution are lane and time, while the z axis is the amount of risk. The road scenario (right) shows the user's vehicle as well as reachable points for the vehicle, along with the other vehicles and future predictions of those vehicles for horizon $H=3$.
-
+ In Fig.~\ref{fig:riskd}, we show an example of a risk distribution, or $\hat{\mathcal{R}}$, over $H=3$ for velocity $v_h$ (left). The x and y axes of the risk distribution are lane and time, while the z axis is the amount of risk. The road scenario (right) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps, along with the other vehicles and future predictions of those vehicles for horizon $H=3$.
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/assist2.png}
-    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right). The magenta shape is the user's HAV, while the blue and black shapes are the actual positions of other vehicles on the road. Unshaded/outline shapes are predictions for vehicles in successive order; $[t+1,t+H]$. The lines coming out of the user's HAV are a visual depiction of the reachable set at the current velocity $v_h$.}
+    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right). The magenta shape is the user's HAV, while the blue and black shapes are the actual positions of other vehicles on the road. Unshaded/outline shapes are predictions for vehicles in successive order; $[t+1,t+H]$.}
     \label{fig:riskd}
 \end{figure}
 
@@ -611,7 +610,7 @@ In other words, we are only concerned with the first row of $\hat{\mathcal{R}}$,
 The value $r^*$ gives information about the safest lane to enter and the safest velocity to reach. The optimal pair can be obtained by identifying $r^*$ in the risk distribution, $\hat{\mathcal{R}}$:
 \begin{align} \label{eq:optpair}
     l^* =  l_j\in\hat{L}\vert r^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}} \nonumber \\
-    v^* =  v\in\hat{V}\vert r^* = \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}}
+    v^* =  v\in\hat{V}\vert \arg_v r^* =\arg_v\hat{\mathcal{R}}_{1j}^{v}\text{ with } \hat{\mathcal{R}}_{1j}^{v}\in\hat{\mathcal{R}}
 \end{align}
 where $j$ refers to a particular entry and $v$ refers to a particular velocity associated with $r^*$.
 %\NB{so you pick the lane of the minimum risk even if the minimum risk is on t=3?} %\NB{you should pick the lane such that the risk on that lane and for the next iteration is minimized.}
