@@ -357,11 +357,13 @@ In the event that \eqref{eq:pred} returns more than one value, we cross-referenc
 In the event that \eqref{eq:pred2} still returns more than one state, we choose the more dangerous transition, which depends on the specific application. For instance, in our case, the more dangerous transition is one that reduces distance between the user's vehicle and other vehicles.
 %\NB{go to another line}
 
-Using this approach, we can predict a series of future states over any horizon $H$ by assuming that each prediction for $t+1$ is correct. We re-use the emission and transition matrices to predict next state at $t+2$ and so on, up to horizon $H$. It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
+Using this approach, we can predict a series of future states over any horizon $H$ by assuming that each prediction for $t+1$ is correct. We re-use the emission and transition matrices to predict a sequence of future states up to horizon $H$.
+It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
+%next state at $t+2$ and so on, up to horizon $H$. It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
 %\NB{flip the order} \NB{explain the algorithm}.
 Algorithm~\ref{alg:pred} shows how we carry forward this prediction through $H$. In this algorithm, an observed state, $s(t) = s_i$, is used in %\NB{in not with} 
 $\mathcal P$ and $\mathcal B$ to find the most likely next state, $s(t+1) = s_{j^*}$ %\NB{$s_j^*$}.
-The following state, $s(t+2)$ is calculated using the previously determined $s_{j^*}$, assuming that it is the next observation. This process is repeated up to $t+H$, such that we have an series $\{s(t+1),\ldots,s(t+H)\}$ of future states.
+At the following step, $s(t+2)$ is calculated using the previously predicted $s_{j^*}$. This process is repeated up to $t+H$, obtaining a series $\{s(t+1),\ldots,s(t+H)\}$ of future states.
 %\NB{I think we can remove this if you have explained the procedure well before}
 %\NB{assuming that next observation is be the predicted $s(t+1)$}. This process is repeated up to $t+H$.
 
