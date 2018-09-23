@@ -362,7 +362,7 @@ It is, however, important to note that as $H$ is increased, every successive pre
 %next state at $t+2$ and so on, up to horizon $H$. It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
 %\NB{flip the order} \NB{explain the algorithm}.
 Algorithm~\ref{alg:pred} shows how we carry forward this prediction through $H$. In this algorithm, an observed state, $s(t) = s_i$, is used in %\NB{in not with} 
-$\mathcal P$ and $\mathcal B$ to find the most likely next state, $s(t+1) = s_{j^*}$ %\NB{$s_j^*$}.
+$\mathcal P$ and $\mathcal B$ to find the most likely next state, $s(t+1) = s*_{j}$ %\NB{$s_j^*$}.
 At the following step, $s(t+2)$ is calculated using the previously predicted $s_{j^*}$. This process is repeated up to $t+H$, obtaining a series $\{s(t+1),\ldots,s(t+H)\}$ of future states.
 %\NB{I think we can remove this if you have explained the procedure well before}
 %\NB{assuming that next observation is be the predicted $s(t+1)$}. This process is repeated up to $t+H$.
@@ -373,11 +373,11 @@ At the following step, $s(t+2)$ is calculated using the previously predicted $s_
 \WHILE{$t\leq t+H$}
 \STATE $s(t) = s_i$
 \STATE $s(t+1) = s_j \in S \vert p_{ij}=\max(\mathcal{P}_i)$
-\IF{$s_j$ is not a singleton, i.e. $s_j\in S'\in S$}
-\STATE $s(t+1)=s_j\in S'\vert g_{ij} = \max(\mathcal{B}_i)$
+\IF{$s_j$ is not a singleton, $s_j\in S$}
+\STATE $s(t+1)=s_j\in S\vert p_{ij}=\max(\mathcal{P}_i) \land g_{ij} = \max(\mathcal{B}_i)$
 \STATE $s(t+1) \gets s_{j}$
 \IF{$s_j$ is not a singleton}
-\STATE $s(t+1) = \max_{s_j}S'$
+\STATE $s(t+1) = \max_{s_j}S,\forall s_j\in S\vert p_{ij}=\max(\mathcal{P}_i)$
 \ENDIF
 \ENDIF
 \STATE $s_i = s(t+1)$
