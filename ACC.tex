@@ -300,7 +300,7 @@ In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while tho
 
 The specific environment that we are studying involves multiple vehicles that can change their velocities and their lanes.% Within this environment, we implement the framework twice for all of the vehicles, $q$ in our sensing range $R_h$.
 
-Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ the set of distances between vehicles, $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are the inputs to vehicles that we are most concerned with; changes in velocity and changes in lane. %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
+Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated the following vehicle input behaviors; changes in velocity and changes in lane. \RP{Check later} %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
 For velocity we consider the following 3 emissions,
     
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
@@ -313,7 +313,7 @@ For velocity we consider the following 3 emissions,
 %\NB{formalize...$v(t-1)+\delta_v$ etc}
 %\NB{give a name to this emissions...i.e. $b_{1}^v, b_{2}^v$}
 %\NB{if not where}
-
+where $\delta_v\in\mathbb{R}^+$ and reflects the change in velocity from one step to another.
 
 For the lanes, the following 3 emissions are considered:
 
@@ -329,7 +329,7 @@ where we assume that lanes are modeled in increasing order from left to right; i
 
 
 \section{HMM-Based Online Prediction and Model Updates} \label{sec:ahmmpredupdate} %\NB{perhaps combine with next and add Update in the title}
-  Using the framework outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the available, previously collected, emission and transition matrices as lookup tables to obtain the most likely future state. The future state is determined using:
+  Using the framework outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the available, previously collected, emission and transition matrices as lookup tables to obtain the most likely future state. The future state is determined as:
  %\NB{Using the HMM approach outlined in Section...given enough observations, we can extract a model for surround vehicles}. \NB{This model can be used online to predict future states of the system. This is achieved by collecting more observations online. The observed states at time t can then be used in the available emission and transition matrices, as a lookup table, to obtain the most likely next state}At $t$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i}(t)$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. %We start with the assumption that $\mathcal{P}$ will give conclusive results from which we can predict the future state as follows\NB{remove this}:
 %\begin{equation} \label{eq:nextstate}
 %    s_{i}(t+1) = \max_{j}[\mathcal{P}_{i(t),j}]
@@ -342,12 +342,12 @@ where we assume that lanes are modeled in increasing order from left to right; i
 %\NB{this should be only between the two that are uncertain and that formula is not resolving the issue! }
 %\NB{equation needed}.
 \begin{equation} \label{eq:pred}
-   s(t+1) = s_j \in S \vert p_{ij}=\max(\mathcal{P}_i)
+   s(t+1) = s_j \in S \vert p_{ij}=\max_p(\mathcal{P}_i)
 \end{equation}
 
 In the event that \eqref{eq:pred} returns more than one value, we cross-reference the states with the emission matrix, $\mathcal{B}$ as follows: 
 \begin{equation} \label{eq:pred2}
-    s(t+1)=s_j\vert g_{ij} = \max(\mathcal{B}_i)    
+    s(t+1)=s_j\vert g_{ij} = \max_b(\mathcal{B}_i)    
 \end{equation}
 
 %\NB{s(t+1) doesn't return multiple values....if there are multiple states that satisfy equation 13. You should go to another line and state that not in an equation environment}
