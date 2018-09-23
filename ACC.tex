@@ -502,13 +502,13 @@ By using the approach presented in Section \ref{sec:ahmmpredupdate}, we can pred
 %\RP{put in text}
 
 where $V_q$ and $L_q$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
-Using these future velocities, we can calculate the positions of $q$ over the horizon $H$ as $x_q(t) = v_q(t)\delta t$ where $v_q\in V_q$, and obtain future forward positions:
+Using these future velocities, we can calculate the positions of each $q$ over the horizon $H$ as $x_q(t) = v_q(t)\delta t$ and obtain the predicted future positions:
 \begin{equation}
     \hat{x}_q = \{x_q(t+1),\ldots,x_q(t+H)\}
 \end{equation}
-Using this information, we are able calculate relative distance,
+We can then calculate relative distance as
 \begin{equation}
-    \forall q \in R_h: d_q(t) = \lVert x_h(t)-x_q(t)\rVert
+    \forall q \in R_h: d_q(t) = \lVert x_h(t)-x_q(t)\rVert_2
 \end{equation}
 
 %Generating and using the optimal model for each vehicle $q$, as discussed in Section \ref{sec:omf}, we are able to predict where an agent will be in the environment for the user-defined time horizon, $H$, as discussed in Section \ref{sec:ahmmpredupdate}\NB{this sentence is confusing: By using the prediction approach presented in Section...we can predict future states for $q$ over an finite horizon $H$. }. This time horizon defines how far ahead the user wants the system to check, in order to intervene \NB{remove}. A sequence of future states for agent $q$, both in terms of velocity and lateral position, are developed for $H$ using the AHMM parameters and Algorithm \ref{alg:pred} \NB{merge this with the previous section}. Given a sequence of future predicted velocities,
