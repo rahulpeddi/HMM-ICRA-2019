@@ -425,16 +425,17 @@ Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predicti
 %\NB{revise this}
 
 \begin{equation}
-    M^*=M_i\in\mathcal{M}\vert e_i = \min(\hat{e})
+    M^*=M_i\in\mathcal{M}\vert e_i = \min_e(\hat{e})
 \end{equation}
 %\NB{need to check variables here}
 %\NB{add argmin}
-
-and $M^*$ %\NB{i is a index not a model}
+%\NB{i is a index not a model}
 %\NB{this is unnecessary. Say this before, above...we find the model $M^*$ that minimizes the error...}
-  Given this model, the transition and emission matrices, $\mathcal{P}_{i^*}$ and $\mathcal{B}_{i^*}$ are used in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. In addition to calculating the error, a level of trust for each model is determined, $\forall e_i \in\hat{e}: \rho_i = 1/e_i$. Because trust is inversely related to error, it holds that the model with the lowest error, $M^*$, also has the highest trust, $\rho^*$. This trust value is utilized in determining risk and is discussed in Section \ref{sec:adapt}. 
-  
-  
+  Given this model, the associates transition and emission matrices, $\mathcal{P}_{i}$ and $\mathcal{B}_{i}$ are used in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. In addition to calculating the error, a trust measure for each model is determined:
+  \begin{equation}
+      \forall e_i \in\hat{e}, \rho_i = 1/e_i
+ \end{equation}
+ Because trust is inversely proportional to error, the model with the lowest error, $M^*$ also has the highest trust. This trust measure is utilized in Section \ref{sec:adapt} to determine risk.
   
   
   %\NB{something is missing here...we should somehow associate the error to the confidence that we have in that model....bigger errors = more uncertainties. The question becomes what should we do if the error is large or if it is small?? The answer is in the trust. What does it mean to trust more or less?}
@@ -449,24 +450,24 @@ and $M^*$ %\NB{i is a index not a model}
 
 \subsection{Reachability Analysis}
 
-In order to assess risk of collision we need to predict:
+In this work, we are interested in assessing risk of collision. In order to assess this risk we need to predict:
 \begin{enumerate}[i.]
 \item future states of the surrounding vehicles which are obtained by following the procedure outlined in Section \ref{sec:ahmmpredupdate} and
-\item the reachable states of $h$ over the horizon $H$.
+\item the reachable states of $h$ over a future horizon $H$.
 \end{enumerate}
 In some of our current work, we are using Hamilton-Jacobi reachability analysis to predict future states of a system under uncertainties \cite{esen}. In this paper, we consider a simplified approach for reachability in which we assume that:
 \begin{enumerate}[i.]
 \item The vehicle can move to the adjacent lane in one time step $\delta t$ \label{ass:i}
 \item future variations of velocity are bounded $v_h-\delta_v \leq v_h\leq v_h+\delta_v$, with $\delta_v>0$ \label{ass:ii}
 \end{enumerate}
-Assumption \ref{ass:i} is made in order to treat the situation as a worst case scenario, and assumption \ref{ass:ii} is made to reflect a physical limitation of vehicles.
-Three reachable velocities are computed using:
+Both \ref{ass:i}. and \ref{ass:ii}. are worst case scenarios. %Assumption \ref{ass:ii} reflects a physical limitation of vehicles.
+Using these assumptions three reachable velocities can be considered as follows:
 \begin{enumerate} %\NB{t+1 not i}
-    \item $v_h(t+1)=v_h(t)$
-    \item $v^-(t+1)=v_h(t)-\delta_v$
-    \item $v^+(t+1)=v_h(t)+\delta_v$
+    \item $v_h^=(t+1)=v_h(t)$
+    \item $v_h^-(t+1)=v_h(t)-\delta_v$
+    \item $v_h^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
-and $\hat{V} = \{v^-(t),v_h(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable forward positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, where there are $n$ lanes. 
+and $\hat{V} = \{v^-(t),v_h^=(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable forward positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, in which $n$ lanes are considered. 
 %\NB{this set is time varying and depends on the current velocity}
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/input.png}
@@ -474,17 +475,17 @@ and $\hat{V} = \{v^-(t),v_h(t),v^+(t)\}$, which is a time-varying set that depen
     \label{fig:reach}
 \end{figure}
 %\NB{the iteration contains?}
-Three reachable sets obtained contain the all the possible states that can be reached by $h$. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, assuming three velocity case above, then we obtain a total of 27 predictions, as indicated by the points in Fig. \ref{fig:reach}.
+Three reachable sets containing all the possible states that can be reached by $h$ are obtained. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, then a total of 27 predictions are obtained, as indicated by the points in Fig. \ref{fig:reach}.
 %\RP{dont forget to add picture}
 %\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
 
 \subsection{Risk Assessment}
 
- In this section, we discuss how our framework is used to guarantee safety for a HAV, $h$, over a time horizon $H$.
+ In this section, we discuss how our framework is used to guarantee safety for an HAV, $h$, over a time horizon $H$.
  
  %\NB{which vehicle? Any?}. In this situation \NB{what situation?}, we have our manned vehicle, $h$, and we have all of the vehicles in our vehicle's sensing range, $R_h$ \NB{$N_{R_h}$ vehicles are in range and can be monitored by $h$ \NB{remember to acknowledge that some vehicles may intermittently enter and exit the range of h}}:
  
- Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$, and $q\in\mathbb{N}^m$ where $m$ is the total number of vehicles in the sensing range.
+ Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$.
  %\NB{and what? What's the solution here? }
 
 %These vehicles will be referred to as agents in the rest of this work \NB{why??? What's wrong with vehicles? Please remove}.
