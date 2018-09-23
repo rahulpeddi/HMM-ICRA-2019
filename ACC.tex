@@ -255,9 +255,9 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}. 
         \end{equation}
         These probabilities are initialized as $1/n$. Each transition probability is calculated by counting the occurrences of each state transition over all transitions from that state:
         \begin{equation} \label{eq:transbuild}
-            p_{ij} = N_{ij}/N_{i}*
+            p_{ij} = N_{ij}/N*_{i}
         \end{equation}
-        where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$ and $N_{i}*$ is the total number of transitions from $s_i$ to any state, and $N_{ij} \leq N_{i}* \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
+        where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$ and $N*_{i}$ is the total number of transitions from $s_i$ to any state, and $N_{ij} \leq N_{i}* \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
         \begin{equation}
             \mathcal{P} = 
                     \begin{bmatrix}
@@ -272,9 +272,9 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}. 
         \end{equation}
         where $i = 1,\ldots,n$. These probabilities are initialized as $1/m$, and are calculated in a similar way to (\ref{eq:transbuild}):
         \begin{equation} \label{eq:obsbuild}
-            b_{ik} = N_{g_{ik}}/N_{g_{i}}*
+            b_{ik} = N_{g_{ik}}/N*_{g_{i}}
         \end{equation} 
-        where $N_{g_{ik}} \leq N_{g_{i*}} \leq T$.
+        where $N_{g_{ik}} \leq N*_{g_{i}} \leq T$.
         \begin{equation}
             \mathcal{B} = 
                     \begin{bmatrix}
@@ -290,7 +290,7 @@ This framework is executed over $T$ and a set of parameters is obtained: $\langl
 %\NB{clarify}
 %with implicit parameters $m$ and $n$ \NB{this sentence is confusing}
 between states and their corresponding inferences. Because we have all the states and transitions a priori, we can learn the parameters of multiple models offline. %In addition, having the knowledge pertaining to the relationship between states and inferences allows predictions to be made with increased accuracy.\NB{how? This sentence is telling everything and nothing}
-The general pictorial representation of the framework is shown in Fig.~\ref{fig:hmm} %\NB{what's a in the figure?}\NB{figure needs improvement: make it smaller vertically...too much space in between s and c. Increase fonts}.
+The general pictorial representation of the framework is shown in Fig.~\ref{fig:hmm}. %\NB{what's a in the figure?}\NB{figure needs improvement: make it smaller vertically...too much space in between s and c. Increase fonts}.
 In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $g$ represent the emissions ($\mathcal{G}$). The lines with the label $p$ are the transition probabilities between states, and those labeled $b$ are the probabilities that each of the connected observations are associated with connected states.
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/hmm.png}
@@ -298,9 +298,9 @@ In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while tho
     \label{fig:hmm}
 \end{figure}
 
-The specific environment we are studying involves multiple lanes with multiple vehicles that can change their velocities and their lanes. Within this environment, we implement the framework twice for all of the vehicles, $q$ in our sensing range $R_h$.
+The specific environment that we are studying involves multiple vehicles that can change their velocities and their lanes.% Within this environment, we implement the framework twice for all of the vehicles, $q$ in our sensing range $R_h$.
 
-Our goal is to predict future velocities $v$ and lanes $l$ of the vehicles. In this model, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$,$S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ the set of distances between vehicles, $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are the inputs to vehicles that we are most concerned with; changes in velocity and changes in lane. %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
+Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ the set of distances between vehicles, $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are the inputs to vehicles that we are most concerned with; changes in velocity and changes in lane. %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
 For velocity we consider the following 3 emissions,
     
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
