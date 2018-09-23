@@ -467,7 +467,7 @@ Using these assumptions three reachable velocities can be considered as follows:
     \item $v_h^-(t+1)=v_h(t)-\delta_v$
     \item $v_h^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
-and $\hat{V} = \{v^-(t),v_h^=(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable forward positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$ for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, in which $n$ lanes are considered. 
+and $\hat{V} = \{v^-(t),v_h^=(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable forward positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$, where $\delta t$ is the sampling time, for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, in which $n$ lanes are considered. 
 %\NB{this set is time varying and depends on the current velocity}
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/input.png}
@@ -501,12 +501,8 @@ By using the approach presented in Section \ref{sec:ahmmpredupdate}, we can pred
 
 %\RP{put in text}
 
-where $V_q\in S_v$ and $L_q\in S_l$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
-With the future velocities, we are able to calculate the forward positions over the horizon $H$ using %\NB{what you mean the position for the horizon? } using %\NB{no need to use the $\forall$ here}: 
-\begin{equation} \label{eq:dumpos}
-    x_q(t) = v_q(t)\delta_t
-\end{equation}
-where $v_q\in V_q$ and $\delta_t$ refers to a sampling time. Using \eqref{eq:dumpos} we obtain future forward positions:
+where $V_q$ and $L_q$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
+Using these future velocities, we can calculate the positions of $q$ over the horizon $H$ as $x_q(t) = v_q(t)\delta t$ where $v_q\in V_q$, and obtain future forward positions:
 \begin{equation}
     \hat{x}_q = \{x_q(t+1),\ldots,x_q(t+H)\}
 \end{equation}
