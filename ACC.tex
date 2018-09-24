@@ -689,7 +689,7 @@ In order to train the models, we used a workspace featuring $6$ stationary obsta
 In addition to velocity, we also measure the accuracy of our predictions regarding lane changes and following distances at which these changes occurred. Based on results shown in Fig.~\ref{fig:train2}, it is evident that the expected lane changes occurred, and to validate the following distances at which the lane changes took place, we used RMSE, which was $1.2564$m. The results for both velocity and lane change distance validation showed that the predictions were very effective when predicting the future states of the same model.
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train2.png}
-\caption{The lane changes of the actual vehicle (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).} \label{fig:train2}
+\caption{The lane changes of the actual vehicle and estimated vehicle are shown} \label{fig:train2}
 \end{figure}
 \subsection{Fitting Models}
 In this section, we show that we are able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we use \eqref{eq:pnorm} with each of the three pre-trained models. We obtain and display the errors in Fig.~\ref{fig:error}.
@@ -704,7 +704,7 @@ At each iteration, we use the model with the lowest error for future predictions
     \includegraphics[width=0.48\textwidth]{fig/modelselect.png}
     \caption{The selected model at each iteration} \label{fig:select}
 \end{figure}
-Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $3.1423$m. In Fig.~\ref{fig:lanchan}, we show the the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.5421$m. The RMSE values obtained for each of these tests suggest that the prediction is reliable. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
+Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $3.1423$m/s. In Fig.~\ref{fig:lanchan}, we show the the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.5421$m. The RMSE values obtained for each of these tests suggest that the prediction is reliable. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
 
 
 \begin{figure}[ht]
@@ -717,7 +717,7 @@ Using the selected model, we are able to make predictions for every iteration of
     \caption{The lane changes of the actual vehicle (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).} \label{fig:lanchan}
 \end{figure}
 \subsection{Assistive Planning and Control}
-In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_{\max} = 0.85$.
+In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h\in\hat{\mathcal{R}}$ is nearing the user set limit of $r_{\max} = 0.85$.
 
 
 \begin{figure}[H]
