@@ -680,7 +680,7 @@ Because the distance is reduced at each step, the vehicle continuously enters sa
 The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
 
 \subsection{Training Models}
-In order to train the models, we used a workspace featuring $6$ stationary obstacles. A test vehicle drove through this workspace, while avoiding these obstacles, and it was observed for a training period of 700 iterations. In this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated. In order to validate the effectiveness of the generated matrices, we tested the sample over another period of the same length with $9$ obstacles. In verifying the results for velocity, we used forward position, which is calculated using the relationship in \eqref{eq:dumpos}. The resulting root mean squared error (RMSE) for forward position estimates was $1.3927$m. The results for velocity prediction are shown in Fig.~\ref{fig:train1}, where the validation begins after the vertical line labeled ``End Training Set". 
+In order to train the models, we used a workspace featuring $6$ stationary obstacles. A test vehicle drove through this workspace, while avoiding these obstacles, and it was observed for a training period of 700 iterations. In this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated. In order to validate the effectiveness of the generated matrices, we tested the sample over another period of the same length with $9$ obstacles. In verifying the results for velocity, we used forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. The resulting root mean squared error (RMSE) for forward position estimates was $1.3927$m. The results for velocity prediction are shown in Fig.~\ref{fig:train1}, where the validation begins after the vertical line labeled ``End Training Set". 
 
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train1.png}
@@ -694,9 +694,6 @@ In addition to velocity, we also measure the accuracy of our predictions regardi
 \caption{The lane changes of the actual vehicle (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).} \label{fig:train2}
 \end{figure}
 
-
-
-
 \subsection{Fitting Models}
 
 In this section, we show that we are able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we use \eqref{eq:pnorm} with each of the three pre-trained models. We obtain and display the errors in Fig.~\ref{fig:error}.
@@ -707,12 +704,10 @@ In this section, we show that we are able to fit pre-trained models to a new veh
 \end{figure}
 
 At each iteration, we use the model with the lowest error for future predictions. The selected model changes frequently at the start of run-time and converges to one model by the end of run-time. The selected model at each iteration is shown in Fig.~\ref{fig:select}. In this case, we converge to Model $3$ in approximately 300 iterations.
-
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/modelselect.png}
     \caption{The selected model at each iteration} \label{fig:select}
 \end{figure}
-
 Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $3.1423$m. In Fig.~\ref{fig:lanchan}, we show the the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.5421$m. The RMSE values obtained for each of these tests suggest that the prediction is reliable. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
 
 
@@ -725,8 +720,6 @@ Using the selected model, we are able to make predictions for every iteration of
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
     \caption{The lane changes of the actual vehicle (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).} \label{fig:lanchan}
 \end{figure}
- 
- 
 
  
 \subsection{Assistive Planning and Control}
@@ -759,20 +752,20 @@ In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted.
 \centering
 \begin{subfigure}{.54\linewidth}
   \centering
-  \includegraphics[width=\linewidth]{fig/critpt_rd.png}
+  \includegraphics[width=\linewidth]{fig/noassist_rd.png}
   \caption{Risk Distribution}
-  \label{fig:critptrd}
+  \label{fig:noasstrd}
 \end{subfigure}%
 \begin{subfigure}{.46\linewidth}
   \centering
-  \includegraphics[width=\linewidth]{fig/critpt_rs.png}
+  \includegraphics[width=\linewidth]{fig/noassist_rs.png}
   \caption{Road Scenario}
-  \label{fig:critptrs}
+  \label{fig:noasstrs}
 \end{subfigure}
-\caption{Critical Point - Risk Distribution and Road Scenario} \label{fig:noassist}
+\caption{Unassisted - Risk Distribution and Road Scenario} \label{fig:noassist}
 \end{figure}
 
-In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account, as the risk surpassed $r_{\max}$. With assistive input, both lane and velocity were changed in order to minimize risk at every future time $t$ up to $t+H$.
+In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account, as the risk surpassed $r_{\max}$. With assistive input, both lane and velocity were changed in order to minimize risk at $t+1$.
 
 \begin{figure}[H]
 \centering
@@ -788,7 +781,7 @@ In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. T
   \caption{Road Scenario}
   \label{fig:assistrs}
 \end{subfigure}
-\caption{Assisted Control - Risk Distribution and Road Scenario} \label{fig:assist}
+\caption{Assisted - Risk Distribution and Road Scenario} \label{fig:assist}
 \end{figure}
 
  In the situation depicted in Fig.~\ref{fig:assist}, we are able to minimize risk and avoid collisions, thereby ensuring that our HAV is being operated safely.
