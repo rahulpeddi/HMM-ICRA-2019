@@ -220,7 +220,7 @@ Formally the problem that we investigate in this work can be stated as:
     \caption{Block Diagram of the Approach}
     \label{fig:app}
 \end{figure}
-\NB{fix the lines on this figure}
+%\NB{fix the lines on this figure}
 %\NB{figure is too blurry}
 %\NB{that's not a pictorial representation, It's a block diagram.}
 %\NB{By using offline training we extract different models representing different vehicle behaviors. These models are then 
@@ -300,7 +300,7 @@ In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while tho
 
 The specific environment that we are studying involves multiple vehicles that can change their velocities and their lanes.% Within this environment, we implement the framework twice for all of the vehicles, $q$ in our sensing range $R_h$.
 
-Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated the following vehicle input behaviors; changes in velocity and changes in lane. \RP{Check later} %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
+Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated the following vehicle input behaviors; changes in velocity and changes in lane. %\RP{Check later} %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
 For velocity we consider the following 3 emissions,
     
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
@@ -587,7 +587,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
 \caption{Risk Distribution and Associated Road Scenario}
 \label{fig:test}
 \end{figure}
-\NB{where is the legend?}
+%\NB{where is the legend?}
 
 %\begin{figure}[ht]
 %    \includegraphics[width=0.48\textwidth]{fig/assist2.png}
@@ -679,23 +679,19 @@ Because the distance is reduced at each step, the vehicle continuously enters sa
 The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
 
 \subsection{Training Models}
-In order to train the models, we used a workspace featuring $6$ stationary obstacles. A test vehicle drove through this workspace, while avoiding these obstacles, and it was observed for a training period of 700 iterations. In this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated. In order to validate the effectiveness of the generated matrices, we tested the sample over another period of the same length with $9$ obstacles. In verifying the results for velocity, we used forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. The resulting root mean squared error (RMSE) for forward position estimates was $1.3927$m. The results for velocity prediction are shown in Fig.~\ref{fig:train1}, where the validation begins after the vertical line labeled ``End Training Set". 
+In order to train the models, we used a workspace featuring $6$ stationary obstacles. A test vehicle drove through this workspace, while avoiding these obstacles, and it was observed for a training period of 700 iterations. In this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated. In order to validate the effectiveness of the generated matrices, we tested the sample over another period of the same length with $9$ obstacles. In verifying the results for velocity, we used forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. The resulting root mean squared error (RMSE) for forward position estimates was $0.3927$m. The error for forward position predictions is shown in Fig.~\ref{fig:train1}.
 
 \begin{figure}[ht]
-\includegraphics[width=0.48\textwidth]{fig/train1.png}
-\caption{The forward position of the actual vehicle (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).} \label{fig:train1}
+\includegraphics[width=0.48\textwidth]{fig/trainerror.png}
+\caption{The error between the position of the actual model and estimated positions} \label{fig:train1}
 \end{figure}
-\NB{plot error not state}
 
 In addition to velocity, we also measure the accuracy of our predictions regarding lane changes and following distances at which these changes occurred. Based on results shown in Fig.~\ref{fig:train2}, it is evident that the expected lane changes occurred, and to validate the following distances at which the lane changes took place, we used RMSE, which was $1.2564$m. The results for both velocity and lane change distance validation showed that the predictions were very effective when predicting the future states of the same model.
-
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train2.png}
 \caption{The lane changes of the actual vehicle (red) are shown. After the training set, a prediction is made and the lateral positions/lane changes of the estimate is shown (blue dashed).} \label{fig:train2}
 \end{figure}
-
 \subsection{Fitting Models}
-
 In this section, we show that we are able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we use \eqref{eq:pnorm} with each of the three pre-trained models. We obtain and display the errors in Fig.~\ref{fig:error}.
 
 \begin{figure}[ht]
@@ -712,17 +708,14 @@ Using the selected model, we are able to make predictions for every iteration of
 
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fig/fitx.png}
-    \caption{The forward position of the actual vehicle (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).} \label{fig:fwd}
+    \includegraphics[width=0.48\textwidth]{fig/fiterroravg.png}
+    \caption{Absolute Error of velocity between the fitted and actual vehicles} \label{fig:fwd}
 \end{figure}
-\NB{plot error not state}
 
-\begin{figure}[ht]
+\begin{figure}[htpb!]
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
     \caption{The lane changes of the actual vehicle (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).} \label{fig:lanchan}
 \end{figure}
-
- 
 \subsection{Assistive Planning and Control}
 In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_{\max} = 0.85$.
 
@@ -747,7 +740,7 @@ In order to show the impact of our assistive control, we show a scenario where a
 In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur within $H$. 
 
 
-In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk existed in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
+In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk exists in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
 
 \begin{figure}[H]
 \centering
