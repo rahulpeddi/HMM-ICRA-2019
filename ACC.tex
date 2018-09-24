@@ -140,7 +140,7 @@ In this work, we develop a monitor that can predict the future states of multipl
 %\NB{Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with line changing warning and assisted braking, } 
 %\NB{here let's talk about the trolly problem and mention that we see humans as disturbance in this work! discuss about teleoperated robotics that is still big and assistive automation}
 
-In recent years, robotic systems have become more precise and reliable, and as a result they are used in many fields, including military, industry, and even as consumer electronics. For example, aerial vehicles can be used for military operations and intelligent ground vehicles can be used by consumers. Many of these systems are capable of autonomous behaviors, but the levels of autonomy are varied. For instance, modern consumer vehicles are often equipped with Adaptive Cruise Control (ACC)\cite{acc} or Advanced Driver Assistance (ADA)\cite{adas} capabilities, both of which are systems that have a human in the loop with different levels of involvement. Humans, sometime a pilot or an operator, in remote locations like in military drones or behind steering wheels in cars affect the performance, safety, and security of these systems. Data from the National Highway Traffic Safety Administration (NHTSA) in 2016 suggests that $94\%$ of crashes on the road are caused by human error \cite{nhtsa}. Of these crashes, $74\%$ are attributed to recognition and decision errors - meaning the user either didn't have an understanding of the road conditions or made an unsafe decision. Thus, the human can be considered a disturbance in such systems. One solution would be to make every vehicle on the road fully autonomous, without a human in the loop. This, however, may not be completely possible for every application, and even if it is the ultimate goal, mixed scenarios (i.e. autonomous and manned vehicles sharing the same road), are inevitable. In this paper, we develop a monitor to assess safety in multi-vehicle operations to avoid unsafe situations (i.e. collisions).
+In recent years, robotic systems have become more precise and reliable, and as a result they are used in many fields, including military, industry, and even as consumer electronics. For example, aerial vehicles can be used for military operations and intelligent ground vehicles can be used by consumers. \RP{Add examples} Many of these systems are capable of autonomous behaviors, but the levels of autonomy are varied. For instance, modern consumer vehicles are often equipped with Adaptive Cruise Control (ACC)\cite{acc} or Advanced Driver Assistance (ADA)\cite{adas} capabilities, both of which are systems that have a human in the loop with different levels of involvement. Humans, sometime a pilot or an operator, in remote locations like in military drones or behind steering wheels in cars affect the performance, safety, and security of these systems. Data from the National Highway Traffic Safety Administration (NHTSA) in 2016 suggests that $94\%$ of crashes on the road are caused by human error \cite{nhtsa}. Of these crashes, $74\%$ are attributed to recognition and decision errors - meaning the user either did not have an understanding of the road conditions or made an unsafe decision. Thus, the human can be considered a disturbance in such systems. One solution would be to make every vehicle on the road fully autonomous, without a human in the loop. Full autonomy, however, may not be completely possible for every application, and even if it is the ultimate goal, mixed scenarios (i.e. autonomous and manned vehicles sharing the same road), are inevitable. In this paper, we develop a monitor to assess safety in multi-vehicle operations to avoid unsafe situations (i.e. collisions).
 
 In this work, we assume the user is operating a Hybrid Autonomous Vehicle (HAV), where at any time either the user has full control of the vehicle, or the vehicle is autonomously controlled. With our monitor, we are interested in predicting what every other vehicle will do, determining how much we trust our prediction, what the actions the user could take, assess the risk of these actions, and intervene only if needed (i.e. the risk is very high). 
 In Fig.\ref{fig:hiway}, we show an example of what our system should achieve in an automotive setting. In this figure, a user is driving a vehicle (yellow car) behind a slower vehicle (blue car). In this case, both actions presented in Fig.\ref{fig:hiway} may appear safe to a driver at the moment, but as can be seen by the red circle, one of the lane changes is considerably riskier in the future, because a rapidly approaching vehicle (red car) will enter the same space as the user's vehicle. In this case, we see the driver's actions as a disturbance, and want to assist the driver. In order to achieve this, we contribute a two-fold approach:
@@ -251,9 +251,9 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}. 
         \end{equation}
         These probabilities are initialized as $1/n$. Each transition probability is calculated by counting the occurrences of each state transition over all transitions from that state:
         \begin{equation} \label{eq:transbuild}
-            p_{ij} = N_{ij}/N*_{i}
+            p_{ij} = N_{ij}/N^*_{i}
         \end{equation}
-        where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$ and $N*_{i}$ is the total number of transitions from $s_i$ to any state, and $N_{ij} \leq N_{i}* \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
+        where $N_{ij}$ represents the total number of transitions, $s_j \to s_i$, over $T$ and $N^*_{i}$ is the total number of transitions from $s_i$ to any state, and $N_{ij} \leq N^*_{i} \leq T$. The state transition matrix is right-stochastic, meaning the sum of all rows is $1$ and is of the form:
         \begin{equation}
             \mathcal{P} = 
                     \begin{bmatrix}
@@ -268,9 +268,9 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}. 
         \end{equation}
         where $i = 1,\ldots,n$. These probabilities are initialized as $1/m$, and are calculated in a similar way to (\ref{eq:transbuild}):
         \begin{equation} \label{eq:obsbuild}
-            b_{ik} = N_{g_{ik}}/N*_{g_{i}}
+            b_{ik} = N_{g_{ik}}/N^*_{g_{i}}
         \end{equation} 
-        where $N_{g_{ik}} \leq N*_{g_{i}} \leq T$.
+        where $N_{g_{ik}} \leq N^*_{g_{i}} \leq T$.
         \begin{equation}
             \mathcal{B} = 
                     \begin{bmatrix}
@@ -564,7 +564,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
  where $i = 1,\ldots,H$, $j = 1,\ldots,n$, and $\hat{\mathcal{R}} \in \mathbb{R}^{H\times n}$.
  
  %Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. % \NB{how are you combining these risks in one risk?}. 
- In Fig.~\ref{fig:riskd}, we show an example of a risk distribution (i.e. $\hat{\mathcal{R}}$), over $H=3$ for velocity $v_h$. The road scenario (right) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps. In addition, other vehicles and future predictions of those vehicles for horizon $H=3$ are also shown in the road scenario.
+ In Fig.~\ref{fig:distr}, we show an example of a risk distribution (i.e. $\hat{\mathcal{R}}$), over $H=3$ for velocity $v_h$. The road scenario (Fig.~\ref{fig:roads}) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps. In addition, other vehicles and future predictions of those vehicles for horizon $H=3$ are also shown in the road scenario.
 
 \begin{figure}[H]
 \centering
@@ -572,7 +572,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
   \centering
   \includegraphics[width=\linewidth]{fig/assist_rd.png}
   \caption{Risk Distribution}
-  \label{fig:riskd}
+  \label{fig:distr}
 \end{subfigure}%
 \begin{subfigure}{.46\linewidth}
   \centering
@@ -581,7 +581,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
   \label{fig:roads}
 \end{subfigure}
 \caption{Risk Distribution and Associated Road Scenario}
-\label{fig:test}
+\label{fig:riskd}
 \end{figure}
 %\NB{where is the legend?}
 
@@ -635,40 +635,25 @@ The value $r^*$ gives information about the safest lane to enter and the safest 
 At every iteration, the optimal pair $(l^*,v^*)$ is calculated. In this work, we place an emphasis on the user's risk threshold $r_\max$, so the autonomous input $u_a = (l^*,v^*)$ is only implemented when the condition described in \eqref{eq:inputctrl} is met. By minimizing the risk at $t+1$, we ensure that the immediate action of our vehicle $h$ is always the safest option.
 
 \begin{lemma}
-Assuming the predictions of other vehicles is correct, meaning trust $\rho$ is above a threshold $\rho_\min$, and if $\exists~\hat{\mathcal{R}}(i,j) >= r_\max$ over a horizon $H$, our approach guarantees that the safest sequence of actions is always chosen, given that there exists such a sequence of actions.
+Assuming the predictions of other vehicles is correct, meaning trust $\rho$ is above a threshold $\rho_\min$, and if $\exists~\hat{\mathcal{R}}(i,j) >= r_\max$ over a horizon $H$, our approach guarantees that the safest input pair is always chosen for each timestep $t$, given that such a pair exists.
 \end{lemma}
 
 \begin{proof}
-Using calculations in \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. The input pair $u_a=(l^*,v^*)$ is determined using $r^*$ by minimizing $\hat{\mathcal{R}}$. Because risk, as per our definition in \eqref{eq:riskcalc}, is inversely proportional to distance and lane separation, the distance between $h$ and all $q$ at each time $t$ is always less than that of the previous step:
-\begin{equation}
-d_q(t) < d_q(t-1)
-\end{equation}
-Because the distance is reduced at each step, the vehicle continuously enters safer states, meaning there is lower risk of collision.
+Using calculations in \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. The optimal input pair $u_a=(l^*,v^*)$ is determined by obtaining $r^*$, which is the minimum of $\hat{\mathcal{R}(1,j)}$. With this $r^*$ measure, we obtain the minimum distance between $h$ and all $q$:
 
+\begin{equation}
+d^*_q(t) = \frac{1}{r^*}
+\end{equation}
+
+The input $(l^*,v^*)$ guarantees a separation of $d^*_q(t)$ because of its association with $r^*$. Because any other possible input $(l,v) \neq u_a$ is associated with a risk $r>r^*$, as defined in \eqref{eq:riskcalc}. The associated input results in distance/separation, $d_q(t)$, between $h$ and other vehicles $q$, that satisfies the following condition:
+\begin{equation}
+\forall{(l,v) \neq (l^*,v^*)},~d_q(t) > d^*_q(t)
+\end{equation}
+
+Because $d_q^*$ is greater than all other attainable distances, the risk of collision associated with input $(l^*,v^*)$ is the lowest reachable risk, and the safest action has been taken.
 
 %Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
 \end{proof}
-
-
-
-%In a situation where $u = u_a$, as defined in \eqref{eq:inputctrl}, the input to the HAV is the optimal lane and velocity as indicated by \eqref{eq:optlane} and \eqref{eq:optvel}. The optimal lane and velocity are chosen such that the $r(t+H)$ is lowest for the reachable set that pertains to $(l^*,v_h^*)$, meaning that these inputs are determined to have the lowest $r(t+H)$ between all reachable velocities, $\hat{v}$ and lanes, $\hat{l}$. It is important to note that the risk is considered from $r(t+1),\ldots,r(t+H)$, meaning that if $r(t+H)\leq r_\max \land r(t+H-1)\geq r_\max$, the input is selected such that $r(t+H-1)$ is the risk we choose to minimize \NB{I'm confused on the approach}.
-%By minimizing the most immediate high risk, assuming it is above the user's threshold, we are able to ensure that our input pair $u_a = (l^*,v^*)$ is always a safe action.  
-
-
-%Because the risk is calculated for each lane, the initial action is to identify if a certain lane has a lower risk. With this, we identify $l^*$, which is the lane with the lowest risk:
-%\begin{equation}
-%    l^* = \min_l(\mathcal{\hat{R}})
-%\end{equation}
-%In addition, we consider the fact that a lane change may be unavailable or unfeasible due to environmental constraints. In this case, we determine the minimum and maximum velocities our vehicle should be driving within one lane. In order to calculate these values, we first find a range $[d_{\min},d_{\max}]$ that our vehicle must be within, in order to ensure that the risk stays below $\rho$. After these safe distances are determined, a maximum velocity and minimum velocity are found such that this range is not violated for horizon $H$.
-%\RP{1. if one of the vs is safe, then we do that}
-%\begin{equation}
-%    v_{\min} = d_{\min}/H
-%\end{equation}
-%\begin{equation}
-%    v_{\max} = d_{\max}/H
-%\end{equation}
-
-% Let us take, for example, our host vehicle travelling at a much higher velocity than a preceding agent in the same lane. Our system identifies that our user has not shown any sign of turning, and because of that, we assume the user's priority is to stay in the lane. As a result of this, the $u_a$ involves lowering the velocity first. Assuming that the user doesn't respond, our system will continue to lower the velocity such that $u_s = v_q$, as long as the risk remains below $\rho$. If the user responds with a sub-optimal lane change, then the system will assist the user by reverting to the optimal action instead.  
 
 
 \section{Simulations} \label{sec:sims}
@@ -781,7 +766,10 @@ In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. T
 %\NB{conclusions should summarize what we have accomplished with this work and what you learned from this work, including the pros and cons. They need to discuss also current and future directions.}
 In this work, we have presented an approach for simultaneously predicting the future states of multiple vehicles and assisting the user of an HAV. Our approach uses a Hidden Markov Model based framework to build offline models of different vehicles and fit these models to any number of online observed vehicles. A shared control scheme was also presented to ensure that the user of an HAV does not enter an unsafe state. We were able to show that by minimizing our predicted risk at each step, we are able to ensure the vehicle stays as safe as possible. While the prediction method is reliable, model fitting is most effective when the set of offline models is rich and varied enough such that any vehicle can be fitted accurately.
 
-In future work, we could consider building more pre-trained models to increase richness. In addition, the state prediction method can be expanded across different types of vehicles and other cyber-physical systems.
+In future work, we will build more pre-trained models to increase richness. In this work, we are primarily concerned with. In addition, the state prediction method can be expanded across different types of vehicles and other cyber-physical systems.
+
+\section{Acknowledgement}
+
 %\NB{KEEP THIS - this sentence needs more explanation. If we don't have enough models we need to mention that future work is centered on using existing models to extract new models}
 % references section
 
