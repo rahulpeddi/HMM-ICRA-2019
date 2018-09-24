@@ -45,6 +45,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{varwidth}
+\usepackage{subcaption}
 \newtheorem{lemma}{Lemma}
 %\usepackage{subcaption}
 %\usepackage[noend]{algpseudocode}
@@ -570,21 +571,36 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
  %Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. % \NB{how are you combining these risks in one risk?}. 
  In Fig.~\ref{fig:riskd}, we show an example of a risk distribution (i.e. $\hat{\mathcal{R}}$), over $H=3$ for velocity $v_h$. The road scenario (right) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps. In addition, other vehicles and future predictions of those vehicles for horizon $H=3$ are also shown in the road scenario.
 
-\begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fig/assist2.png}
-    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right). The magenta shape is the user's HAV, while the blue and black shapes are the actual positions of other vehicles on the road. Unshaded/outline shapes are predictions for vehicles in successive order; $[t+1,t+H]$.}
-    \label{fig:riskd}
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.54\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/assist_rd.png}
+  \caption{Risk Distribution}
+  \label{fig:riskd}
+\end{subfigure}%
+\begin{subfigure}{.46\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/assist_rs.png}
+  \caption{Road Scenario}
+  \label{fig:roads}
+\end{subfigure}
+\caption{Risk Distribution and Associated Road Scenario}
+\label{fig:test}
 \end{figure}
 
 
+%\begin{figure}[ht]
+%    \includegraphics[width=0.48\textwidth]{fig/assist2.png}
+%    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right). The magenta shape is the user's HAV, while the blue and black shapes are the actual positions of other vehicles on the road. Unshaded/outline shapes are predictions for vehicles in successive order; $[t+1,t+H]$.}
+%    \label{fig:riskd}
+%\end{figure}
 %\NB{as mentioned during last meeting use solid filled shapes to show the current position and empty shape (not necessary to have a dashed line) for future states. No need to paint future states with different colors, just use the same color that you used to paint the shape of the vehicle. i.e., if the car on your left is blue, the future states are also blue}
 %\NB{avoid this notation, this what?}
-
 %\begin{equation}
 %    \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
 %\end{equation}
 %\NB{this doesn't say too much. We can remove it probably}
-
 \subsection{Adaptive User Assistance}
 
 %\NB{define dangerous condition}
@@ -717,9 +733,21 @@ Using the selected model, we are able to make predictions for every iteration of
 In order to show the impact of our assistive control, we show a scenario where assistance is given to the user and one where it is not, and the user has full control of the HAV. In Fig.~\ref{fig:critpt}, we show a scenario where the risk, $r_h(t+H)$ at $H=3$ is surpassing the user set limit of $r_{\max} = 0.85$.
 
 
-\begin{figure}[ht] 
-    \includegraphics[width=0.48\textwidth]{fig/critpt.png}
-    \caption {In this snapshot, $r_h(t+H)$ is approaching $r_{\max}$. This is a situation where the HAV would assist the user in selecting the least risky action} \label{fig:critpt}
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.54\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/critpt_rd.png}
+  \caption{Risk Distribution}
+  \label{fig:critptrd}
+\end{subfigure}%
+\begin{subfigure}{.46\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/critpt_rs.png}
+  \caption{Road Scenario}
+  \label{fig:critptrs}
+\end{subfigure}
+\caption{Critical Point - Risk Distribution and Road Scenario} \label{fig:critpt}
 \end{figure}
 
 In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur within $H$. 
@@ -727,16 +755,40 @@ In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are ab
 
 In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk existed in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
 
-\begin{figure}[ht] 
-    \includegraphics[width=0.48\textwidth]{fig/noassist.png} 
-    \caption{In this snapshot, a user has taken an unsafe action and it has resulted in high risk and a collision} \label{fig:noassist} 
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.54\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/critpt_rd.png}
+  \caption{Risk Distribution}
+  \label{fig:critptrd}
+\end{subfigure}%
+\begin{subfigure}{.46\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/critpt_rs.png}
+  \caption{Road Scenario}
+  \label{fig:critptrs}
+\end{subfigure}
+\caption{Critical Point - Risk Distribution and Road Scenario} \label{fig:noassist}
 \end{figure}
 
 In Fig.~\ref{fig:assist}, we a show a scenario in which the user was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account, as the risk surpassed $r_{\max}$. With assistive input, both lane and velocity were changed in order to minimize risk at every future time $t$ up to $t+H$.
 
-\begin{figure}[ht] 
-    \includegraphics[width=0.48\textwidth]{fig/assist2.png} 
-    \caption{This figure depicts a situation in which assistance has occurred and a risky situation was avoided altogether.} \label{fig:assist}
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.54\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/assist_rd.png}
+  \caption{Risk Distribution}
+  \label{fig:assistrd}
+\end{subfigure}%
+\begin{subfigure}{.46\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/assist_rs.png}
+  \caption{Road Scenario}
+  \label{fig:assistrs}
+\end{subfigure}
+\caption{Assisted Control - Risk Distribution and Road Scenario} \label{fig:assist}
 \end{figure}
 
  In the situation depicted in Fig.~\ref{fig:assist}, we are able to minimize risk and avoid collisions, thereby ensuring that our HAV is being operated safely.
