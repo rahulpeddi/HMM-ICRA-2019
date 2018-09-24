@@ -159,7 +159,7 @@ In Fig.\ref{fig:hiway}, we show an example of what our system should achieve in 
     \caption{Two possible actions on a highway, where one leads to a dangerous situation in the future(top), and another minimizes risk (bottom)}
     \label{fig:hiway}
 \end{figure}
-    
+ \NB{fix this figure. The proportions are off}   
     
      
     The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. The general approach is discussed in Section \ref{sec:approach}. In Section \ref{sec:fmwk}, we discuss the specifics of the HMM-based framework, and how it is used to build models. We then use that framework to make online predictions in Section \ref{sec:ahmmpredupdate}, and show how we can fit the models to a system we are observing in Section \ref{sec:omf}. This is followed by a discussion of we use the framework, along with the predictions and fitting, to assist the user in Section \ref{sec:adapt}. Then we demonstrate our results with MATLAB simulations in Section \ref{sec:sims}. Lastly, we discuss our conclusions and future work in Section \ref{sec:concs}.
@@ -221,7 +221,7 @@ Formally the problem that we investigate in this work can be stated as:
     \caption{Block Diagram of the Approach}
     \label{fig:app}
 \end{figure}
-%\NB{let's revise this figure and add what I showed in the board yesterday}
+\NB{fix the lines on this figure}
 %\NB{figure is too blurry}
 %\NB{that's not a pictorial representation, It's a block diagram.}
 %\NB{By using offline training we extract different models representing different vehicle behaviors. These models are then 
@@ -588,7 +588,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
 \caption{Risk Distribution and Associated Road Scenario}
 \label{fig:test}
 \end{figure}
-
+\NB{where is the legend?}
 
 %\begin{figure}[ht]
 %    \includegraphics[width=0.48\textwidth]{fig/assist2.png}
@@ -686,6 +686,7 @@ In order to train the models, we used a workspace featuring $6$ stationary obsta
 \includegraphics[width=0.48\textwidth]{fig/train1.png}
 \caption{The forward position of the actual vehicle (red) is shown. After the training set, a prediction is made and the forward position of the estimate is shown (blue dashed).} \label{fig:train1}
 \end{figure}
+\NB{plot error not state}
 
 In addition to velocity, we also measure the accuracy of our predictions regarding lane changes and following distances at which these changes occurred. Based on results shown in Fig.~\ref{fig:train2}, it is evident that the expected lane changes occurred, and to validate the following distances at which the lane changes took place, we used RMSE, which was $1.2564$m. The results for both velocity and lane change distance validation showed that the predictions were very effective when predicting the future states of the same model.
 
@@ -715,6 +716,7 @@ Using the selected model, we are able to make predictions for every iteration of
     \includegraphics[width=0.48\textwidth]{fig/fitx.png}
     \caption{The forward position of the actual vehicle (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).} \label{fig:fwd}
 \end{figure}
+\NB{plot error not state}
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
