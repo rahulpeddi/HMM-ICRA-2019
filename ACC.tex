@@ -173,7 +173,7 @@ The study of semi-autonomous and autonomous vehicles has been growing in recent 
 
 The authors in \cite{mpc} use velocity predictions derived from artificial neural networks and GPS systems for Model Predictive Control (MPC), which is presented as a highly complicated optimization problem, and the predictions are only evaluated for one vehicle at a time. The authors in \cite{velnn} and \cite{veldatadriv} take a data science approach and use large data-sets, along with very specific traffic information, in order to make predictions. The use of a Hidden Markov Model based approach for prediction is done in \cite{lanhmm}, where the authors develop an approach treating a vehicle as a hybrid state system to predict the trajectory of a certain behavior. This is done while assuming knowledge of multiple states that cannot be observed from outside. In \cite{woohmm}, motivated by previous work in HMMs, the authors discuss using a simplified form of the hybrid state system with an HMM to improve lane change prediction scalability over multiple vehicles. In our work, we consider the problem of predicting future velocity and when lane changes are expected by leveraging the theories presented in \cite{mpc} and \cite{woohmm}. 
 
-In terms of controlling vehicles in such environments, the authors in \cite{qmdp} use a Point-Based Markov Decision Process (QMDP) to estimate dangerous situations and react with the appropriate autonomous driving behavior in single-lane situations. The QMDP process employs a robust, but computationally expensive value iteration algorithm in order to select the safest action in a single lane situation. In \cite{predcost}, the authors present a prediction and cost-based (PCB) control strategy for autonomous vehicles given a known set of predicted scenarios. In this vein, \cite{vfh+} and \cite{vfh*} discuss reliable obstacle avoidance methods given that obstacle locations and characteristics are known based on artificial physics methods. In \cite{takeover}, with a human-factors based approach, the authors show multiple ways that take-over requests can be generated in partially autonomous vehicles, including performance based and environment based characteristics. In our work, we leverage the idea of sharing control from \cite{takeover}, along with the theories in \cite{vfh*} to control for future unsafe scenarios we detect in our predictions. \RP{Last sentence is confusing - fix it}
+In terms of controlling vehicles in such environments, the authors in \cite{qmdp} use a Point-Based Markov Decision Process (QMDP) to estimate dangerous situations and react with the appropriate autonomous driving behavior in single-lane situations. The QMDP process employs a robust, but computationally expensive value iteration algorithm in order to select the safest action in a single lane situation. In \cite{predcost}, the authors present a prediction and cost-based (PCB) control strategy for autonomous vehicles given a known set of predicted scenarios. In this vein, \cite{vfh+} and \cite{vfh*} discuss reliable obstacle avoidance methods given that obstacle locations and characteristics are known based on artificial physics methods. In \cite{takeover}, with a human-factors based approach, the authors show multiple ways that take-over requests can be generated in partially autonomous vehicles, including performance based and environment based characteristics. In our work, we leverage the idea of sharing control from \cite{takeover}, along with the theories in \cite{vfh*} to control for future unsafe scenarios.
 
     
 \section{Problem Formulation} \label{sec:probform}
@@ -470,7 +470,7 @@ Using these assumptions three reachable velocities can be considered as follows:
 and $\hat{V} = \{v^-(t),v_h^=(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable forward positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$, where $\delta t$ is the sampling time, for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, in which $n$ lanes are considered. 
 %\NB{this set is time varying and depends on the current velocity}
 \begin{figure}[ht!]
-    \includegraphics[width=0.48\textwidth]{fig/input.png}
+    \includegraphics[width=0.48\textwidth]{fig/reach.png}
     \caption{Diagram of each reachable set}
     \label{fig:reach}
 \end{figure}
@@ -661,7 +661,7 @@ Because the distance is reduced at each step, the vehicle continuously enters sa
 
 
 \section{Simulations} \label{sec:sims}
-The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid risk of collision.
+The simulations for this work were done in Matlab. Different simulations were run for each part of the approach depicted in Section \ref{sec:approach}. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
 
 \subsection{Training Models}
 In order to train the models, we used a workspace featuring $6$ stationary obstacles. A test vehicle drove through this workspace, while avoiding these obstacles, and it was observed for a training period of 700 iterations. In this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated. In order to validate the effectiveness of the generated matrices, we tested the sample over another period of the same length with $9$ obstacles. In verifying the results for velocity, we used forward position, which is calculated using the relationship in \eqref{eq:dumpos}. The resulting root mean squared error (RMSE) for forward position estimates was $1.3927$m. The results for velocity prediction are shown in Fig.~\ref{fig:train1}, where the validation begins after the vertical line labeled ``End Training Set". 
@@ -701,12 +701,12 @@ Using the selected model, we are able to make predictions for every iteration of
 
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fig/fit2.png}
+    \includegraphics[width=0.48\textwidth]{fig/fitx.png}
     \caption{The forward position of the actual vehicle (red) is shown. In addition, the forward position of the best-fit is shown (blue dashed).} \label{fig:fwd}
 \end{figure}
 
 \begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fig/fitx.png}
+    \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
     \caption{The lane changes of the actual vehicle (red) are shown. The lane change predictions of the best-fit are shown (blue dashed).} \label{fig:lanchan}
 \end{figure}
  
@@ -722,7 +722,7 @@ In order to show the impact of our assistive control, we show a scenario where a
     \caption {In this snapshot, $r_h(t+H)$ is approaching $r_{\max}$. This is a situation where the HAV would assist the user in selecting the least risky action} \label{fig:critpt}
 \end{figure}
 
-In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur in $H$. 
+In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV. In this case, we are only showing the reachable set and risk distribution for $v_h$. The snapshot occurs at a critical point, meaning a decision has to be made at this time, or a collision will occur within $H$. 
 
 
 In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid the obstacle in front, indicated by the black polygonal shape, by moving to the left lane, unaware that an increased risk existed in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
