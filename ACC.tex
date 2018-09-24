@@ -419,7 +419,7 @@ We treat any vehicle observed online as a new system from which we are intereste
 \end{equation}
 %\NB{is it $\hat{e}$ that you are computing? or each element?}
 %\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
-where $\lVert * \rVert_2$ is the $l_2$ matrix norm to return a scalar, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
+where $\lVert \cdot \rVert_2$ is the $l_2$ matrix norm to return a scalar, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
 
 Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predictions, we select the model $M^*$ with the lowest error: %\NB{What's the l2 of a matrix? Is it a scalar or a vector?}
 %\NB{revise this}
@@ -520,7 +520,7 @@ We can then calculate relative distance as
 %\end{equation}
 
 %\RP{Simplify - Risk is a function of D as follows}
-Risk is inversely proportional to distance $d_q(t)$, lane separation $l_q(t)$, trust $\rho$. Specifically the risk $r_q^l(t)$ associated with vehicle $q$ and lane $l$ at time $t$ is computed as follows: %\NB{what about the lanes?}
+where $\rVert \cdot \lVert_2$ indicates the $l_2$ vector norm. Risk is inversely proportional to distance $d_q(t)$, lane separation $l_q(t)$, trust $\rho$. Specifically the risk $r_q^l(t)$ associated with vehicle $q$ and lane $l$ at time $t$ is computed as follows: %\NB{what about the lanes?}
 
 \begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
@@ -624,15 +624,15 @@ The value $r^*$ gives information about the safest lane to enter and the safest 
 At every iteration, the optimal pair $(l^*,v^*)$ is calculated. In this work, we place an emphasis on the user's risk threshold $r_\max$, so the autonomous input $u_a = (l^*,v^*)$ is only implemented when the condition described in \eqref{eq:inputctrl} is met. By minimizing the risk at $t+1$, we ensure that the immediate action of our vehicle $h$ is always the safest option.
 
 \begin{lemma}
-Assuming the predictions of other vehicles is correct, meaning trust $\rho$ is above a threshold $\rho_\min$, and if $\exists~\hat{\mathcal{R}}(i,j) >= r_\max$ over a horizon $H$, our approach guarantees that the safest sequence of actions is always chosen.
+Assuming the predictions of other vehicles is correct, meaning trust $\rho$ is above a threshold $\rho_\min$, and if $\exists~\hat{\mathcal{R}}(i,j) >= r_\max$ over a horizon $H$, our approach guarantees that the safest sequence of actions is always chosen, given that there exists such a sequence of actions.
 \end{lemma}
 
 \begin{proof}
-Through the predictions, we are given the future states of all vehicles: $\hat{x}_q$ and $L_q$ with associated trust $\rho$. Using calculations in \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. Because the risk distribution is a function of distance, we are able to retroactively calculate absolute relative distance for each reachable point at time $t+1$ using these values: $d = \frac{1}{\hat{\mathcal{R}}(1,j)}$,
-where $j = 1,\ldots,n$. By performing gradient descent on this risk distribution, we obtain the optimal input $u_a = (l^*,v^*)$. This input, assuming $\exists~\hat{\mathcal{R}}(i,j) <= r_\max$, will always ensure that there is at least distance $d^*$ between the assisted vehicle and any other vehicle in the sensing range $R_h$:\begin{equation}
-    d* = \frac{1}{r_\max}
+Using calculations in \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. The input pair $u_a=(l^*,v^*)$ is determined using $r^*$ by minimizing $\hat{\mathcal{R}}$. Because risk, as per our definition in \eqref{eq:riskcalc}, is inversely proportional to distance and lane separation, the distance between $h$ and all $q$ at each time $t$ is always less than that of the previous step:
+\begin{equation}
+d_q(t) < d_q(t-1)
 \end{equation}
-Given that this distance is held in any situation, the system will be safe (i.e. a collision will not occur).
+Because the distance is reduced at each step, the vehicle continuously enters safer states, meaning there is lower risk of collision.
 
 
 %Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
