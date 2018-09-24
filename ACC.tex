@@ -47,11 +47,10 @@
 \usepackage{varwidth}
 \usepackage{subcaption}
 \newtheorem{lemma}{Lemma}
-%\usepackage{subcaption}
-%\usepackage[noend]{algpseudocode}
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
+\bibliographystyle{ieeetr}
 
 
 \newcommand\NB[1]{$\spadesuit$\footnote{NB: #1}}
@@ -179,7 +178,7 @@ In terms of controlling vehicles in such environments, the authors in \cite{qmdp
     
 \section{Problem Formulation} \label{sec:probform}
  
-In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems operations. We focus on manned vehicles employing an hybrid autonomy scheme as defined in \cite{}[PETER CORKE ROBOTICS VISION AND CONTROL] in which the control authority is shared between the human and the on-board computer. For the sake of brevity we denote this class of vehicles as {\em hybrid autonomous vehicles} (HAVs), In our scheme, the on-board computer is used as a supervisory monitor to predict and assess safety and assist by correcting undesired human behaviors that may lead to unsafe situations and compromise the system's integrity. 
+In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems operations. We focus on manned vehicles employing an hybrid autonomy scheme as defined in \cite{corke} in which the control authority is shared between the human and the on-board computer. For the sake of brevity we denote this class of vehicles as {\em hybrid autonomous vehicles} (HAVs), In our scheme, the on-board computer is used as a supervisory monitor to predict and assess safety and assist by correcting undesired human behaviors that may lead to unsafe situations and compromise the system's integrity. 
 
 % control in which users may perform undesired actions that can compromise the safety of the entire system 
 Formally the problem that we investigate in this work can be stated as: 
