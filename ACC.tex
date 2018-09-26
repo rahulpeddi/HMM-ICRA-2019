@@ -245,7 +245,6 @@ Formally the problem that we investigate in this work can be stated as:
     \item assist and intervene to correct the HAV actions to guarantee safety, i.e., obtain an input policy $U_h=\{{u_h(t), u_h(t+1),..., u_h(t+T)}\}$ such that the risk $r$ is always minimized. 
     \end{enumerate}
    In our specific multi-vehicle case, risk is a function of distance between vehicles. Hence minimizing risk is equivalent to guaranteeing the following:
-    
 %    surpasses a certain user defined level,$\rho$, we are able to minimize the risk, and guarantee,
     \begin{equation}
         ||{x_h(t)-x_q(t)}|| \geq d_{\textrm{min}}
@@ -454,7 +453,9 @@ During run-time, we observe new measurements of other vehicles. The challenge he
 
 %\NB{We treat any vehicle observed online as a new system and follow the approach outlined in Section...to obtain P and B. At each iteration P and B are updated and compared with the existing Models. The closest model is chosen to predict the behavior of the system. }Having built multiple models, we observe a new vehicle and begin to execute the framework discussed in Section \ref{sec:fmwk} for two consecutive measurements, $\left[o(t-1),o(t)\right]$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$, which stand for the transition and emission matrices for the system we are currently observing. In order to determine the optimal model, we calculate the set of errors, $\hat{e}_{N_{M}} = \{e_{N_1},\ldots,e_{N_M}$\} between our model and each of the offline models:
 
-We treat any vehicle observed online as a new system from which we are interested to compute a model, hence we follow the same procedure in Section \ref{sec:fmwk} to extract transition and emission matrices. Each element of transition matrix, $\tilde{\mathcal{P}}(t)\in\mathbb{R}^{n\times n}$, is initialized to $\tilde{p}_{ij} = 1/n$, where $i,j = 1,\ldots,n$. Similarly each element of the emission matrix,  $\tilde{\mathcal{B}}(t)\in\mathbb{R}^{n\times m}$, is initialized to $\tilde{b}_{ik}= 1/m$, where $i = 1,\ldots,n$ and $k=1,\ldots,m$. At each iteration, these matrices are updated using the method discussed in \ref{sec:ahmmpredupdate}, and are then compared with those of the pretrained models, $\hat{\mathcal{P}}$ and $\hat{\mathcal{B}}$. The most similar model is chosen to predict the behavior of the observed system. To obtain this model, the following error is computed at every iteration:
+We treat any vehicle observed online as a new system from which we are interested to compute a model, hence we follow the same procedure in Section \ref{sec:fmwk} to extract transition and emission matrices. Each element of transition matrix, $\tilde{\mathcal{P}}(t)\in\mathbb{R}^{n\times n}$, is initialized to $\tilde{p}_{ij} = 1/n$, where $i,j = 1,\ldots,n$. Similarly each element of the emission matrix,  $\tilde{\mathcal{B}}(t)\in\mathbb{R}^{n\times m}$, is initialized to $\tilde{b}_{ik}= 1/m$, where $i = 1,\ldots,n$ and $k=1,\ldots,m$. At each iteration, these matrices are updated using the method discussed in \ref{sec:ahmmpredupdate}, and are then compared with those of the pretrained models, $\hat{\mathcal{P}}$ and $\hat{\mathcal{B}}$.
+
+The most similar model is chosen to predict the behavior of the observed system. To obtain this model, the following error is computed at every iteration:
  %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
 \begin{equation} \label{eq:pnorm}
     \forall{P_i} \in \hat{\mathcal{P}}: e_i = \lVert\tilde{\mathcal{P}}(t)-\mathcal{P}_{i}\rVert_{2}
