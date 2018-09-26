@@ -493,12 +493,12 @@ Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predicti
 \subsection{Reachability Analysis}
 
 In this work, we are interested in assessing risk of collision. In order to assess this risk we need to predict:
-\begin{enumerate}[i.]
+\begin{enumerate}
 \item future states of the surrounding vehicles which are obtained by following the procedure outlined in Section \ref{sec:ahmmpredupdate} and
 \item the reachable states of $h$ over a future horizon $H$.
 \end{enumerate}
 In some of our current work, we are using Hamilton-Jacobi reachability analysis to predict future states of a system under uncertainties \cite{esen}. In this paper, we consider a simplified approach for reachability in which we assume that:
-\begin{enumerate}[i.]
+\begin{enumerate}
 \item The vehicle can move to the adjacent lane in one time step $\delta t$ \label{ass:i}
 \item future variations of velocity are bounded $v_h-\delta_v \leq v_h\leq v_h+\delta_v$, with $\delta_v>0$ \label{ass:ii}
 \end{enumerate}
@@ -708,10 +708,8 @@ The input $(l^*,v^*)$ guarantees that this maximum separation is met because of 
 %Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
 \end{proof}
 
-
 \section{Simulations} \label{sec:sims}
 In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First we discuss how different vehicle's models are trained and validated (from Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}). Then we show an example of online model fitting (from Section \ref{sec:omf}) given a known pre-trained set of models. Finally we demonstrate the risk estimate and assistive behaviors (from Section \ref{sec:adapt}) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
-
 %The simulations for this work were done in Matlab. Each part of the approach depicted in Section \ref{sec:approach} was tested. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
 
 \subsection{Model Training Example}
