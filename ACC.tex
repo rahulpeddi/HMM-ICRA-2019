@@ -621,7 +621,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
 	\vspace{-5pt}
 	\caption{Risk distribution and associated road scenario}
 	\label{fig:riskd}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 %\begin{figure}[H]
@@ -732,10 +732,10 @@ Fig.~\ref{fig:trainvel} shows the absolute error between actual and estimated ve
 	\centering
 	\subfigure[The error between the velocity of the actual model and estimated velocities \label{fig:trainvel}]{\includegraphics[width=\linewidth]{fig/trainvelerror.png}}
 	\subfigure[The error between the position of the actual model and estimated positions \label{fig:trainpos}]{\includegraphics[width=\linewidth]{fig/trainposerror.png}}
-	\vspace{-5pt}
+	\vspace{-10pt}
 	\caption{Error of Model Training}
 	\label{fig:trainerrors}
-	\vspace{-5pt}
+	\vspace{-10pt}
 \end{figure}
 
 
@@ -744,10 +744,10 @@ Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 
 
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train2.png}
- \vspace{-5pt}
+ \vspace{-10pt}
 \caption{Lane change training and prediction. Online prediction is occurring at 700 iterations} \label{fig:train2}
 \end{figure}
-
+	\vspace{-10pt}
 \subsection{Model Fitting Example}
 
 Building on the previous results, here we demonstrate the model fitting approach presented in Section \ref{sec:omf}. For the sake of simplicity in this work we trained and built 3 different vehicles models whose velocities were between $22$m/s and $32$m/s. Specifically one vehicle was aggressive, one was conservative, while the third vehicle's behavior was in between the other two behaviors. Three different transition and emission matrices were computed offline and used online to predict the behavior of a new vehicle with the assumption that this new vehicle's model was similar to one of the previously sampled behaviors. Following the procedure in Section \ref{sec:omf} at each iteration, a model for the new vehicle is built and compared with each of the pre-trained models. The model with the minimum error (i.e. with the highest trust) is selected at each iteration to predict future states of the new vehicle.
@@ -756,7 +756,7 @@ Fig.~\ref{fig:error} shows the error between the model of the vehicle and each p
 
 %In this section, we add to the previous results, by showing that we are not only able to predict states given a model, but we are also able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we initialize $\hat{\mathcal{P}}$ use \eqref{eq:pnorm} with the transition matrices of each of three pre-trained models. In Fig.~\ref{fig:error}, the error between each pre-trained model and the observed vehicle is shown. At the start of run-time, the errors are higher and are very scrambled. As the vehicle is observed for longer, one model has less error than the others; in this case, the model is Model $3$. 
 
-\begin{figure}[h]
+\begin{figure}[ht!]
 	\centering
 	\subfigure[Fit error between the current vehicle and each of the three pretrained models \label{fig:error}]{\includegraphics[width=\linewidth]{fig/modelerror.png}}
 	\subfigure[Trust associated with the best-fit model at each iteration
@@ -774,20 +774,20 @@ Fig.~\ref{fig:lanchan} shows the lane change behavior. The RMSE between the pred
 
 Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $2.1423$m/s. 
 In Fig.~\ref{fig:lanchan}, we show the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.521$m. 
-
 %The RMSE values obtained for each of these tests suggest that the prediction is reliable, given that convergence to one model occurs. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
-
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/fiterroravg.png}
     \vspace{-5pt}
     \caption{Absolute Error of velocity between the fitted and actual vehicles} \label{fig:fwd}
 \end{figure}
- \vspace{-10pt}
-\begin{figure}[ht]
+% \vspace{-5pt}
+\begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
      \vspace{-5pt}
     \caption{The lane changes of the actual vehicle and the best-fit vehicle model} \label{fig:lanchan}
+    	     \vspace{-10pt}
 \end{figure}
+%     \vspace{-5pt}
 
 
 \subsection{Assistive Planning and Control Case Study}
@@ -823,9 +823,8 @@ In Fig.~\ref{fig:noassist}, we show a snapshot for a situation in which the user
 	\vspace{-5pt}
 	\caption{Unassisted - Risk Distribution and Road Scenario}
 	\label{fig:noassist}
-	\vspace{-5pt}
+	\vspace{-10pt}
 \end{figure}
-
 In our approach, we aim to avoid such a situation. Fig.~\ref{fig:assistrs} shows a snapshot of the same scenario but this time with the assistive behavior enabled. In this case the optimal input was switched between $u_h$ and $u_a$ when the risk was above $r_{max}$. 
 The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. Using our framework the $u_h$ was overwritten by $u_a$ guaranteeing a safe operation of $h$.
 %With assistive input, both lane and velocity were changed in order to minimize risk. In this case, the specific input pair was $u_a = (l_3,v_h^+)$. 
@@ -839,9 +838,9 @@ The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this c
 	\vspace{-5pt}
 	\caption{Assisted - Risk Distribution and Road Scenario}
 	\label{fig:assist}
-	\vspace{-5pt}
+	\vspace{-10pt}
 \end{figure}
-
+	\vspace{-5pt}
 % In the situation depicted in Fig.~\ref{fig:assist}, the input $(l_3,v_h^+)$ increases the distance, $d_q(t)$, between vehicles $h$ and all $q$, which indicates risk has successfully been minimized for that timestep.
 
 
