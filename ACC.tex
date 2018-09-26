@@ -441,7 +441,7 @@ Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predicti
 %\NB{this is unnecessary. Say this before, above...we find the model $M^*$ that minimizes the error...}
   Given this model, the associates transition and emission matrices, $\mathcal{P}_{i}$ and $\mathcal{B}_{i}$ are used in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. In addition, a trust measure for the selected model is determined as:
   \begin{equation}
-    \rho = 1/e_i
+    \rho = 1-e_i
  \end{equation}
  where $e_i$ is the error associated with $M^* = M_i$. Because trust is inversely proportional to error, the model with the lowest error, $M^*$ also has the highest trust. This trust measure is utilized in Section \ref{sec:adapt} to determine risk.
   
@@ -666,7 +666,7 @@ The input $(l^*,v^*)$ guarantees that this maximum separation is met because of 
 
 
 \section{Simulations} \label{sec:sims}
-In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First we discuss how different vehicle's models are trained and validated (from Section ...). Then we show an example of online model fitting ( from Section...) given a known pre-trained set of models. Finally we demonstrate the risk estimate and assistive behaviors (from Sections....) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
+In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First we discuss how different vehicle's models are trained and validated (from Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}). Then we show an example of online model fitting ( from Section \ref{sec:omf}) given a known pre-trained set of models. Finally we demonstrate the risk estimate and assistive behaviors (from Section \ref{sec:adapt}) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
 
 %The simulations for this work were done in Matlab. Each part of the approach depicted in Section \ref{sec:approach} was tested. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
 
@@ -675,16 +675,27 @@ In order to train different vehicles models, we used an environment featuring $6
 Fig.~\ref{fig:trainvel} shows the absolute error between actual and estimated velocities while Fig.~\ref{fig:trainpos} shows the absolute error between the predicted and actual position of the vehicle. The resulting root mean square error (RMSE) for forward position estimates was recorded to $0.3927$m.
 %obtaining the error
 %In verifying the results for velocity, we used velocity and forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. In Fig.~\ref{fig:trainvel}, the absolute error between actual and estimated velocities is depicted. In Fig.~\ref{fig:trainpos}, we show the absolute error in the position between the two vehicles. The resulting root mean square error (RMSE) for forward position estimates was $0.3927$m.
-\begin{figure}[ht]
-\includegraphics[width=0.48\textwidth]{fig/trainvelerror.png}
-\caption{The error between the velocity of the actual model and estimated velocities} \label{fig:trainvel}
-\end{figure}
-\begin{figure}[ht]
-\includegraphics[width=0.48\textwidth]{fig/trainposerror.png}
-\caption{The error between the position of the actual model and estimated positions} \label{fig:trainpos}
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/trainvelerror.png}
+    \caption{The error between the velocity of the actual model and estimated velocities}
+    \label{fig:trainvel}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/trainposerror.png}
+    \caption{The error between the position of the actual model and estimated positions}
+    \label{fig:trainpos}
+\end{subfigure}
+\caption{Error of Model Training}
+\label{fig:trainerror}
 \end{figure}
 
-Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 iteration) relative to lane changes. During the prediction phase the RMSE was recorded as $1.2564$m. These errors are due to the fact that the trained vehicles and measurements were noisy to consider a more realistic behavior. These results validate that the proposed framework is able to predict efficiently future velocity and lane change states, given a pre-trained model.
+
+Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 iterations) relative to lane changes. During the prediction phase the RMSE was recorded as $1.2564$m. These errors are due to the fact that the trained vehicles and measurements were noisy to consider a more realistic behavior. These results validate that the proposed framework is able to predict efficiently future velocity and lane change states, given a pre-trained model.
 %In addition to velocity, we also measure the accuracy of our predictions regarding lane changes and following distances at which these changes occurred. Based on results shown in Fig.~\ref{fig:train2}, it is evident that the expected lane changes occurred, and to validate the following distances at which the lane changes took place, we use RMSE, which was $1.2564$m. The results for both velocity and lane change distance validation showed that the framework is very effective when predicting the future states of the same model.
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train2.png}
