@@ -149,17 +149,9 @@
 %\NB{start with Hybrid autonomous systems}
 %\NB{abstract needs to be fixed...check my comments below}
 %In this work, we develop a monitor that can predict the future states of multiple vehicles within a sensing range, and correct the actions of a user-operated hybrid autonomous vehicle (HAV) to ensure safety. We use a framework that leverages Hidden Markov Model (HMM) theory along with a simplified reachability analysis to perform a risk computation and trust analysis for imminent situations. Our monitor leaves the user in power when safe and intervenes only when the risk is above a threshold, in which case the user action is overwritten by actions that minimize risk. Using this method, we are able to guarantee that the vehicle is safe for the period in which risk is above the threshold. In addition, this approach was validated through simulations of an automotive scenario. \NB{abstract needs to be rewritten}
-
 %NB{In the abstract we are building a monitor...we need to mention that we leverage HMM, propose a simplified reachability analysis, to predict future states of other surrounding vehicles, compute a risk and, trust to assist a vehicle. We need to mention that the way that }
-
-
-<<<<<<< Updated upstream
 Hybrid Autonomous Vehicles (HAVs) are systems in which control authority is shared between a human user and an on-board computer. In such systems users can sometimes pass errant commands that compromise the integrity and safety of the system. In this paper, we develop a monitor for assessing and predicting the future states of other vehicles that are sharing the same task space of the HAV, and correct the user's actions to ensure safety (i.e., no collisions). We propose a framework that uses the Hidden Markov Model (HMM) theory to predict and estimate the risk and trust associated with future states. A switching strategy is also proposed to alternate between human input and autonomous input when risk is above a certain threshold guaranteeing safety while leaving the user desired control input when risk is below a safe threshold. The proposed approach is validated with simulations for an automotive setting with multiple vehicles having different behaviors.
-=======
-Hybrid Autonomous Vehicles (HAVs) are systems in which control authority is shared between a human user and an on-board computer. In such systems users can sometimes pass errant commands that compromise the integrity and safety of the system. In this paper, we develop a monitor for assessing and predicting the future states of other vehicles that are sharing the same task space of the HAV, and correct the user's actions to ensure safety (i.e., no collisions). We propose a framework that uses the Hidden Markov Model (HMM) theory to predict and estimate the risk and trust associated with future states. A switching strategy is also proposed to alternate between human input and autonomous input when risk is above a certain threshold guaranteeing safety while leaving the user desired control input when risk is below a safe threshold.
-%along with a method with which the autonomous controller will correct a user's action.
-The proposed approach is validated with simulations for an automotive setting with multiple vehicles having different behaviors.
->>>>>>> Stashed changes
+
 
 %we develop a monitor capable of assessing the future risk of the user's actions and leveraging the autonomous capabilities to
 
@@ -844,9 +836,9 @@ The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this c
 	\label{fig:assist}
 	\vspace{-10pt}
 \end{figure}
-	\vspace{-5pt}
+	\vspace{-0pt}
 % In the situation depicted in Fig.~\ref{fig:assist}, the input $(l_3,v_h^+)$ increases the distance, $d_q(t)$, between vehicles $h$ and all $q$, which indicates risk has successfully been minimized for that timestep.
-
+Animations for the simulations presented above can be found at https://www.bezzorobotics.com/rp-acc19.
 
 \section{Conclusions} \label{sec:concs}
 %\NB{conclusions should summarize what we have accomplished with this work and what you learned from this work, including the pros and cons. They need to discuss also current and future directions.}
