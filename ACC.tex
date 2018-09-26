@@ -699,12 +699,12 @@ Given a configuration where there exists a safe sequence of actions, and if any 
 Using calculations in \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. The optimal input pair $u^*(t)=(l^*(t),v^*(t))$ is determined by obtaining $r^*(t)$, which is the minimum of $\hat{\mathcal{R}}(1,j)$. Assuming that we are in steady state, meaning trust $\rho$ is not changing, from \eqref{eq:riskcalc} we obtain:
 %\vspace{-10pt}
 \begin{equation}
-\gamma_q(t) = (\xi+1) d_q(t) \rho
+\gamma_q(t) = \frac{1}{r^*(t)}=(\xi+1) d_q(t) \rho
 \end{equation}
 %\vspace{-10pt}
 Minimizing risk means that the quantity $(\xi+1)d_q(t)$ is maximized, meaning that the separation between vehicles is maximized.
 
-The input $(l^*,v^*)$ guarantees that this maximum separation is met because of its association with $r^*$. Any other possible input $u(t) \neq u^*(t)$ is associated with a risk $r(t)>r^*(t)$, as defined in \eqref{eq:riskcalc}, and therefore the separation $(\xi+1)d_q(t)$ if those actions are taken is larger. Because $u^*(t)$ results in the highest separation out of all possible inputs, the risk of collision the lowest, and the safest action has been taken.
+The input $(l^*,v^*)$ guarantees that this maximum separation is met because of its association with $r^*$. Any other possible input $u(t) \neq u^*(t)$ is associated with a risk $r(t)>r^*(t)$, as defined in \eqref{eq:riskcalc}, and therefore the separation $(\xi+1)d_q(t)$ if those actions are taken is smaller. Because $u^*(t)$ results in the highest separation out of all possible inputs, the risk of collision the lowest, and the safest action has been taken.
 
 %Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
 \end{proof}
