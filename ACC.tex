@@ -330,7 +330,7 @@ In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while tho
 
 The specific environment that we are studying involves multiple vehicles that can change their velocities and their lanes.% Within this environment, we implement the framework twice for all of the vehicles, $q$ in our sensing range $R_h$.
 
-Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated the following vehicle input behaviors: changes in velocity and changes in lane. %\RP{Check later} %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
+Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated to the following vehicle input behaviors: changes in velocity and changes in lane. %\RP{Check later} %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
 For velocity we consider the following 3 emissions,
     
 %\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
