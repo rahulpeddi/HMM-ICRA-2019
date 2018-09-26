@@ -709,10 +709,6 @@ The input $(l^*,v^*)$ guarantees that this maximum separation is met because of 
 %Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
 \end{proof}
 
-<<<<<<< Updated upstream
-=======
-%\vspace{-30pt}
->>>>>>> Stashed changes
 \section{Simulations} \label{sec:sims}
 %\vspace{-30pt}
 In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First we discuss how different vehicle's models are trained and validated (from Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}). Then we show an example of online model fitting (from Section \ref{sec:omf}) given a known pre-trained set of models. Finally we demonstrate the risk estimate and assistive behaviors (from Section \ref{sec:adapt}) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
@@ -740,6 +736,7 @@ Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 
 
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train2.png}
+ \vspace{-5pt}
 \caption{Lane change training and prediction. Online prediction is occurring at 700 iterations} \label{fig:train2}
 \end{figure}
 
@@ -774,11 +771,13 @@ In Fig.~\ref{fig:lanchan}, we show the predictions made that pertain to lane cha
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/fiterroravg.png}
+    \vspace{-5pt}
     \caption{Absolute Error of velocity between the fitted and actual vehicles} \label{fig:fwd}
 \end{figure}
-
+ \vspace{-10pt}
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
+     \vspace{-5pt}
     \caption{The lane changes of the actual vehicle and the best-fit vehicle model} \label{fig:lanchan}
 \end{figure}
 
