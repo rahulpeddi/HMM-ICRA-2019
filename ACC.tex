@@ -697,10 +697,11 @@ Given a configuration where there exists a safe sequence of actions, and if any 
 
 \begin{proof}
 Using calculations in \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. The optimal input pair $u^*(t)=(l^*(t),v^*(t))$ is determined by obtaining $r^*(t)$, which is the minimum of $\hat{\mathcal{R}}(1,j)$. Assuming that we are in steady state, meaning trust $\rho$ is not changing, from \eqref{eq:riskcalc} we obtain:
+%\vspace{-10pt}
 \begin{equation}
 \gamma_q(t) = (\xi+1) d_q(t) \rho
 \end{equation}
-
+%\vspace{-10pt}
 Minimizing risk means that the quantity $(\xi+1)d_q(t)$ is maximized, meaning that the separation between vehicles is maximized.
 
 The input $(l^*,v^*)$ guarantees that this maximum separation is met because of its association with $r^*$. Any other possible input $u(t) \neq u^*(t)$ is associated with a risk $r(t)>r^*(t)$, as defined in \eqref{eq:riskcalc}, and therefore the separation $(\xi+1)d_q(t)$ if those actions are taken is larger. Because $u^*(t)$ results in the highest separation out of all possible inputs, the risk of collision the lowest, and the safest action has been taken.
@@ -708,17 +709,22 @@ The input $(l^*,v^*)$ guarantees that this maximum separation is met because of 
 %Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
 \end{proof}
 
+<<<<<<< Updated upstream
+=======
+%\vspace{-30pt}
+>>>>>>> Stashed changes
 \section{Simulations} \label{sec:sims}
+%\vspace{-30pt}
 In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First we discuss how different vehicle's models are trained and validated (from Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}). Then we show an example of online model fitting (from Section \ref{sec:omf}) given a known pre-trained set of models. Finally we demonstrate the risk estimate and assistive behaviors (from Section \ref{sec:adapt}) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
 %The simulations for this work were done in Matlab. Each part of the approach depicted in Section \ref{sec:approach} was tested. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
-
+\vspace{-5pt}
 \subsection{Model Training Example}
 In order to train different vehicles models, we used an environment featuring $6$ stationary obstacles. A test vehicle with a predefined behavior was driven through the environment, while avoiding these obstacles, observing its velocity, lane changes and distance to the obstacle for a training period $T=700$ iterations. During this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated for both velocity measurements and lane change measurements. The effectiveness of the generated transition and emission matrices was validated online against the same vehicle running over a new environment with $9$ obstacles. Following the scheme in Section \ref{sec:ahmmpredupdate} a one step prediction was computed and compared with the vehicle's ground truth velocity and position.
 Fig.~\ref{fig:trainvel} shows the absolute error between actual and estimated velocities while Fig.~\ref{fig:trainpos} shows the absolute error between the predicted and actual position of the vehicle. The resulting root mean square error (RMSE) for forward position estimates was recorded to $0.3927$m.
 %obtaining the error
 %In verifying the results for velocity, we used velocity and forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. In Fig.~\ref{fig:trainvel}, the absolute error between actual and estimated velocities is depicted. In Fig.~\ref{fig:trainpos}, we show the absolute error in the position between the two vehicles. The resulting root mean square error (RMSE) for forward position estimates was $0.3927$m.
 
-\begin{figure}[H]
+\begin{figure}[ht!]
 	\centering
 	\subfigure[The error between the velocity of the actual model and estimated velocities \label{fig:trainvel}]{\includegraphics[width=\linewidth]{fig/trainvelerror.png}}
 	\subfigure[The error between the position of the actual model and estimated positions \label{fig:trainpos}]{\includegraphics[width=\linewidth]{fig/trainposerror.png}}
