@@ -691,20 +691,32 @@ Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 
 \caption{Lane change training and prediction. Online prediction is occurring at 700 iterations} \label{fig:train2}
 \end{figure}
 
-\subsection{Fitting Models}
-In this section, we add to the previous results, by showing that we are not only able to predict states given a model, but we are also able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we initialize $\hat{\mathcal{P}}$ use \eqref{eq:pnorm} with the transition matrices of each of three pre-trained models. In Fig.~\ref{fig:error}, the error between each pre-trained model and the observed vehicle is shown. At the start of run-time, the errors are higher and are very scrambled. As the vehicle is observed for longer, one model has less error than the others; in this case, the model is Model $3$. 
+\subsection{Model Fitting Example}
+
+Building on the previous results, here we demonstrate the model fitting approach presented in Section...For the sake of simplicity in this work we trained and built 3 different vehicles models whose velocities was between xx and xx\NB{complete}. Specifically one vehicle was aggressive, one was conservative, while the third vehicle's behavior was in between the other two behaviors. Three different transition and emission matrices were computed offline and used online to predict the behavior of a new vehicle with the assumption that this new vehicle's model was similar to one of the previously sampled behaviors. Following the procedure in .... at each iteration a model for the new vehicle is built and compared with each of the pre-trained models. The model with the minimum error (i.e. with the highest trust) is selected at each iteration to predict future states of the new vehicle.
+
+Fig...(a) shows the error between the model of the vehicle and each pre-trained model, Fig...(b) shows the trust at each iteration, while Fig...(c) displays the choice of model at every iterations. As expected the error is high at the beginning because fewer transitions are observed which are very likely to be similar among different models. As the simulation advances and more data are gathered, trust increases and the error decreases aligning the prediction with one of the three pre-trained model, which in this case was Model 3. Convergence is achieved in about 300 iterations.  
+
+%In this section, we add to the previous results, by showing that we are not only able to predict states given a model, but we are also able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we initialize $\hat{\mathcal{P}}$ use \eqref{eq:pnorm} with the transition matrices of each of three pre-trained models. In Fig.~\ref{fig:error}, the error between each pre-trained model and the observed vehicle is shown. At the start of run-time, the errors are higher and are very scrambled. As the vehicle is observed for longer, one model has less error than the others; in this case, the model is Model $3$. 
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/modelerror.png}
     \caption{The error of the fit between the current vehicle and each of the three pretrained models} \label{fig:error}
 \end{figure}
 
-At each iteration, we use the model with the lowest error for future predictions. The selected model changes frequently at the start of run-time and converges to one model by the end of run-time. The selected model at each iteration is shown in Fig.~\ref{fig:select}. In this case, we converge to Model $3$ in approximately 300 iterations.
+%At each iteration, we use the model with the lowest error for future predictions. The selected model changes frequently at the start of run-time and converges to one model by the end of run-time. The selected model at each iteration is shown in Fig.~\ref{fig:select}. In this case, we converge to Model $3$ in approximately 300 iterations.
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/modelselect.png}
     \caption{The selected model at each iteration} \label{fig:select}
 \end{figure}
-Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $2.1423$m/s. In Fig.~\ref{fig:lanchan}, we show the the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.521$m. The RMSE values obtained for each of these tests suggest that the prediction is reliable, given that convergence to one model occurs. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
+
+Fig.~\ref{fig:fwd} shows the error between the predicted and actual velocity of the vehicle. The RMSE of this trial was recorded as $2.1423$m/s.
+Fig.~\ref{fig:lanchan} shows the lane change behavior. The RMSE between the prediction and the actual lane change actions was recorded as $3.521$m.
+
+Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $2.1423$m/s. 
+In Fig.~\ref{fig:lanchan}, we show the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.521$m. 
+
+%The RMSE values obtained for each of these tests suggest that the prediction is reliable, given that convergence to one model occurs. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
 
 \begin{figure}[ht]
     \includegraphics[width=0.48\textwidth]{fig/fiterroravg.png}
@@ -715,8 +727,13 @@ Using the selected model, we are able to make predictions for every iteration of
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
     \caption{The lane changes of the actual vehicle and the best-fit vehicle model} \label{fig:lanchan}
 \end{figure}
-\subsection{Assistive Planning and Control}
-In order to show the impact of our assistive control, we simulate a scenario much like the one depicted in Fig.\ref{fig:hiway}. We show one case where the user has full control of the HAV, and one where assistance is given to the user. Depicted in Fig.~\ref{fig:critpt} is a scenario where the risk, $r_h\in\hat{\mathcal{R}}$ is nearing the user set limit of $r_{\max} = 0.85$.
+
+
+\subsection{Assistive Planning and Control Case Study}
+In order to show the impact of our assistive control, we simulate a scenario similar to the one depicted in Fig.~\ref{fig:hiway}. 
+Fig.~\ref{fig:critpt} shows the setup used for this simulation. Two vehicles $q_1$ and $q_2$ with different behaviors are fitted online with the correct model and a HAV $h$ is monitoring and predicting their behavior assessing risk over a 3 time steps horizon. 
+Fig.~\ref{fig:critpt} shows the resulting risk over the reachable set of $h$. A user set $r_{\max} = 0.85$ is considered here. As can be noted the risk is increasing at $t+3$ on lane 2 because in this specific case $h$ gets closer to $q_2$ as time advances. 
+%We show one case where the user has full control of the HAV, and one where assistance is given to the user. Depicted in Fig.~\ref{fig:critpt} is a scenario where the risk, $r_h\in\hat{\mathcal{R}}$ is nearing the user set limit of $r_{\max} = 0.85$.
 
 
 \begin{figure}[h]
@@ -733,14 +750,13 @@ In order to show the impact of our assistive control, we simulate a scenario muc
   \caption{Road Scenario}
   \label{fig:critptrs}
 \end{subfigure}
-\caption{Critical Point - Risk Distribution and Road Scenario} \label{fig:critpt}
+\caption{Example scenario in which $h$ (magenta colored) is monitoring and predicting the behavior of two vehicles $\{q_1,q_2\}$ (blue and black colored).} \label{fig:critpt}
 \end{figure}
 
-In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV, with the lines marked with $(t+1,t+2,t+3)$. In this case, we are only showing the reachable set and risk distribution for $v_h$. The situation depicted is one of a critical point, which means that a decision has to be made at this time, or there's a heightened chance a collision will occur within $H$. 
+%In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV, with the lines marked with $(t+1,t+2,t+3)$. In this case, we are only showing the reachable set and risk distribution for $v_h$. The situation depicted is one of a critical point, which means that a decision has to be made at this time, or there's a heightened chance a collision will occur within $H$. 
 
 
-In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted. In this scenario, the user reached the same critical point as in Fig.~\ref{fig:critpt}, and decided to simply avoid vehicle $q_2$, by moving to the left lane, unaware that an increased risk exists in the future for the left lane. In addition, the user did not adjust their velocity either, and as a result a collision occurred.
-
+In Fig.~\ref{fig:noassist}, we show a snapshot for a situation in which the user was not assisted, i.e., $u^*=u_h, \;\;\forall t>0$. In this scenario, the user reaches the a safety-critical point as in Fig.~\ref{fig:critpt}, and decides to avoid $q_2$, by moving to the left lane $l_1$, where the risk is high (as shown in Fig.~\ref{fig:critpt}). As a result a collision happened in this case.
 \begin{figure}[h]
 \centering
 \begin{subfigure}{.54\linewidth}
@@ -758,7 +774,9 @@ In Fig.~\ref{fig:noassist}, we show a scenario in which the user was unassisted.
 \caption{Unassisted - Risk Distribution and Road Scenario} \label{fig:noassist}
 \end{figure}
 
-In our approach, we aim to avoid such a situation, and in Fig.~\ref{fig:assist}, we a show a scenario in which the HAV was assisted. The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. With assistive input, both lane and velocity were changed in order to minimize risk. In this case, the specific input pair was $u_a = (l_3,v_h^+)$. 
+In our approach, we aim to avoid such a situation. Fig.~\ref{fig:assist}, shows a snapshot of the same scenario but this time with the assistive behavior enabled. In this case the optimal input was switched between $u_h$ and $u_a$ when the risk was above $r_{max}$. 
+The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. Using our framework the $u_h$ was overwritten by $u_a$ guaranteeing a safe operation of $h$.
+%With assistive input, both lane and velocity were changed in order to minimize risk. In this case, the specific input pair was $u_a = (l_3,v_h^+)$. 
 
 \begin{figure}[h]
 \centering
@@ -777,7 +795,7 @@ In our approach, we aim to avoid such a situation, and in Fig.~\ref{fig:assist},
 \caption{Assisted - Risk Distribution and Road Scenario} \label{fig:assist}
 \end{figure}
 
- In the situation depicted in Fig.~\ref{fig:assist}, the input $(l_3,v_h^+)$ increases the distance, $d_q(t)$, between vehicles $h$ and all $q$, which indicates risk has successfully been minimized for that timestep.
+% In the situation depicted in Fig.~\ref{fig:assist}, the input $(l_3,v_h^+)$ increases the distance, $d_q(t)$, between vehicles $h$ and all $q$, which indicates risk has successfully been minimized for that timestep.
 
 
 \section{Conclusions} \label{sec:concs}
