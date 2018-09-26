@@ -261,6 +261,7 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}.
     \caption{Block Diagram of the Approach}
     \label{fig:app}
 \end{figure}
+
 We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are then used online to recognize and predict new vehicles' behaviors. Based on these predictions, and the user's input $u_h$, a monitor predicts and assesses whether $h$ could enter any unsafe state. If such an unsafe action is detected, an autonomous control action, $u_a$, is deployed to assist and correct the user's intention. In the next sections, we will go over this framework, explaining in detail each block presented in Fig.~\ref{fig:app}.
 
 %Our approach, shown in Fig.~\ref{fig:app}, has the following components: by using offline training, we extract different models representing different vehicle behaviors. These models are then used online to to predict future states of other vehicles, $\{s_q(t+1),\ldots s_q(t+H)\}$ over a time horizon $H$, thus inferring their behavior to better assess safety and intervene to avoid hazardous situations, like a collision.
