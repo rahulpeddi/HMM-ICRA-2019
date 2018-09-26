@@ -703,24 +703,34 @@ Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 
 
 \subsection{Model Fitting Example}
 
-Building on the previous results, here we demonstrate the model fitting approach presented in Section...For the sake of simplicity in this work we trained and built 3 different vehicles models whose velocities was between $22$m/s and $32$m/s. Specifically one vehicle was aggressive, one was conservative, while the third vehicle's behavior was in between the other two behaviors. Three different transition and emission matrices were computed offline and used online to predict the behavior of a new vehicle with the assumption that this new vehicle's model was similar to one of the previously sampled behaviors. Following the procedure in Section \ref{sec:omf} at each iteration a model for the new vehicle is built and compared with each of the pre-trained models. The model with the minimum error (i.e. with the highest trust) is selected at each iteration to predict future states of the new vehicle.
+Building on the previous results, here we demonstrate the model fitting approach presented in Section \ref{sec:omf}. For the sake of simplicity in this work we trained and built 3 different vehicles models whose velocities were between $22$m/s and $32$m/s. Specifically one vehicle was aggressive, one was conservative, while the third vehicle's behavior was in between the other two behaviors. Three different transition and emission matrices were computed offline and used online to predict the behavior of a new vehicle with the assumption that this new vehicle's model was similar to one of the previously sampled behaviors. Following the procedure in Section \ref{sec:omf} at each iteration a model for the new vehicle is built and compared with each of the pre-trained models. The model with the minimum error (i.e. with the highest trust) is selected at each iteration to predict future states of the new vehicle.
 
-Fig...(a) shows the error between the model of the vehicle and each pre-trained model, Fig...(b) shows the trust at each iteration, while Fig...(c) displays the choice of model at every iterations. As expected the error is high at the beginning because fewer transitions are observed which are very likely to be similar among different models. As the simulation advances and more data are gathered, trust increases and the error decreases aligning the prediction with one of the three pre-trained model, which in this case was Model 3. Convergence is achieved in about 300 iterations.  
+Fig.~\ref{fig:error} shows the error between the model of the vehicle and each pre-trained model, Fig.~\ref{fig:trust} shows the trust at each iteration, while Fig.~\ref{fig:select} displays the choice of model at every iterations. As expected the error is high at the beginning because fewer transitions are observed which are very likely to be similar among different models. As the simulation advances and more data are gathered, trust increases and the error decreases aligning the prediction with one of the three pre-trained models, which, in this case, was Model 2. Convergence is achieved in about 300 iterations.  
 
 %In this section, we add to the previous results, by showing that we are not only able to predict states given a model, but we are also able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we initialize $\hat{\mathcal{P}}$ use \eqref{eq:pnorm} with the transition matrices of each of three pre-trained models. In Fig.~\ref{fig:error}, the error between each pre-trained model and the observed vehicle is shown. At the start of run-time, the errors are higher and are very scrambled. As the vehicle is observed for longer, one model has less error than the others; in this case, the model is Model $3$. 
 
-\begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fig/modelerror.png}
-    \caption{The error of the fit between the current vehicle and each of the three pretrained models} \label{fig:error}
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{fig/modelerror.png}
+    \caption{The error of the fit between the current vehicle and each of the three pretrained models}
+    \label{fig:error}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{fig/trustfit.png}
+    \caption{The trust associated with the best-fit model at each iteration}
+    \label{fig:trust}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{fig/modelselect.png}
+    \caption{The selected model at each iteration}
+    \label{fig:select}
+\end{subfigure}
+\caption{Model Selection Process - Error, Trust, and Selection}
 \end{figure}
 
-%At each iteration, we use the model with the lowest error for future predictions. The selected model changes frequently at the start of run-time and converges to one model by the end of run-time. The selected model at each iteration is shown in Fig.~\ref{fig:select}. In this case, we converge to Model $3$ in approximately 300 iterations.
-\begin{figure}[ht]
-    \includegraphics[width=0.48\textwidth]{fig/modelselect.png}
-    \caption{The selected model at each iteration} \label{fig:select}
-\end{figure}
-
-Fig.~\ref{fig:fwd} shows the error between the predicted and actual velocity of the vehicle. The RMSE of this trial was recorded as $2.1423$m/s.
+Fig.~\ref{fig:fwd} shows the error between the predicted and actual velocity of the vehicle. The RMSE of this trial was recorded as $1.1423$m/s.
 Fig.~\ref{fig:lanchan} shows the lane change behavior. The RMSE between the prediction and the actual lane change actions was recorded as $3.521$m.
 
 Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $2.1423$m/s. 
