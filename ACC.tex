@@ -720,7 +720,7 @@ Fig.~\ref{fig:trainvel} shows the absolute error between actual and estimated ve
 %obtaining the error
 %In verifying the results for velocity, we used velocity and forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. In Fig.~\ref{fig:trainvel}, the absolute error between actual and estimated velocities is depicted. In Fig.~\ref{fig:trainpos}, we show the absolute error in the position between the two vehicles. The resulting root mean square error (RMSE) for forward position estimates was $0.3927$m.
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 	\centering
 	\subfigure[The error between the velocity of the actual model and estimated velocities \label{fig:trainvel}]{\includegraphics[width=\linewidth]{fig/trainvelerror.png}}
 	\subfigure[The error between the position of the actual model and estimated positions \label{fig:trainpos}]{\includegraphics[width=\linewidth]{fig/trainposerror.png}}
@@ -747,7 +747,7 @@ Fig.~\ref{fig:error} shows the error between the model of the vehicle and each p
 
 %In this section, we add to the previous results, by showing that we are not only able to predict states given a model, but we are also able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we initialize $\hat{\mathcal{P}}$ use \eqref{eq:pnorm} with the transition matrices of each of three pre-trained models. In Fig.~\ref{fig:error}, the error between each pre-trained model and the observed vehicle is shown. At the start of run-time, the errors are higher and are very scrambled. As the vehicle is observed for longer, one model has less error than the others; in this case, the model is Model $3$. 
 
-\begin{figure}[ht!]
+\begin{figure}[h]
 	\centering
 	\subfigure[Fit error between the current vehicle and each of the three pretrained models \label{fig:error}]{\includegraphics[width=\linewidth]{fig/modelerror.png}}
 	\subfigure[Trust associated with the best-fit model at each iteration
