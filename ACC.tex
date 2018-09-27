@@ -195,9 +195,9 @@ Our contribution is twofold:
 
 \section{Related Work} \label{sec:relatedwork}
 
-The study of semi-autonomous and autonomous vehicles has been growing in recent years. As these options have become more available to the average consumer, driving environments have become more mixed. Researchers approach such environments from different viewpoints: improving the knowledge about the environment (i.e. prediction) and those that involve controlling for such environments (i.e. autonomy).
+The study of semi-autonomous and autonomous vehicles has been growing in recent years. As these options have become more available to the average consumer, driving environments have become more mixed. Researchers approach such environments from different viewpoints: improving the knowledge about the environment (i.e., prediction) and those that involve controlling for such environments (i.e., autonomy).
 
-The authors in \cite{mpc} use velocity predictions derived from artificial neural networks and GPS systems for Model Predictive Control (MPC), which is presented as a computationally expensive optimization problem, and the predictions can only be reliably evaluated for one vehicle at a time. The authors in \cite{velnn} and \cite{veldatadriv} take a data science approach and use large data-sets along with very specific traffic information in order to make predictions. The use of a Hidden Markov Model (HMM)-based approach for prediction is done in \cite{lanhmm}, where the authors develop an approach that treats a vehicle as a hybrid state system in order to predict the trajectory of a certain behavior. This is done  assuming knowledge of multiple states that cannot be observed from outside of the system (i.e., perfect communication is assumed). In \cite{woohmm}, motivated by previous work in HMMs, the authors discuss using a simplified form of the hybrid state system with an HMM to improve lane change prediction scalability over multiple vehicles. In our work, we consider the problem of predicting future velocity and when lane changes are expected by leveraging similar theories presented in \cite{mpc} and \cite{woohmm}.
+The authors in \cite{mpc} use velocity predictions derived from artificial neural networks and GPS systems for Model Predictive Control (MPC), which is presented as a computationally expensive optimization problem, and the predictions can only be reliably evaluated for one vehicle at a time. The authors in \cite{velnn} and \cite{veldatadriv} take a data science approach and use large data-sets along with very specific traffic information in order to make predictions. The use of a Hidden Markov Model (HMM)-based approach for prediction is done in \cite{lanhmm}, where the authors develop an approach that treats a vehicle as a hybrid state system in order to predict the trajectory of a certain behavior. This is done assuming knowledge of multiple states that cannot be observed from outside of the system. In \cite{woohmm}, motivated by previous work in HMMs, the authors discuss using a simplified form of the hybrid state system with an HMM to improve lane change prediction for a single vehicle. In our work, we consider the problem of predicting future velocity and when lane changes are expected by leveraging similar theories presented in \cite{mpc} and \cite{woohmm}.
 
 In terms of controlling vehicles in such environments, the authors in \cite{qmdp} use a Point-Based Markov Decision Process (QMDP) to estimate dangerous situations and react with the appropriate autonomous driving behavior in single-lane situations. The QMDP process employs a robust but computationally expensive value iteration algorithm in order to select the safest action in a single lane situation. In \cite{predcost}, the authors present a prediction and cost-based (PCB) control strategy for autonomous vehicles given a known set of predicted scenarios. In this vein, \cite{vfh*} discusses reliable obstacle avoidance methods given that obstacle locations and characteristics which are known based on artificial physics methods. In \cite{takeover}, with a human-factors based approach, the authors show multiple ways that take-over requests can be generated in partially autonomous vehicles, including performance based and environment based characteristics. In our work, we leverage the idea of sharing control from \cite{takeover}, along with the theories in \cite{vfh*} to control for future unsafe scenarios.
 
@@ -456,7 +456,7 @@ We can then calculate relative distance as
 \begin{equation}
     \forall q \in R_h: d_q(t) = \lVert x_h(t)-x_q(t)\rVert_2
 \end{equation}
-where $\rVert \cdot \lVert_2$ indicates the $l_2$ vector norm. Risk is inversely proportional to distance $d_q(t)$, lane separation $l_q(t)$,and trust $\rho$. Specifically, the risk $r_q^l(t)$ associated with vehicle $q$ and lane $l$ at time $t$ is computed as follows: %\NB{what about the lanes?}
+where $\rVert \cdot \lVert_2$ indicates the $l_2$ vector norm. Risk is inversely proportional to distance $d_q(t)$, lane separation $l_q(t)$, and trust $\rho$. Specifically, the risk $r_q^l(t)$ associated with vehicle $q$ and lane $l$ at time $t$ is computed as follows: %\NB{what about the lanes?}
 
 \begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
@@ -496,12 +496,10 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
 \mathcal{R}_{1}^{v^+}(i,j) & \ldots   & \mathcal{R}_{m}^{v^+}(i,j)
 \end{bmatrix}\end{pmatrix}
 \end{equation}
-%\NB{what's L? Define every variable, vector, set, etc...be careful that you may have already defined this before in another way}
 
-%\NB{$\hat{r}_{v_h}$ is one value if I have to look this expression. why???}
  where $i = 1,\ldots,H$, $j = 1,\ldots,n$, and $\hat{\mathcal{R}} \in \mathbb{R}^{H\times n}$.
  
- %Using \eqref{eq:lanerisk}, we obtain a distribution of all of the highest risk values for velocity $v_h$. % \NB{how are you combining these risks in one risk?}. 
+
  In Fig.~\ref{fig:distr}, we show an example of a risk distribution (i.e. $\hat{\mathcal{R}}$), over $H=3$ for velocity $v_h$. The road scenario (Fig.~\ref{fig:roads}) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps. In addition, other vehicles and future predictions of those vehicles for horizon $H=3$ are also shown in the road scenario.
 
 \begin{figure}[ht!]
@@ -522,7 +520,7 @@ Given the risk distribution, we can assist our user's potentially unsafe actions
 u_h(t) = (l_h(t),v_h(t)), \text{ where } l(t)\in\hat{L}, v_h(t)\in\hat{V}
 \end{equation}
 A user-set threshold, $r_{\max}$ is defined. If risk is below $r_{\max}$, we let the user continue his/her desired actions, and if it is above $r_{\max}$, the autonomous component in the HAV takes control of the system. Given $r_{\max}$ and the values in the risk distribution, as indicated in Figs.~\ref{fig:reach} and \ref{fig:riskd}, the input $u*(t)$ is either the user input $u_h(t)$ or the autonomous input $u_a(t)$ as follows:
-% \NB{what does it mean? A limit for risk for what? Be clear}.
+
 \begin{equation} \label{eq:inputctrl}
     u^*(t) = \begin{cases}
     u_h(t) & \text{ if } \hat{\mathcal{R}}(i,j) < r_{\max}, \forall\hat{\mathcal{R}}(i,j)\in\hat{\mathcal{R}} \\
@@ -606,10 +604,10 @@ Fig.~\ref{fig:error} shows the error between the model of the vehicle and each p
 	\label{fig:trust}]{\includegraphics[width=\linewidth]{fig/trustfit.png}}
 	\subfigure[The selected model at each iteration
 	\label{fig:select}]{\includegraphics[width=\linewidth]{fig/modelselect.png}}
-	\vspace{-5pt}
+	\vspace{-0pt}
 	\caption{Model Selection Process: Model Error, Trust Measure, and Selection}
 	\label{fig:fitprocess}
-	\vspace{-5pt}
+	\vspace{-0pt}
 \end{figure}
 
 Fig.~\ref{fig:fwd} shows the error between the predicted and actual velocity of the vehicle. The RMSE of this trial was recorded as $1.1423$m/s.
@@ -620,15 +618,15 @@ In Fig.~\ref{fig:lanchan}, we show the predictions made that pertain to lane cha
 
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/fiterroravg.png}
-    \vspace{-5pt}
+    \vspace{-0pt}
     \caption{Absolute Error of velocity between the fitted and actual vehicles} \label{fig:fwd}
 \end{figure}
 % \vspace{-5pt}
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/lanefit.png}
-     \vspace{-5pt}
+     \vspace{-0pt}
     \caption{The lane changes of the actual vehicle and the best-fit vehicle model} \label{fig:lanchan}
-    	     \vspace{-10pt}
+    	     \vspace{-0pt}
 \end{figure}
 %     \vspace{-5pt}
 
@@ -649,7 +647,7 @@ Fig.~\ref{fig:critrd} shows the resulting risk over the reachable set of $h$. A 
 	\vspace{-0pt}
 	\caption{Example scenario in which $h$ (magenta colored) is monitoring and predicting the behavior of two vehicles $\{q_1,q_2\}$ (blue and black colored).}
 	\label{fig:critpt}
-	\vspace{-5pt}
+	\vspace{-0pt}
 \end{figure}
 
 %In Fig.~\ref{fig:critpt}, the magenta vehicle in the center is the HAV we are able to control. The reachable set is shown coming out of the HAV, with the lines marked with $(t+1,t+2,t+3)$. In this case, we are only showing the reachable set and risk distribution for $v_h$. The situation depicted is one of a critical point, which means that a decision has to be made at this time, or there's a heightened chance a collision will occur within $H$. 
@@ -666,7 +664,7 @@ In Fig.~\ref{fig:noassist}, we show a snapshot for a situation in which the user
 	\vspace{-0pt}
 	\caption{Unassisted - Risk Distribution and Road Scenario}
 	\label{fig:noassist}
-	\vspace{-5pt}
+	\vspace{-0pt}
 \end{figure}
 In our approach, we aim to avoid such a situation. Fig.~\ref{fig:assistrs} shows a snapshot of the same scenario but this time with the assistive behavior enabled. In this case the optimal input was switched between $u_h$ and $u_a$ when the risk was above $r_{max}$. 
 The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. Using our framework, the $u_h$ was overwritten by $u_a$ guaranteeing a safe operation of $h$.
@@ -680,9 +678,9 @@ The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this c
 	\vspace{-0pt}
 	\caption{Assisted - Risk Distribution and Road Scenario}
 	\label{fig:assist}
-	\vspace{--5pt}
-\end{figure}
 	\vspace{-0pt}
+\end{figure}
+
 
 Animations for the simulations presented above can be found at https://www.bezzorobotics.com/rp-acc19.
 
