@@ -290,7 +290,7 @@ We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to buil
 
 This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{P}, \mathcal{B} \rangle$. Our framework is different from a traditional HMM because the states are not hidden, and we know exactly the relationship between states and their corresponding inferences. Because we have all the states and transitions a priori, we can learn the parameters of multiple models offline. The general pictorial representation of the framework is shown in Fig.~\ref{fig:hmm}. In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $g$ represent the emissions ($\mathcal{G}$). The lines with the label $p$ are the transition probabilities between states, and those labeled $b$ are the probabilities that each of the connected observations are associated with connected states.
 \begin{figure}[h]
-    \includegraphics[width=0.48\textwidth]{fig/hmm.png}
+    \includegraphics[width=0.48\textwidth]{fig/ahmm.png}
     \caption{General Representation of the Hidden Markov Model (HMM) for our framework}
     \label{fig:hmm}
 \end{figure}
@@ -646,7 +646,7 @@ Fig.~\ref{fig:critrd} shows the resulting risk over the reachable set of $h$. A 
 	\label{fig:critrd}]{\includegraphics[width=.49\linewidth]{fig/critpt_rd.png}}
 	\subfigure[Road Scenario
 	\label{fig:critrs}]{\includegraphics[width=.43\linewidth]{fig/critpt_rs.png}}
-	\vspace{-5pt}
+	\vspace{-0pt}
 	\caption{Example scenario in which $h$ (magenta colored) is monitoring and predicting the behavior of two vehicles $\{q_1,q_2\}$ (blue and black colored).}
 	\label{fig:critpt}
 	\vspace{-5pt}
@@ -663,10 +663,10 @@ In Fig.~\ref{fig:noassist}, we show a snapshot for a situation in which the user
 	\label{fig:noasstrd}]{\includegraphics[width=.49\linewidth]{fig/noassist_rd.png}}
 	\subfigure[Road Scenario
 	\label{fig:noasstrs}]{\includegraphics[width=.43\linewidth]{fig/noassist_rs.png}}
-	\vspace{-5pt}
+	\vspace{-0pt}
 	\caption{Unassisted - Risk Distribution and Road Scenario}
 	\label{fig:noassist}
-	\vspace{-10pt}
+	\vspace{-5pt}
 \end{figure}
 In our approach, we aim to avoid such a situation. Fig.~\ref{fig:assistrs} shows a snapshot of the same scenario but this time with the assistive behavior enabled. In this case the optimal input was switched between $u_h$ and $u_a$ when the risk was above $r_{max}$. 
 The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. Using our framework, the $u_h$ was overwritten by $u_a$ guaranteeing a safe operation of $h$.
@@ -677,10 +677,10 @@ The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this c
 	\label{fig:assistrd}]{\includegraphics[width=.49\linewidth]{fig/assist_rd.png}}
 	\subfigure[Road Scenario
 	\label{fig:assistrs}]{\includegraphics[width=.43\linewidth]{fig/assist_rs.png}}
-	\vspace{-5pt}
+	\vspace{-0pt}
 	\caption{Assisted - Risk Distribution and Road Scenario}
 	\label{fig:assist}
-	\vspace{-10pt}
+	\vspace{--5pt}
 \end{figure}
 	\vspace{-0pt}
 
