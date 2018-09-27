@@ -146,14 +146,10 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-%\NB{start with Hybrid autonomous systems}
-%\NB{abstract needs to be fixed...check my comments below}
-%In this work, we develop a monitor that can predict the future states of multiple vehicles within a sensing range, and correct the actions of a user-operated hybrid autonomous vehicle (HAV) to ensure safety. We use a framework that leverages Hidden Markov Model (HMM) theory along with a simplified reachability analysis to perform a risk computation and trust analysis for imminent situations. Our monitor leaves the user in power when safe and intervenes only when the risk is above a threshold, in which case the user action is overwritten by actions that minimize risk. Using this method, we are able to guarantee that the vehicle is safe for the period in which risk is above the threshold. In addition, this approach was validated through simulations of an automotive scenario. \NB{abstract needs to be rewritten}
-%NB{In the abstract we are building a monitor...we need to mention that we leverage HMM, propose a simplified reachability analysis, to predict future states of other surrounding vehicles, compute a risk and, trust to assist a vehicle. We need to mention that the way that }
-Hybrid Autonomous Vehicles (HAVs) are systems in which control authority is shared between a human user and an on-board computer. In such systems, users can sometimes pass errant commands that compromise the integrity and safety of the system. In this paper, we develop a monitor for assessing and predicting the future states of other vehicles that are sharing the same task space of the HAV, and correct the user's actions to ensure safety (i.e., no collisions). We propose a framework that uses the Hidden Markov Model (HMM) theory to predict and estimate the risk and trust associated with future states. A switching strategy is also proposed to alternate between human input and autonomous input when risk is above a certain threshold guaranteeing safety while leaving the user desired control input when risk is below a safe threshold. The proposed approach is validated with simulations for an automotive setting with multiple vehicles having different behaviors.
+
+Hybrid Autonomous Vehicles (HAVs) are systems in which control authority is shared between a human user and an onboard computer. In such systems, users can sometimes pass errant commands that compromise the integrity and safety of the system. In this paper, we develop a monitor for assessing and predicting the future states of other vehicles that are sharing the same task space of the HAV, and correct the user's actions to ensure safety (i.e., no collisions). We propose a framework that uses the Hidden Markov Model (HMM) theory to predict and estimate the risk and trust associated with future states. A switching strategy is also proposed to alternate between human input and autonomous input when risk is above a certain threshold. While the risk is within the safety threshold, the user is allowed to control input. The proposed approach is validated with simulations for an automotive setting with multiple vehicles that have different behaviors.
 
 
-%we develop a monitor capable of assessing the future risk of the user's actions and leveraging the autonomous capabilities to
 
 \end{abstract}
 %\NB{abstract should present the problem with a little motivation and the approach with the technique and briefly mention the results}
@@ -173,59 +169,47 @@ Hybrid Autonomous Vehicles (HAVs) are systems in which control authority is shar
 %\NB{intro needs to be rewritten...follow my comments below}
 % no \IEEEPARstart
 
-%\NB{In a not far future, multiple vehicles with different level of autonomy will have to coexist and operate safely. Examples of such vehicles include cars, vessels, aerial vehicles. Different levels of autonomy are available 1 to 5 for cars, hobby  }   
+ In recent years, robotic systems have become more precise and reliable, and as a result they are used in many fields, including military, industry, and even as consumer electronics. Aerial vehicles can be used for search and rescue missions or package delivery and intelligent ground vehicles can be used for driving safety and consumer convenience applications like robotic vacuum cleaners. Many of these robotic systems are capable of autonomous behaviors, but the level of autonomy varies from system to system. For instance, modern consumer vehicles are often equipped with Adaptive Cruise Control (ACC)\cite{acc} or Advanced Driver Assistance (ADA)\cite{adas} capabilities - both of which consider a human in the loop with different levels of involvement. Humans can affect the performance, safety, and security of remote and locally-operated vehicles (cars, military drones). For aerial vehicles, nearly $33$\% of accidents implicate human error, as per the Federal Aviation Administration. \cite{aviacc}. Data from the National Highway Traffic Safety Administration in 2016 suggests that $94\%$ of crashes on the road are caused by human error \cite{nhtsa}. Of these crashes, $74\%$ are attributed to recognition and decision errors - meaning the user either did not have an understanding of the road conditions or made an unsafe decision. Thus, the human is considered as a disturbance in such systems. One solution would be to make every vehicle on the road fully autonomous, without a human in the loop. Full autonomy, however, may not
+be completely possible for every application, and even if it is the ultimate goal, mixed scenarios (i.e., autonomous and manned vehicles sharing the same road), are inevitable. In this paper, we develop a monitor to assess safety in multi-vehicle operations, propose a switching approach to decide between user and autonomous behavior, deploy a safe input at all times, and avoid undesired situations (e.g., collisions).
 
-%\NB{Semi-autonomous and autonomous vehicles are finding their way in our society rapidly. Although new advancements in sensing and autonomy are increasing safety by assisting drivers with line changing warning and assisted braking, } 
-%\NB{here let's talk about the trolly problem and mention that we see humans as disturbance in this work! discuss about teleoperated robotics that is still big and assistive automation}
+Although our approach is general for any cyber-physical system (CPS), we focus on hybrid autonomous systems in which at any time either the user or the onboard autonomous controller has full control of the vehicle. The proposed monitor needs to predict what every other vehicle will do, determine the trust of the predictions, predict the user's actions' consequences, assess their risk, and intervene, if the risk reaches the established threshold. We deploy the proposed technique in an automotive case study in which a vehicle is on a road with other vehicles that have different behaviors similar to the case depicted in Fig.\ref{fig:hiway}.
 
-In recent years, robotic systems have become more precise and reliable, and as a result they are finding their wayin our society and in many fields, including military and industrial applications and even as recreational consumer electronics. For example, aerial vehicles can be used for search and rescue missions or package delivery and intelligent ground vehicles can be used for driving safety or consumer convenience applications like the well known robotic vacuum cleaners. Many of these robotic systems are capable of autonomous behaviors, but the levels of autonomy varies from system to system. For instance, modern consumer vehicles are often equipped with Adaptive Cruise Control (ACC)\cite{acc} or Advanced Driver Assistance (ADA)\cite{adas} capabilities, both of which consider a human in the loop with different levels of involvement. Humans, sometime a pilot or an operator, in remote locations like for military drones operations or behind the steering wheel in modern cars, affect the performance, safety, and security of these systems. For aerial vehicles, nearly 33\% of accidents implicate human error \cite{aviacc}. Data from the National Highway Traffic Safety Administration (NHTSA) in 2016 suggests that $94\%$ of crashes on the road are caused by human error \cite{nhtsa}. Of these crashes, $74\%$ are attributed to recognition and decision errors - meaning the user either did not have an understanding of the road conditions or made an unsafe decision. Thus, the human can be often considered as a disturbance in such systems. One solution would be to make every vehicle on the road fully autonomous, without a human in the loop. Full autonomy, however, may not be completely possible for every application, and even if it is the ultimate goal, mixed scenarios (i.e. autonomous and manned vehicles sharing the same road), are inevitable. In this paper, we develop a monitor to assess safety in multi-vehicle operations and propose a switching approach to decide between user and autonomous behavior and deploy a safe input at all the times and avoid undesired situations (e.g., collisions).
-
-Although our approach is general for any CPS, we focus on hybrid autonomous systems in which at any time either the user has full control of the vehicle, or the onboard autonomous controller takes over. The proposed monitor needs to predict what every other vehicle will do, determine the trust of the prediction, predict user's actions' consequences, assess their risk, and intervene when needed (i.e. if the risk is very high). We deploy the proposed technique in an automotive case study in which a vehicle is on a road with other vehicles having different behaviors similar to the case depicted in Fig.\ref{fig:hiway}.
-%We assume that a user is operating a Hybrid Autonomous Vehicle (HAV), where at any time either the user has full control of the vehicle, or the onboard autonomous controller takes over. This monitor needs to predict what every other vehicle will do, determine the trust of the prediction, predict user's actions consequences, assess their risk, and intervene when needed (i.e. if the risk is very high). 
-%In Fig.\ref{fig:hiway}, we show an example of the envisioned desired outcome in an automotive setting. 
-In this figure, a user is driving a vehicle (magenta car) behind a slower vehicle (white car). In this case, both actions presented in Fig.\ref{fig:hiway} may appear safe to a driver at the moment, but as can be seen by the red circle, one of the lane changes is considerably riskier in the future, because a rapidly approaching vehicle (blue car) could enter the same space as the user's vehicle (i.e., creating a collision). 
+In this figure, a user is driving a vehicle (magenta car) behind a slower vehicle (white car). In this case, both actions presented in Fig.\ref{fig:hiway} may appear safe to a driver at the moment, as indicated by the red circle; however, one of the lane changes is considerably riskier in the future because a rapidly approaching vehicle (blue car) could enter the same space as the user's vehicle (i.e., creating a collision). 
 
 Our contribution is twofold:
     \begin{itemize}
-    \item{we develop a prediction method that can effectively and efficiently estimate the future positions and the risk and trust associated with the predictions of surrounding vehicles;} %\NB{and the risk and trust associated with these prediction}
+    \item{we develop a prediction method that can effectively and efficiently estimate the future positions, the risk, and trust associated with the predictions of surrounding vehicles;} %\NB{and the risk and trust associated with these prediction}
     \item{we design a switching framework that determines the appropriate input to use and the time to switch between user and autonomous behaviors.} %\NB{change this. What you mean the severity? }
     \end{itemize}
 
-%\NB{Start this section more general and broad, something like: Modern robotic systems are becoming more precise, they are used in many applications because .... For example aerial vehicles..., cars with different level of autonomy are entering our society....mobile robots used for... Several of these vehicles have different level of autonomy...cars have cruise control, adas, etc... and almost all of them have the human in/on the loop with different levels of involvements. The human, sometime a pilot or an operator in a remote location like in military drones or behind the steering wheel in a car affects the performance, safety, and security of these systems. Here brings some examples about accidents...data from [] show that xx\%of car accidents are due to user/operator errors, in [] xx\% of accidents involving military drones were due to human error....(and so on, show some examples with real data that backup that human is often the problem). Thus, the human is often a disturbance in the system. A solution would be to make everything fully autonomous without human in the loop, however this may not be possible for every application and there going to be always a transition with mixed scenarios (i.e. autonomous and manned vehicles sharing the same road). In this work we develop a monitor (this word should be also in your abstract!!) to assess safety in multi-vehicle operations to avoid unsafe situations (i.e. a collision). For example...explain better Figure 1 here (we may change this figure). Here explain that we are interested in predicting what everybody will do and what a user could do, monitor his actions, assess a risk, build a trust on our prediction, and intervene only if necessary, i.e., ... Our contribution is twofold: ....Although our approach is general for any CPS, we focus on hybrid autonomous systems in which....(explain what is a hybrid autonomous system) and deploy the proposed technique in a case study in which a vehicle is on a road with other vehicles having different behaviors similar to the case depicted in Fig. 1.}
+
 \begin{figure}[h]
     \includegraphics[width=0.48\textwidth]{fig/highway.png}
-    \caption{Pictorial representation of the motivation behind this work. On the left, a vehicle may enter unsafe states due to human error. On the right the desired outcome is displayed in which an autonomous controller takes over when the risk is above a certain threshold.}
+    \caption{Pictorial representation of the motivation behind this work. On the left, a vehicle may enter unsafe states due to human error. On the right, the desired outcome is displayed in which an autonomous controller takes over when the risk is above a certain threshold.}
     \label{fig:hiway}
 \end{figure}
-%Two possible actions on a highway, where one leads to a dangerous situation in the future(left), and another minimizes risk (right)
-%\NB{fix this figure. The proportions are off}   
-    
-   The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. In Sections \ref{sec:approach}-\ref{sec:adapt}, we discuss each component of our approach. Our results are then demonstrated with MATLAB simulations in Section \ref{sec:sims}. Lastly, we discuss our conclusions and future work in Section \ref{sec:concs}.%\NB{fix this part}
-   
-   %The general approach is discussed in Section \ref{sec:approach}. In Section \ref{sec:fmwk}, we discuss the specifics of the HMM-based framework, and how it is used to build models. We then use that framework to make online predictions in Section \ref{sec:ahmmpredupdate}, and show how we can fit the models to a system we are observing in Section \ref{sec:omf}. In Section \ref{sec:adapt} we discuss how we use the framework, along with the predictions and fitting, to assist the user.
 
     
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
+   The rest of this paper is organized as follows: in Section \ref{sec:relatedwork}, we discuss related work, and in Section \ref{sec:probform}, we formally define the problem. In Sections \ref{sec:approach}-\ref{sec:adapt}, we discuss each component of our approach. Our results are then demonstrated with MATLAB simulations in Section \ref{sec:sims}. Lastly, we discuss our conclusions and future work in Section \ref{sec:concs}.%\NB{fix this part}
+
 
 \section{Related Work} \label{sec:relatedwork}
 
-The study of semi-autonomous and autonomous vehicles has been growing in recent years. As these options have become more available to the average consumer, driving environments have become more mixed, and researchers approach such environments from different viewpoints; those of improving the knowledge about the environment (i.e. prediction) and those that involve controlling for such environments (i.e. autonomy).
+The study of semi-autonomous and autonomous vehicles has been growing in recent years. As these options have become more available to the average consumer, driving environments have become more mixed. Researchers approach such environments from different viewpoints: improving the knowledge about the environment (i.e. prediction) and those that involve controlling for such environments (i.e. autonomy).
 
-The authors in \cite{mpc} use velocity predictions derived from artificial neural networks and GPS systems for Model Predictive Control (MPC), which is presented as a computationally expensive optimization problem, and the predictions can only be reliably evaluated for one vehicle at a time. The authors in \cite{velnn} and \cite{veldatadriv} take a data science approach and use large data-sets, along with very specific traffic information, in order to make predictions. The use of a Hidden Markov Model (HMM) based approach for prediction is done in \cite{lanhmm}, where the authors develop an approach treating a vehicle as a hybrid state system to predict the trajectory of a certain behavior. This is done while assuming knowledge of multiple states that cannot be observed from outside. In \cite{woohmm}, motivated by previous work in HMMs, the authors discuss using a simplified form of the hybrid state system with an HMM to improve lane change prediction scalability over multiple vehicles. In our work, we consider the problem of predicting future velocity and when lane changes are expected by leveraging similar theories presented in \cite{mpc} and \cite{woohmm}. 
+The authors in \cite{mpc} use velocity predictions derived from artificial neural networks and GPS systems for Model Predictive Control (MPC), which is presented as a computationally expensive optimization problem, and the predictions can only be reliably evaluated for one vehicle at a time. The authors in \cite{velnn} and \cite{veldatadriv} take a data science approach and use large data-sets along with very specific traffic information in order to make predictions. The use of a Hidden Markov Model (HMM)-based approach for prediction is done in \cite{lanhmm}, where the authors develop an approach that treats a vehicle as a hybrid state system in order to predict the trajectory of a certain behavior. This is done  assuming knowledge of multiple states that cannot be observed from outside of the system (i.e., perfect communication is assumed). In \cite{woohmm}, motivated by previous work in HMMs, the authors discuss using a simplified form of the hybrid state system with an HMM to improve lane change prediction scalability over multiple vehicles. In our work, we consider the problem of predicting future velocity and when lane changes are expected by leveraging similar theories presented in \cite{mpc} and \cite{woohmm}.
 
-In terms of controlling vehicles in such environments, the authors in \cite{qmdp} use a Point-Based Markov Decision Process (QMDP) to estimate dangerous situations and react with the appropriate autonomous driving behavior in single-lane situations. The QMDP process employs a robust, but computationally expensive value iteration algorithm in order to select the safest action in a single lane situation. In \cite{predcost}, the authors present a prediction and cost-based (PCB) control strategy for autonomous vehicles given a known set of predicted scenarios. In this vein, \cite{vfh*} discusses reliable obstacle avoidance methods given that obstacle locations and characteristics are known based on artificial physics methods. In \cite{takeover}, with a human-factors based approach, the authors show multiple ways that take-over requests can be generated in partially autonomous vehicles, including performance based and environment based characteristics. In our work, we leverage the idea of sharing control from \cite{takeover}, along with the theories in \cite{vfh*} to control for future unsafe scenarios.
+In terms of controlling vehicles in such environments, the authors in \cite{qmdp} use a Point-Based Markov Decision Process (QMDP) to estimate dangerous situations and react with the appropriate autonomous driving behavior in single-lane situations. The QMDP process employs a robust but computationally expensive value iteration algorithm in order to select the safest action in a single lane situation. In \cite{predcost}, the authors present a prediction and cost-based (PCB) control strategy for autonomous vehicles given a known set of predicted scenarios. In this vein, \cite{vfh*} discusses reliable obstacle avoidance methods given that obstacle locations and characteristics which are known based on artificial physics methods. In \cite{takeover}, with a human-factors based approach, the authors show multiple ways that take-over requests can be generated in partially autonomous vehicles, including performance based and environment based characteristics. In our work, we leverage the idea of sharing control from \cite{takeover}, along with the theories in \cite{vfh*} to control for future unsafe scenarios.
 
     
 \section{Problem Formulation} \label{sec:probform}
  
-In this work we are interested in finding an approach to proactively guarantee safety (i.e., something bad will never happen) in multi-vehicle systems operations. We focus on manned vehicles employing an hybrid autonomy scheme as defined in \cite{corke} in which the control authority is shared between the human and the on-board computer. For the sake of brevity we denote this class of vehicles as {\em hybrid autonomous vehicles} (HAVs), In our scheme, the on-board computer is used as a supervisory monitor to predict and assess safety and assist by correcting undesired human behaviors that may lead to unsafe situations and compromise the system's integrity. 
+In this work we are interested in finding an approach to proactively guarantee safety (i.e., a collision does not occur) in multi-vehicle systems operations. We focus on manned vehicles employing a hybrid autonomy scheme as defined in \cite{corke} in which the control authority is shared between the human and the onboard computer. For the sake of brevity, we denote this class of vehicles as {\em hybrid autonomous vehicles} (HAVs). In our scheme, the onboard computer is used as a supervisory monitor to predict and assess safety, and correct undesired human behaviors that may lead to unsafe situations that compromise the system's integrity. 
 
-% control in which users may perform undesired actions that can compromise the safety of the entire system 
 Formally the problem that we investigate in this work can be stated as: 
 
 \textbf{Problem 1: \textit{Proactive Safe Assisted Planning and Control}:} 
-      A hybrid autonomous vehicle (HAV) $h$ is moving in an environment in the presence of other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
+      An HAV $h$ is moving in an environment in the presence of other vehicles $q \in R_h(t)$, where $R_h(t)$ is a time varying set of vehicles in sensing/communication range with $h$. The goal is to find a policy to:
     \begin{enumerate}
         \item  predict online other vehicles future states $s$ and their likelihood $p$. Formally, $\forall q \in R_h(t)$:
     \begin{equation}
@@ -233,26 +217,20 @@ Formally the problem that we investigate in this work can be stated as:
        \end{equation}
        \begin{equation}
    P_q=\{{p_q(t), p_q(t+1),..., p_q(t+T)}\}
-%     \forall q \in R_h(t), S_q=\{{s_q(t), s_q(t+1),..., s_q(t+T)}\}
     \end{equation}
      where $S_q$ is the set of all states, $s_q$, and $P$ is the set of all probabilities, $p_q$ over a finite time horizon $T\in\N$.  
-%     assess their likelihood
-%    \begin{equation}
-%    P=\{{p_q(t), p_q(t+1),..., p_q(t+T)}\}
-%    \end{equation}
-%    where $P$ represents the set of all probabilities, $p_q(t)$ represents the probabilities at each time, $t$.
     \item assess the risk $0\leq r \leq1$ of a collision during $T$ and
     \item assist and intervene to correct the HAV actions to guarantee safety, i.e., obtain an input policy $U_h=\{{u_h(t), u_h(t+1),..., u_h(t+T)}\}$ such that the risk $r$ is always minimized. 
     \end{enumerate}
-   In our specific multi-vehicle case, risk is a function of distance between vehicles. Hence minimizing risk is equivalent to guaranteeing the following:
-%    surpasses a certain user defined level,$\rho$, we are able to minimize the risk, and guarantee,
+   In our specific multi-vehicle case, risk is a function of distance between vehicles. Hence, minimizing risk is equivalent to guaranteeing the following:
+
     \begin{equation}
         ||{x_h(t)-x_q(t)}|| \geq d_{\textrm{min}}
     \end{equation}
-     where $x_h(t)$ and $x_q(t)$ are the positions of the HAV and the $q^{\textrm{th}}$ surrounding vehicle at time $t$ and $d_{min}$ is a minimum safe distance.    
+     where $x_h(t)$ and $x_q(t)$ are the positions of the HAV and the $q^{\textrm{th}}$ surrounding vehicle at time $t$, and $d_{min}$ is a minimum safe distance.    
     
-    It is important to note that the vehicle that we are assisting is primarily human operated, in the sense that we should intervene only when necessary. %\NB{we are not modifying anything, we are adapting and assisting its operation. This sentence needs to be rewritten.}.
-    In other words, unless the HAV has a reachable state that is unsafe, which we define as a situation where $r_h(t)>r_{\max}$, where $r_{\max}$ is a user defined threshold, we let the user perform his/her desired actions.
+    It is important to note that the vehicle that we are assisting is primarily human operated, in which the monitor should intervene only when necessary.
+    Unless the HAV has a reachable state that is unsafe, which we define as a situation where $r_h(t)>r_{\max}$, where $r_{\max}$ is a user-defined threshold, we let the user perform his/her desired actions.
 
 
 \section{Approach} \label{sec:approach}
@@ -266,18 +244,13 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}.
 
 We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are then used online to recognize and predict new vehicles' behaviors. Based on these predictions, and the user's input $u_h$, a monitor predicts and assesses whether $h$ could enter any unsafe state. If such an unsafe action is detected, an autonomous control action, $u_a$, is deployed to assist and correct the user's intention. In the next sections, we will go over this framework, explaining in detail each block presented in Fig.~\ref{fig:app}.
 
-
 \section{HMM-based Training Framework} \label{sec:fmwk}
- In order to predict future states of other vehicles, we perform offline training of data collected over an horizon $T$ to extract and differentiate between multiple behavioral models. To this end, we propose a modified version of the Hidden Markov Model (HMM) \cite{woohmm} which can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
+ In order to predict future states of other vehicles, we perform offline training of data collected over a horizon $T$ to extract and differentiate between multiple behavioral models. To this end, we propose a modified version of the Hidden Markov Model (HMM) \cite{woohmm} which can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
 \begin{itemize}
     \item $\mathcal{O}\in\mathbb{R}^T$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(t)\}$. 
-%    In our case $\mathcal{O}$ represent measurements about velocity and positions of surrounding vehicles
-    %\NB{change to lower t}.
     \item  $\mathcal{S}\in\mathbb{R}^n$ is a finite set of $n$ unique values that $\mathcal{O}$ can obtain, i.e., $\{s_i,s_j\} \in \mathcal{S} \vert s_i \neq s_j$ with $i\neq j$,and $i,j = 1,\ldots,n$, with $n \in \mathbb{N}$.
-    %\NB{no curly brackets when listing counters and indices}
-    %\NB{i is equal to OR??? and OR is different to j??? not mathematically correct} The notation $s_{ij}$ represents the state transition from $s_i$ to $s_j$.\NB{there are so many issues in this sentence.}
-    \item $\mathcal{C}\in\mathbb{R}^T$ %\NB{what's the dimension of C?}
-    is the finite set of emissions, or inferences $c(t)$ that relate to the action taken each state, and $\mathcal{C} = \{ c(t-T), c(t-T+1), \ldots, c(t)\}$. %\NB{what does it mean that it relates to each state? Explain better} $T$, 
+    \item $\mathcal{C}\in\mathbb{R}^T$
+    is the finite set of emissions, or inferences $c(t)$ that relate to the action taken each state, and $\mathcal{C} = \{ c(t-T), c(t-T+1), \ldots, c(t)\}$.
     \item $\mathcal{G}\in\mathbb{R}^m$ is a finite set of $m$ unique inferences that $\mathcal{C}$ can obtain. and $g_k \in \mathcal{S}$, where $k = 1,\ldots,m$, with $m \in \mathbb{N}$. 
     \item $\mathcal{P}\in\mathbb{R}^{n\times n}$ is a transition probability matrix. This matrix describes the probability of entering a certain state, $s_{j}$, while currently in a particular state $s_{i}$, denoted as $s_j \to s_i$, defined by:
         \begin{equation}
@@ -313,27 +286,19 @@ We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to buil
                         b_{n1} &    & b_{nm}
                     \end{bmatrix}
         \end{equation}
- %       The matrices $\mathcal{P}$ and $\mathcal{B}$ will be referenced as ``the parameters" of the AHMM in the rest of this work. \NB{no let's use their name in the paper}
 \end{itemize}
 
-This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{P}, \mathcal{B} \rangle$. Our framework is different from a traditional HMM because the states are not hidden, and we know exactly the relationship %\NB{not sure about this and we should not add HMM, We haven't defined it yet and it seems unnecessary to give a name to this unless we have really major changes to the way it computes states and transitions}
-%\NB{clarify}
-%with implicit parameters $m$ and $n$ \NB{this sentence is confusing}
-between states and their corresponding inferences. Because we have all the states and transitions a priori, we can learn the parameters of multiple models offline. %In addition, having the knowledge pertaining to the relationship between states and inferences allows predictions to be made with increased accuracy.\NB{how? This sentence is telling everything and nothing}
-The general pictorial representation of the framework is shown in Fig.~\ref{fig:hmm}. %\NB{what's a in the figure?}\NB{figure needs improvement: make it smaller vertically...too much space in between s and c. Increase fonts}.
-In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $g$ represent the emissions ($\mathcal{G}$). The lines with the label $p$ are the transition probabilities between states, and those labeled $b$ are the probabilities that each of the connected observations are associated with connected states.
+This framework is executed over $T$ and a set of parameters is obtained: $\langle \mathcal{P}, \mathcal{B} \rangle$. Our framework is different from a traditional HMM because the states are not hidden, and we know exactly the relationship between states and their corresponding inferences. Because we have all the states and transitions a priori, we can learn the parameters of multiple models offline. The general pictorial representation of the framework is shown in Fig.~\ref{fig:hmm}. In this image, nodes labeled $s$ represent the states ($\mathcal{S}$), while those labeled $g$ represent the emissions ($\mathcal{G}$). The lines with the label $p$ are the transition probabilities between states, and those labeled $b$ are the probabilities that each of the connected observations are associated with connected states.
 \begin{figure}[h]
     \includegraphics[width=0.48\textwidth]{fig/hmm.png}
     \caption{General Representation of the Hidden Markov Model (HMM) for our framework}
     \label{fig:hmm}
 \end{figure}
 
-The specific environment that we are studying involves multiple vehicles that can change their velocities and their lanes.% Within this environment, we implement the framework twice for all of the vehicles, $q$ in our sensing range $R_h$.
+The specific environment that we are studying involves multiple vehicles that can change their velocities and their lanes.
 
-Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated to the following vehicle input behaviors: changes in velocity and changes in lane. %\RP{Check later} %\NB{let's discuss that these emissions are the inputs that we care i.e., changes in speed and changes in lanes}
+Our goal is to predict future velocities $v$ and lanes $l$ of all the surrounding vehicles $q\in R_h$. In this case, $S_v = \{v_1,\ldots, v_n\}$, $S_d = \{d_1,\ldots,d_n\}$, $S_l = \{l_1,\ldots,l_n\}$, where $S_v$ is the set of velocities, $S_d$ is the set of distances between vehicles, and $S_l$ is the set of lanes. The emissions reflect the actions performed between two consecutive states. In our case, emissions are associated to the following vehicle input behaviors: changes in velocity and changes in lane.
 For velocity we consider the following 3 emissions,
-    
-%\NB{too many words...$S_v$ is the set of velocities and $S_d$ the set of distances between vehicles}
 
 \begin{itemize}
     \item[$b_1^v$] {Increasing Velocity if $v(t) > v(t-1)+\delta_v$} 
@@ -353,24 +318,11 @@ For the lanes, the following 3 emissions are considered:
     \item[$b_3^l$] Not changing if  $l(t) = l(t-1)$
 \end{enumerate}
 where we assume that lanes are modeled in increasing order from left to right; i.e. the leftmost lane is $1$ and the rightmost lane is $n$.
-%\NB{what does it mean $lane < lane$?}
-%\NB{same as before...formalize this}
-%\RP{capture that the emission are related to actions}
 
 
-\section{HMM-Based Online Prediction and Model Updates} \label{sec:ahmmpredupdate} %\NB{perhaps combine with next and add Update in the title}
-  Using the framework outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the available, previously collected, emission and transition matrices as lookup tables to obtain the most likely future state. The future state is determined as:
- %\NB{Using the HMM approach outlined in Section...given enough observations, we can extract a model for surround vehicles}. \NB{This model can be used online to predict future states of the system. This is achieved by collecting more observations online. The observed states at time t can then be used in the available emission and transition matrices, as a lookup table, to obtain the most likely next state}At $t$, the parameters of the AHMM can be used to make online predictions about the future states of the observed system. This is done by identifying the current state, $s_{i}(t)$ and applying it to the transition and emission matrices, which are used as lookup tables, to obtain the next most likely state and its likelihood. %We start with the assumption that $\mathcal{P}$ will give conclusive results from which we can predict the future state as follows\NB{remove this}:
-%\begin{equation} \label{eq:nextstate}
-%    s_{i}(t+1) = \max_{j}[\mathcal{P}_{i(t),j}]
-%\end{equation}
-%\NB{this equation is wrong. a state is not equal to the probability!}
-%There is, however, the possibility that there will be more than one returned states, as the maximum transition probability %can be the same for multiple states. In this situation, we invoke the use of $\mathcal{B}$:
-%\begin{equation} \label{eq:nextemis}
-%    g_{k}(t+1) = \max_{k}[\mathcal{B}_{i(t),k}]
-%\end{equation}
-%\NB{this should be only between the two that are uncertain and that formula is not resolving the issue! }
-%\NB{equation needed}.
+\section{HMM-Based Online Prediction and Model Updates} \label{sec:ahmmpredupdate}
+  Using the framework outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the pre-trained emission and transition matrices as lookup tables to obtain the most likely future state. Each future state is determined as:
+ 
 \begin{equation} \label{eq:pred}
    s(t+1) = s_j \in S \vert p_{ij}=\max_p(\mathcal{P}_i)
 \end{equation}
@@ -380,17 +332,12 @@ In the event that \eqref{eq:pred} returns more than one value, we cross-referenc
     s(t+1)=s_j\vert g_{ij} = \max_b(\mathcal{B}_i)    
 \end{equation}
 
-%\NB{s(t+1) doesn't return multiple values....if there are multiple states that satisfy equation 13. You should go to another line and state that not in an equation environment}
-%\NB{change the symbol for and. I'm also not 100\% sure that this expression is correct}
-%Because the relationship between states and observations is not hidden, we can use the expected inference, derived from \eqref{eq:pred} to assess which returned state is more accurate \NB{not clear, rewrite}.
 
 In the event that \eqref{eq:pred2} still returns more than one state, we choose the more dangerous transition, which depends on the specific application. For instance, in our case, the more dangerous transition is one that reduces distance between the user's vehicle and other vehicles.
-%\NB{go to another line}
 
 Using this approach, we can predict a series of future states over any horizon $H$ by assuming that each prediction for $t+1$ is correct. We re-use the emission and transition matrices to predict a sequence of future states up to horizon $H$.
 It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
-%next state at $t+2$ and so on, up to horizon $H$. It is, however, important to note that as $H$ is increased, every successive prediction tends to be less accurate, as the sequence of future predictions is built assuming each of the previous predictions is correct.
-%\NB{flip the order} \NB{explain the algorithm}.
+
 Algorithm~\ref{alg:pred} shows how we carry forward this prediction through $H$. In this algorithm, an observed state, $s(t) = s_i$, is used in %\NB{in not with} 
 $\mathcal P$ and $\mathcal B$ to find the most likely next state, $s(t+1) = s*_{j}$ %\NB{$s_j^*$}.
 At the following step, $s(t+2)$ is calculated using the previously predicted $s_{j^*}$. This process is repeated up to $t+H$, obtaining a series $\{s(t+1),\ldots,s(t+H)\}$ of future states.
@@ -416,16 +363,13 @@ At the following step, $s(t+2)$ is calculated using the previously predicted $s_
 \end{algorithmic}
 \end{algorithm}
 
-%\NB{what's $\mathcal{P}_{i}*$? and $j*$...btw it should be $j^*$}
-%\NB{this is not correct! The prediction is still not sure because we don't know what's going to happen. On the other hand we want to improve the prediction itself and thus we update the model online}.
 
 It is, however, possible that the online predictions are incorrect, indicating that the offline model does not accurately represent the system we are currently observing. In order to alleviate this issue, $\mathcal{P}$ and $\mathcal{B}$ are updated online. This is achieved by using \eqref{eq:transbuild} and \eqref{eq:obsbuild}, where we adjust $N_{ij}$ and $N_{ik}$, thus also changing $p_{ij}$ and $b_{ij}$. As a result, new transition and emission matrices $\mathcal{P'}$ and $\mathcal{B'}$ are created at each iteration to reflect the updates. In addition, we use a sliding window approach such that the size of the training set is always a constant $T$. %\NB{is always constant $T$}\NB{remove this last part}.
-The training set is kept the same size in order to retain computational efficiency and to avoid keeping older and less reliable data. Another option would be to discount older data, however we decide not to use this method in this paper because the transition and emission matrices will grow larger, decreasing the efficiency of the proposed method. 
-%$\mathcal{P'}$ and $\mathcal{B'}$ are updated each iteration and will continue to be used for online prediction, making each prediction up-to-date with the online observations. \NB{this last part need to be revised} %\NB{rewrite} %\NB{simplify}
+The training set is kept the same size in order to retain computational efficiency and to avoid accumulating older and less reliable data. Another option would be to discount older data, however we decide not to use this method in this paper because the transition and emission matrices will grow larger, decreasing the efficiency of the proposed method. 
 
 \section{Online Model Fitting}\label{sec:omf}
 Using the framework described in Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}, we can extract a model that captures the behavior of a system that we have been observing for $T$. Multiple models $\mathcal{M} = \{M_1,\ldots,M_m\}$ can be extracted using several data sets. Each of these models are characterized by unique transition and emission matrices to capture $m$ different behaviors which will be used at run-time to predict the behavior of any new observed system.
-%Multiple models can be extracted using several data sets, and with that we can obtain super-sets containing all the transition and emission matrices for multiple vehicles. These models capture different behaviors. In this work, we assume that models have been collected such that any new system can be fit during run-time. $\mathcal{M} = \{M_1,\ldots,M_m\}$ is the set of $m$ models. %\NB{too many words...M  is the set of m models.}.
+
 The transition and emission matrices of these models are denoted as follows:
 \begin{equation}
     \hat{\mathcal{P}} = \{\mathcal{P}_1,\ldots,\mathcal{P}_m\}
@@ -438,47 +382,29 @@ The transition and emission matrices of these models are denoted as follows:
 
 During run-time, we observe new measurements of other vehicles. The challenge here becomes fitting each vehicle's observations to one of the offline models. Until we have enough observations, the prediction may not be accurate. Thus, we need to take into account possible errors in the prediction, $e_i$ as we are matching the vehicle behavior with the offline models. 
 
-%In efforts to minimize situations where transitions are unclear, we propose training multiple models prior to the prediction process.\NB{??? What does this last sentence mean?} \NB{just say that we assume to have collected enough models offline to be able to fit and match any new vehicles that appear in our range}
-
-%\NB{We treat any vehicle observed online as a new system and follow the approach outlined in Section...to obtain P and B. At each iteration P and B are updated and compared with the existing Models. The closest model is chosen to predict the behavior of the system. }Having built multiple models, we observe a new vehicle and begin to execute the framework discussed in Section \ref{sec:fmwk} for two consecutive measurements, $\left[o(t-1),o(t)\right]$. With this information, we are able to further execute the framework and determine parameters $\tilde{\mathcal{P}}$ and $\tilde{\mathcal{B}}$, which stand for the transition and emission matrices for the system we are currently observing. In order to determine the optimal model, we calculate the set of errors, $\hat{e}_{N_{M}} = \{e_{N_1},\ldots,e_{N_M}$\} between our model and each of the offline models:
-
-We treat any vehicle observed online as a new system from which we are interested to compute a model, hence we follow the same procedure in Section \ref{sec:fmwk} to extract transition and emission matrices. Each element of transition matrix, $\tilde{\mathcal{P}}(t)\in\mathbb{R}^{n\times n}$, is initialized to $\tilde{p}_{ij} = 1/n$, where $i,j = 1,\ldots,n$. Similarly each element of the emission matrix,  $\tilde{\mathcal{B}}(t)\in\mathbb{R}^{n\times m}$, is initialized to $\tilde{b}_{ik}= 1/m$, where $i = 1,\ldots,n$ and $k=1,\ldots,m$. At each iteration, these matrices are updated using the method discussed in \ref{sec:ahmmpredupdate}, and are then compared with those of the pretrained models, $\hat{\mathcal{P}}$ and $\hat{\mathcal{B}}$.
+We treat any vehicle observed online as a new system from which we are interested to compute a model, hence we follow the same procedure in Section \ref{sec:fmwk} to extract transition and emission matrices. Each element of transition matrix, $\tilde{\mathcal{P}}(t)\in\mathbb{R}^{n\times n}$, is initialized to $\tilde{p}_{ij} = 1/n$, where $i,j = 1,\ldots,n$. Similarly, each element of the emission matrix,  $\tilde{\mathcal{B}}(t)\in\mathbb{R}^{n\times m}$, is initialized to $\tilde{b}_{ik}= 1/m$, where $i = 1,\ldots,n$ and $k=1,\ldots,m$. At each iteration, these matrices are updated using the method discussed in \ref{sec:ahmmpredupdate}, and are then compared with those of the pre-trained models, $\hat{\mathcal{P}}$ and $\hat{\mathcal{B}}$.
 
 The most similar model is chosen to predict the behavior of the observed system. To obtain this model, the following error is computed at every iteration:
  %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
 \begin{equation} \label{eq:pnorm}
     \forall{P_i} \in \hat{\mathcal{P}}: e_i = \lVert\tilde{\mathcal{P}}(t)-\mathcal{P}_{i}\rVert_{2}
 \end{equation}
-%\NB{is it $\hat{e}$ that you are computing? or each element?}
-%\NB{check again the expression before; there are a lot of things that are not defined or make little sense}\NB{also I think the l1 and l2 is not correct now. Please check and write the correct expression}
+
 where $\lVert \cdot \rVert_2$ is the $l_2$ matrix norm to return a scalar, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
 
-Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predictions, we select the model $M^*$ with the lowest error: %\NB{What's the l2 of a matrix? Is it a scalar or a vector?}
-%\NB{revise this}
+Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predictions, we select the model $M^*$ with the lowest error:
 
 \begin{equation}
     M^*=M_i\in\mathcal{M}\vert e_i = \min_e(\hat{e})
 \end{equation}
-%\NB{need to check variables here}
-%\NB{add argmin}
-%\NB{i is a index not a model}
-%\NB{this is unnecessary. Say this before, above...we find the model $M^*$ that minimizes the error...}
-  Given this model, the associates transition and emission matrices, $\mathcal{P}_{i}$ and $\mathcal{B}_{i}$ are used in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. In addition, a trust measure for the selected model is determined as:
+
+  Given this model, the associated transition and emission matrices, $\mathcal{P}_{i}$ and $\mathcal{B}_{i}$ are used in order to make predictions. The procedure to predict future states is shown in Algorithm~\ref{alg:pred}. In addition, a trust measure for the selected model is determined as:
   \begin{equation}
     \rho = 1-e_i
  \end{equation}
  where $e_i$ is the error associated with $M^* = M_i$. Because trust is the complement of error, the model with the lowest error, $M^*$ also has the highest trust. This trust measure is utilized in Section \ref{sec:adapt} to determine risk.
-  
-  
-  %\NB{something is missing here...we should somehow associate the error to the confidence that we have in that model....bigger errors = more uncertainties. The question becomes what should we do if the error is large or if it is small?? The answer is in the trust. What does it mean to trust more or less?}
-
-
-%\NB{merge with previous and change to explain better how new data are going to improve your model...}
-%If the observed system, however, does not result in an $i^*$ with a low error, the model is updated using the method discussed in Section \ref{sec:ahmmpredupdate} \NB{what does it mean....very confusing}. Because we are attempting to fit the model, rather than build a new one, we have the advantage of having the baseline, the current $N_M^*$ \NB{what is this baseline?}. We are able to leverage the parameters of this model, by  updating $\mathcal{P}_{N_M^*}$ and $\mathcal{B}_{N_M^*}$ as we observe new transitions or make new inferences, much like how we obtain $\mathcal{P}'$ and $\mathcal{B}'$ in Section \ref{sec:ahmmpredupdate} \NB{again very confusing}. In this case, we obtain $\mathcal{P}'_{N_M^*}$ and $\mathcal{B}'_{N_M^*}$. These models can be used to make future predictions using Algorithm \ref{alg:pred}.\NB{this last part is really bad written}
-
 
 \section{Assistive Control} \label{sec:adapt}
-
 
 \subsection{Reachability Analysis}
 
@@ -493,36 +419,26 @@ In some of our current work, we are using Hamilton-Jacobi reachability analysis 
 \item future variations of velocity are bounded $v_h-\delta_v \leq v_h\leq v_h+\delta_v$, with $\delta_v>0$ \label{ass:ii}
 \end{enumerate}
 Both \ref{ass:i}. and \ref{ass:ii}. are worst case scenarios. %Assumption \ref{ass:ii} reflects a physical limitation of vehicles.
-Using these assumptions three reachable velocities can be considered as follows:
+Using these assumptions, three reachable velocities can be considered as follows:
 \begin{enumerate} %\NB{t+1 not i}
     \item $v_h^=(t+1)=v_h(t)$
     \item $v_h^-(t+1)=v_h(t)-\delta_v$
     \item $v_h^+(t+1)=v_h(t)+\delta_v$
 \end{enumerate} 
 and $\hat{V} = \{v^-(t),v_h^=(t),v^+(t)\}$, which is a time-varying set that depends on the current velocity, $v_h(t)$. Future reachable forward positions can be easily computed as $x_h(t+i)=v(t+i)\delta t$, where $\delta t$ is the sampling time, for each of the three aforementioned velocities. Reachable lanes are modeled as $\hat{L} = \{l_1,\ldots,l_n\}$, in which $n$ lanes are considered. 
-%\NB{this set is time varying and depends on the current velocity}
+
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/reach.png}
     \caption{Reachable set for each velocity}
     \label{fig:reach}
 \end{figure}
-%\NB{the iteration contains?}
-Three reachable sets containing all the possible states that can be reached by $h$ are obtained. For example if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, then a total of 27 predictions are obtained, as indicated by the points in Fig. \ref{fig:reach}.
-%\RP{dont forget to add picture}
-%\RP{Predicting for H allows for trajectory generation for motion planning applications as well}
+
+Three reachable sets containing all the possible states that can be reached by $h$ are obtained. For example, if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, then a total of 27 predictions are obtained, as indicated by the points in Fig. \ref{fig:reach}.
+
 
 \subsection{Risk Assessment}
 
- In this section, we discuss how our framework is used to guarantee safety for an HAV, $h$, over a time horizon $H$.
- 
- %\NB{which vehicle? Any?}. In this situation \NB{what situation?}, we have our manned vehicle, $h$, and we have all of the vehicles in our vehicle's sensing range, $R_h$ \NB{$N_{R_h}$ vehicles are in range and can be monitored by $h$ \NB{remember to acknowledge that some vehicles may intermittently enter and exit the range of h}}:
- 
- Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$.
- %\NB{and what? What's the solution here? }
-
-%These vehicles will be referred to as agents in the rest of this work \NB{why??? What's wrong with vehicles? Please remove}.
-
-By using the approach presented in Section \ref{sec:ahmmpredupdate}, we can predict future states for all $q$ to obtain:
+Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$. By using the approach presented in Section \ref{sec:ahmmpredupdate}, we can predict future states for all $q$ to obtain:
 %\RP{Change to bar or tilde or hat for predictions}
 \begin{equation}
     V_q = \{v_q(t+1),\ldots,v_q(t+H)\}
@@ -530,8 +446,6 @@ By using the approach presented in Section \ref{sec:ahmmpredupdate}, we can pred
 \begin{equation}
     L_q = \{l_q(t+1),\ldots,l_q(t+h)\}
 \end{equation}
-
-%\RP{put in text}
 
 where $V_q$ and $L_q$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
 Using these future velocities, we can calculate the positions of each $q$ over the horizon $H$ as $x_q(t) = v_q(t)\delta t$ and obtain the predicted future positions:
@@ -542,17 +456,7 @@ We can then calculate relative distance as
 \begin{equation}
     \forall q \in R_h: d_q(t) = \lVert x_h(t)-x_q(t)\rVert_2
 \end{equation}
-
-%Generating and using the optimal model for each vehicle $q$, as discussed in Section \ref{sec:omf}, we are able to predict where an agent will be in the environment for the user-defined time horizon, $H$, as discussed in Section \ref{sec:ahmmpredupdate}\NB{this sentence is confusing: By using the prediction approach presented in Section...we can predict future states for $q$ over an finite horizon $H$. }. This time horizon defines how far ahead the user wants the system to check, in order to intervene \NB{remove}. A sequence of future states for agent $q$, both in terms of velocity and lateral position, are developed for $H$ using the AHMM parameters and Algorithm \ref{alg:pred} \NB{merge this with the previous section}. Given a sequence of future predicted velocities,
-
-
-%In this case, we also assume that the driver will continue the behavior he/she is doing at $t$ up to $t+H$. With this assumption, we are able to the estimate the future positions of $h$, obtaining the set:
-%\begin{equation}
-%    x_h^p = \{x_h(t+1),\ldots,x_h(t+H)\}
-%\end{equation}
-
-%\RP{Simplify - Risk is a function of D as follows}
-where $\rVert \cdot \lVert_2$ indicates the $l_2$ vector norm. Risk is inversely proportional to distance $d_q(t)$, lane separation $l_q(t)$, trust $\rho$. Specifically the risk $r_q^l(t)$ associated with vehicle $q$ and lane $l$ at time $t$ is computed as follows: %\NB{what about the lanes?}
+where $\rVert \cdot \lVert_2$ indicates the $l_2$ vector norm. Risk is inversely proportional to distance $d_q(t)$, lane separation $l_q(t)$,and trust $\rho$. Specifically, the risk $r_q^l(t)$ associated with vehicle $q$ and lane $l$ at time $t$ is computed as follows: %\NB{what about the lanes?}
 
 \begin{equation} \label{eq:riskcalc}
     r_{q}^{l}(t) =
@@ -564,7 +468,7 @@ where $\rVert \cdot \lVert_2$ indicates the $l_2$ vector norm. Risk is inversely
 
 where $\xi$ is the difference in lanes between $h$ and each vehicle $q\in R_h$.
 % \NB{what is this function?} 
- The values obtained from \eqref{eq:riskcalc} are calculated for each reachable velocity and position of $h$. For each $q$ and $v$ we can compute the following risk matrix: %\NB{the vehicle are arranged as follows?}:
+ The values obtained from \eqref{eq:riskcalc} are calculated for each reachable velocity and position of $h$. For each $q$ and $v$, we can compute the following risk matrix: %\NB{the vehicle are arranged as follows?}:
 \begin{equation} \label{eq:riskmat}
 \mathcal{R}_{q}^{v}=
 \begin{bmatrix}
@@ -573,8 +477,7 @@ r_q^{l_1}(t+1)  \dots  r_q^{l_n}(t+1) \\
 r_q^{l_1}(t+H)  \dots   r_q^{l_n}(t+H)
 \end{bmatrix} q = 1,\ldots,m,v\in\hat{V}
 \end{equation}
-%\NB{what you mean interfering?}
-Combining together all of the risk matrices we obtain the following superset $\mathcal{R}$:
+Combining together all of the risk matrices, we obtain the following superset $\mathcal{R}$:
 
 \begin{equation} \label{eq:superrisk}
 \mathcal{R} =
@@ -611,40 +514,8 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
 	\vspace{-15pt}
 \end{figure}
 
-%\begin{figure}[H]
-%\centering
-%\begin{subfigure}{.54\linewidth}
-%  \centering
-%  \includegraphics[width=\linewidth]{fig/assist_rd.png}
-%  \caption{Risk Distribution}
-%  \label{fig:distr}
-%\end{subfigure}%
-%\begin{subfigure}{.46\linewidth}
-%  \centering
-%  \includegraphics[width=\linewidth]{fig/riskdist_rs.png}
-%  \caption{Road Scenario}
-%  \label{fig:roads}
-%\end{subfigure}
-%\caption{Risk distribution and associated road scenario}
-%\label{fig:riskd}
-%\end{figure}
-%\NB{where is the legend?}
 
-%\begin{figure}[ht]
-%    \includegraphics[width=0.48\textwidth]{fig/assist2.png}
-%    \caption{The distribution of risk at $v_h$ with $H = 3$ (left) for a certain road scenario (right). The magenta shape is the user's HAV, while the blue and black shapes are the actual positions of other vehicles on the road. Unshaded/outline shapes are predictions for vehicles in successive order; $[t+1,t+H]$.}
-%    \label{fig:riskd}
-%\end{figure}
-%\NB{as mentioned during last meeting use solid filled shapes to show the current position and empty shape (not necessary to have a dashed line) for future states. No need to paint future states with different colors, just use the same color that you used to paint the shape of the vehicle. i.e., if the car on your left is blue, the future states are also blue}
-%\NB{avoid this notation, this what?}
-%\begin{equation}
-%    \hat{\mathcal{R}} = \{\hat{r}^{L},\hat{r}^{C},\hat{r}^{R}\}
-%\end{equation}
-%\NB{this doesn't say too much. We can remove it probably}
 \subsection{Adaptive User Assistance}
-
-%\NB{define dangerous condition}
-%\NB{...we propose a policy...}
 
 Given the risk distribution, we can assist our user's potentially unsafe actions to guarantee safety, by performing actions that minimize risk. In order to adapt, we need to first identify whether these actions are going to result in a dangerous situation i.e., a collision. User actions, in this case, are limited to selecting a reachable lane and velocity,
 \begin{equation}
@@ -658,9 +529,7 @@ A user-set threshold, $r_{\max}$ is defined. If risk is below $r_{\max}$, we let
     u_a(t) & \text{ if } \exists~\hat{\mathcal{R}}(i,j) >= r_{\max}
     \end{cases}
 \end{equation}
-%\NB{this is not what we are implementing...you are looking if any risk between now and H is above the maximum: if yes you switch to autonomous and send the vehicle toward the lane and velocity with the minimum risk associated}
-%\NB{we need to define what are the inputs in our system}
-%\NB{super confusing. You should simply say that the input $u$ is going to be either the user input or the autonomous input as follows...and then show the equation above.}. 
+ 
 During run-time, we are monitoring $\hat{\mathcal{R}}$ to find the appropriate pair of actions (velocity and lane) that minimize risk at time $t+1$. In order to identify the safest actions, we use gradient descent on the risk distribution:
 \begin{equation} \label{eq:optpt}
   r^*(t+1) = \min\{\hat{\mathcal{R}}(1,1),\ldots,\hat{\mathcal{R}}(1,n)\}  
@@ -671,18 +540,13 @@ The value $r^*(t+1)$ gives information about the safest lane to enter and the sa
     l^*(t) &=  l_j\in\hat{L}\vert r^*(t) = \hat{\mathcal{R}}(1,j)\in\hat{\mathcal{R}} \nonumber \\
     v^*(t) &=  v\in\hat{V}\vert r^*(t) = \hat{\mathcal{R}}(1,j)\in\hat{\mathcal{R}}
 \end{align}
-%\NB{so you pick the lane of the minimum risk even if the minimum risk is on t=3?} %\NB{you should pick the lane such that the risk on that lane and for the next iteration is minimized.}
-%\NB{what is the dimension of $\hat{r}_q^l$? From (22) it's one value} \NB{Why argmin with respect to $l_i$ and not $l$? Is it just $l_i$?}\NB{this expression is not correct! You need to pick the l and v associated to the minimum risk!}
 
-%\NB{what do you mean that you are picking $v_h$? What about if you have $v_h^-$ that is the best one?}
-%\NB{what do you mean that you pick the minimum lane and velocity??? Please critique each expression that you write on the paper}
 
 At every iteration, the optimal pair $(l^*(t),v^*(t))$ is calculated. In this work, we place an emphasis on the user's risk threshold $r_{\max}$, so the autonomous input $u_a(t) = (l^*(t),v^*(t))$ is only implemented when the condition described in \eqref{eq:inputctrl} is met. By minimizing the risk at $t+1$, we ensure that the immediate action of our vehicle $h$ is always the safest option.
 
 \begin{lemma}
-%Assuming the predictions of other vehicles is correct, meaning trust $\rho$ is above a threshold $\rho_\min$, and if $\exists~\hat{\mathcal{R}}(i,j) >= r_{\max}$ over a horizon $H$, our approach guarantees that the safest input pair is always chosen for each timestep $t$, given that such a pair exists.
 Given a configuration where there exists a safe sequence of actions, and if any risk in this configuration is above the threshold, $ \exists~\hat{\mathcal{R}}(i,j) >= r_{\max}$ over horizon $H$, the approach in Section \ref{sec:adapt} guarantees that the system is always going to be safe. This is a probabilistic guarantee that hinges on the trust measure $\rho$ of our predictions.
-%  if $\exists~\hat{\mathcal{R}}(i,j) >= r_{\max}$ over a horizon $H$, the approach proposed in ... guarantees that  
+
 \end{lemma}
 
 \begin{proof}
@@ -699,21 +563,16 @@ Minimizing risk means that the quantity $(\xi+1)d_q(t)$ is maximized, hence mean
 
 Thus, the input $(l^*,v^*)$ guarantees that at each iteration the separation between $h$ and any other vehicle is maximized. Any other possible input $u(t) \neq u^*(t)$ is associated with a risk $r(t)>r^*(t)$, as defined in \eqref{eq:riskcalc}. $\forall u(t) \neq u^*(t)$, $(\xi+1)d_q(t)\leq\gamma_q^*(t)$ hence proving that $u^*(t)$ will achieve the maximum possible separation at every step.
 
-%if those actions are taken is smaller. Because $u^*(t)$ results in the highest separation out of all possible inputs, the risk of collision the lowest, and the safest action has been taken.
-
-%Risk distribution $\hat{\mathcal{R}}$ is a function of distance between the reachable positions of user operated vehicle $h$, the future position predictions all the other vehicles, $q$, and the trust value $\rho$. $\hat{\mathcal{R}}$ conveys the worst-case scenario of all risks at each reachable set as it takes the maximum of each risk value indicated in \eqref{eq:riskdistribution}. Because $(l^*,v^*)$ take the minimum risk, we guarantee that we always remain a certain distance from other vehicles. 
 \end{proof}
 
 \section{Simulations} \label{sec:sims}
 %\vspace{-30pt}
-In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First we discuss how different vehicle's models are trained and validated (from Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}). Then we show an example of online model fitting (from Section \ref{sec:omf}) given a known pre-trained set of models. Finally we demonstrate the risk estimate and assistive behaviors (from Section \ref{sec:adapt}) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
-%The simulations for this work were done in Matlab. Each part of the approach depicted in Section \ref{sec:approach} was tested. We first discuss how the models were trained, and we validate those results for both velocity and lateral positions (lanes). This is followed by showing an example of fitting one model given multiple pre-trained models and a new system to observe. Lastly we demonstrate the risk estimates, and the assistance given to the user's actions, in order to verify that we are able to avoid collisions.
+In the following simulations we validate the proposed monitoring and adaptive approach presented in Section \ref{sec:approach} on an automotive case study. First, we discuss how different vehicle's models are trained and validated (from Sections \ref{sec:fmwk} and \ref{sec:ahmmpredupdate}). Then, we show an example of online model fitting (from Section \ref{sec:omf}) given a known pre-trained set of models. Finally, we demonstrate the risk estimate and assistive behaviors (from Section \ref{sec:adapt}) for a safety critical automotive case study on a road with multiple vehicles and demonstrate the validity of our framework.
+
 \vspace{-5pt}
 \subsection{Model Training Example}
-In order to train different vehicles models, we used an environment featuring $6$ stationary obstacles. A test vehicle with a predefined behavior was driven through the environment, while avoiding these obstacles, observing its velocity, lane changes and distance to the obstacle for a training period $T=700$ iterations. During this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated for both velocity measurements and lane change measurements. The effectiveness of the generated transition and emission matrices was validated online against the same vehicle running over a new environment with $9$ obstacles. Following the scheme in Section \ref{sec:ahmmpredupdate} a one step prediction was computed and compared with the vehicle's ground truth velocity and position.
+In order to train different vehicle models, we used an environment featuring $6$ stationary obstacles. A test vehicle with a predefined behavior was driven through the environment, while avoiding these obstacles. The vehicle's velocity, lane changes, and distance to each obstacle was observed for a training period of $T=700$ iterations. During this period, the framework discussed in Section \ref{sec:fmwk} was executed and $\mathcal P$ and $\mathcal B$ matrices were generated for both velocity measurements and lane change measurements. The effectiveness of the generated transition and emission matrices was validated online against the same vehicle running over a new environment with $9$ obstacles. Following the scheme in Section \ref{sec:ahmmpredupdate} a one step prediction was computed and compared with the vehicle's ground truth velocity and position.
 Fig.~\ref{fig:trainvel} shows the absolute error between actual and estimated velocities while Fig.~\ref{fig:trainpos} shows the absolute error between the predicted and actual position of the vehicle. The resulting root mean square error (RMSE) for forward position estimates was recorded to $0.3927$m.
-%obtaining the error
-%In verifying the results for velocity, we used velocity and forward position, which is calculated using $x_h(t) = v_h(t)\delta t$. In Fig.~\ref{fig:trainvel}, the absolute error between actual and estimated velocities is depicted. In Fig.~\ref{fig:trainpos}, we show the absolute error in the position between the two vehicles. The resulting root mean square error (RMSE) for forward position estimates was $0.3927$m.
 
 \begin{figure}[ht!]
 	\centering
@@ -727,7 +586,6 @@ Fig.~\ref{fig:trainvel} shows the absolute error between actual and estimated ve
 
 
 Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 iterations) relative to lane changes. During the prediction phase the RMSE was recorded as $1.2564$m. These errors are due to the fact that the trained vehicles and measurements were noisy to consider a more realistic behavior. These results validate that the proposed framework is able to predict efficiently future velocity and lane change states, given a pre-trained model.
-%In addition to velocity, we also measure the accuracy of our predictions regarding lane changes and following distances at which these changes occurred. Based on results shown in Fig.~\ref{fig:train2}, it is evident that the expected lane changes occurred, and to validate the following distances at which the lane changes took place, we use RMSE, which was $1.2564$m. The results for both velocity and lane change distance validation showed that the framework is very effective when predicting the future states of the same model.
 
 \begin{figure}[ht]
 \includegraphics[width=0.48\textwidth]{fig/train2.png}
@@ -737,11 +595,9 @@ Fig.~\ref{fig:train2} shows the training and online prediction (starting at 700 
 	\vspace{-10pt}
 \subsection{Model Fitting Example}
 
-Building on the previous results, here we demonstrate the model fitting approach presented in Section \ref{sec:omf}. For the sake of simplicity in this work we trained and built 3 different vehicles models whose velocities were between $22$m/s and $32$m/s. Specifically one vehicle was aggressive, one was conservative, while the third vehicle's behavior was in between the other two behaviors. Three different transition and emission matrices were computed offline and used online to predict the behavior of a new vehicle with the assumption that this new vehicle's model was similar to one of the previously sampled behaviors. Following the procedure in Section \ref{sec:omf} at each iteration, a model for the new vehicle is built and compared with each of the pre-trained models. The model with the minimum error (i.e. with the highest trust) is selected at each iteration to predict future states of the new vehicle.
+Building on the previous results, here we demonstrate the model fitting approach presented in Section \ref{sec:omf}. For the sake of simplicity in this work, we trained and built 3 different vehicles models whose velocities were between $22$m/s and $32$m/s. Specifically, one vehicle was aggressive, one was conservative, and the third vehicle's behavior was in between the other two behaviors. Three different transition and emission matrices were computed offline and used online to predict the behavior of a new vehicle with the assumption that this new vehicle's model was similar to one of the previously sampled behaviors. Following the procedure in Section \ref{sec:omf} at each iteration, a model for the new vehicle is built and compared with each of the pre-trained models. The model with the minimum error (i.e. with the highest trust) is selected at each iteration to predict future states of the new vehicle.
 
 Fig.~\ref{fig:error} shows the error between the model of the vehicle and each pre-trained model, Fig.~\ref{fig:trust} shows the trust at each iteration, while Fig.~\ref{fig:select} displays the choice of model at every iteration. As expected, the error is high at the beginning because fewer transitions are observed which are very likely to be similar among different models. As the simulation advances and more data are gathered, trust increases and the error decreases aligning the prediction with one of the three pre-trained models, which, in this case, was Model 2. Convergence is achieved in about 300 iterations.  
-
-%In this section, we add to the previous results, by showing that we are not only able to predict states given a model, but we are also able to fit pre-trained models to a new vehicle online. The behaviors of this vehicle are randomly generated and used to find the appropriate model. In order to determine the appropriate model, we initialize $\hat{\mathcal{P}}$ use \eqref{eq:pnorm} with the transition matrices of each of three pre-trained models. In Fig.~\ref{fig:error}, the error between each pre-trained model and the observed vehicle is shown. At the start of run-time, the errors are higher and are very scrambled. As the vehicle is observed for longer, one model has less error than the others; in this case, the model is Model $3$. 
 
 \begin{figure}[ht!]
 	\centering
@@ -761,7 +617,7 @@ Fig.~\ref{fig:lanchan} shows the lane change behavior. The RMSE between the pred
 
 Using the selected model, we are able to make predictions for every iteration of run-time. In Fig.~\ref{fig:fwd}, we show the accuracy of the fit for velocity/forward position over 1400 iterations. The RMSE of this trial was $2.1423$m/s. 
 In Fig.~\ref{fig:lanchan}, we show the predictions made that pertain to lane changes and following distance. The RMSE of the predictions as compared to the actual actions was $3.521$m. 
-%The RMSE values obtained for each of these tests suggest that the prediction is reliable, given that convergence to one model occurs. In addition, it was verified that the model chosen was the closest to the randomly generated behaviors, by examining the specific results of the randomization.
+
 \begin{figure}[ht!]
     \includegraphics[width=0.48\textwidth]{fig/fiterroravg.png}
     \vspace{-5pt}
@@ -813,8 +669,7 @@ In Fig.~\ref{fig:noassist}, we show a snapshot for a situation in which the user
 	\vspace{-10pt}
 \end{figure}
 In our approach, we aim to avoid such a situation. Fig.~\ref{fig:assistrs} shows a snapshot of the same scenario but this time with the assistive behavior enabled. In this case the optimal input was switched between $u_h$ and $u_a$ when the risk was above $r_{max}$. 
-The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. Using our framework the $u_h$ was overwritten by $u_a$ guaranteeing a safe operation of $h$.
-%With assistive input, both lane and velocity were changed in order to minimize risk. In this case, the specific input pair was $u_a = (l_3,v_h^+)$. 
+The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this case, the assistive input was taken into account as the risk surpassed $r_{\max}$. Using our framework, the $u_h$ was overwritten by $u_a$ guaranteeing a safe operation of $h$.
 
 \begin{figure}[ht!]
 	\centering
@@ -828,14 +683,14 @@ The user input was modeled the same as in Fig.~\ref{fig:noassist}, but in this c
 	\vspace{-10pt}
 \end{figure}
 	\vspace{-0pt}
-% In the situation depicted in Fig.~\ref{fig:assist}, the input $(l_3,v_h^+)$ increases the distance, $d_q(t)$, between vehicles $h$ and all $q$, which indicates risk has successfully been minimized for that timestep.
+
 Animations for the simulations presented above can be found at https://www.bezzorobotics.com/rp-acc19.
 
 \section{Conclusions} \label{sec:concs}
 %\NB{conclusions should summarize what we have accomplished with this work and what you learned from this work, including the pros and cons. They need to discuss also current and future directions.}
-In this work, we have presented an approach for simultaneously predicting the future states of multiple vehicles and assisting the user of an HAV. Our approach uses a Hidden Markov Model based framework to build offline models of different vehicles and fit these models to any number of online observed vehicles. A shared control scheme was also presented to ensure that the user of an HAV does not enter an unsafe state. We were able to show that by minimizing our predicted risk at each step, we are able to ensure the vehicle stays as safe as possible. While the prediction method is reliable, model fitting is most effective when the set of offline models is rich and varied enough such that any vehicle can be fitted accurately.
+In this work, we have presented an approach for simultaneously predicting the future states of multiple vehicles and assisting the user of an HAV. Our approach uses a Hidden Markov Model-based framework to build offline models of different vehicles and to fit these models to any number of online observed vehicles. A shared control scheme was also presented to ensure that the user of an HAV does not enter an unsafe state. We were able to show that by minimizing our predicted risk at each step, we are able to ensure the vehicle stays as safe as possible. While the prediction method is reliable, model fitting is most effective when the set of offline models is rich and varied enough such that any vehicle can be fitted accurately.
 
-In future work, we will build more pre-trained models to increase richness. In this work, we are primarily concerned with the technique, but plan to expand the prediction framework to a more realistic situation, involving more realistic dynamics and other factors, such as external disturbances. In addition, we plan to expand our framework across different types of vehicles and other cyber-physical systems.
+In future work, we will build more pre-trained models to increase richness. In this paper, we are primarily concerned with the technique. In the future, we plan to further expand the prediction framework to different situations, which would involve more realistic dynamics and other factors, such as external disturbances. In addition, we plan to expand our framework across different types of vehicles and other cyber-physical systems.
 
 \section{Acknowledgement}
 
