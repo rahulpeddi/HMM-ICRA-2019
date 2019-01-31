@@ -50,7 +50,6 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb {Z}}
 \newcommand{\D}{\mathbb {D}}
-%\newcommand{\P}{\mathbb {P}}
 \newcommand{\N}{\mathbb {N}}
 
 \newtheorem{problem}{Problem}
@@ -123,9 +122,7 @@
 %\title{\LARGE \bf A Hidden Markov Model-based Approach for Predictive and Assistive Control in Semi-Autonomous Vehicles}
 \title{\LARGE \bf A Hidden Markov Model-based Monitor for Predictive and Assistive Control of Hybrid Autonomous Systems}
 \author{Rahul Peddi and Nicola Bezzo%
-\thanks{Rahul Peddi and Nicola Bezzo are with the Department of Systems and Information Engineering and the Charles L. Brown Department of Electrical and Computer Engineering, University of Virginia, Charlottesville, VA 22904, USA. Email: {\tt \{rp3cy, nb6be\}@virginia.edu}}
-%\thanks{$^{2}$Esen Yel is with the Department of Systems and Information Engineering, University of Virginia, Charlottesville, VA 22904, USA. Email: {\tt ey3un@virginia.edu}}
-}
+\thanks{Rahul Peddi and Nicola Bezzo are with the Department of Systems and Information Engineering and the Charles L. Brown Department of Electrical and Computer Engineering, University of Virginia, Charlottesville, VA 22904, USA. Email: {\tt \{rp3cy, nb6be\}@virginia.edu}}}
 
 
 
@@ -245,7 +242,7 @@ Our approach is summarized in the architecture presented in Fig.~\ref{fig:app}.
 We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to build different models, $\{M_1,\ldots,M_n\}$, that are then used online to recognize and predict new vehicles' behaviors. Based on these predictions, and the user's input $u_h$, a monitor predicts and assesses whether $h$ could enter any unsafe state. If such an unsafe action is detected, an autonomous control action, $u_a$, is deployed to assist and correct the user's intention. In the next sections, we will go over this framework, explaining in detail each block presented in Fig.~\ref{fig:app}.
 
 \section{HMM-based Training Framework} \label{sec:fmwk}
- In order to predict future states of other vehicles, we perform offline training of data collected over a horizon $T$ to extract and differentiate between multiple behavioral models. To this end, we propose a modified version of the Hidden Markov Model (HMM) \cite{woohmm} which can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{E},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
+ In order to predict future states of other vehicles, we perform offline training of data collected over a horizon $T$ to extract and differentiate between multiple behavioral models. To this end, we propose a modified version of the Hidden Markov Model (HMM) \cite{woohmm} which can be described by a tuple $\langle \mathcal{O},\mathcal{S},\mathcal{C},\mathcal{G},\mathcal{P},\mathcal{B} \rangle$  where:
 \begin{itemize}
     \item $\mathcal{O}\in\mathbb{R}^T$ is a finite set of observed states $o(t)$ collected over a finite past time horizon $T$, $\mathcal{O} = \{ o(t-T), o(t-T+1), \ldots, o(t)\}$. 
     \item  $\mathcal{S}\in\mathbb{R}^n$ is a finite set of $n$ unique values that $\mathcal{O}$ can obtain, i.e., $\{s_i,s_j\} \in \mathcal{S} \vert s_i \neq s_j$ with $i\neq j$,and $i,j = 1,\ldots,n$, with $n \in \mathbb{N}$.
@@ -265,7 +262,7 @@ We leverage a history of offline observations, $\{o(t-T),\ldots,o(t)\}$, to buil
             \mathcal{P} = 
                     \begin{bmatrix}
                         p_{11} & \dots & p_{1n} \\
-                        \vdots & \ddots & \\
+                        \vdots &\ddots & \\
                         p_{n1} &    & p_{nn}
                     \end{bmatrix}
         \end{equation}
@@ -324,7 +321,7 @@ where we assume that lanes are modeled in increasing order from left to right; i
   Using the framework outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the pre-trained emission and transition matrices as lookup tables to obtain the most likely future state. Each future state is determined as:
  
 \begin{equation} \label{eq:pred}
-   s(t+1) = s_j \in S \vert p_{ij}=\max_p(\mathcal{P}_i)
+   s(t+1) = s_j \in S \vert p_{ij}=\max_p(\mathcal{P}_i*)
 \end{equation}
 
 In the event that \eqref{eq:pred} returns more than one value, we cross-reference the states with the emission matrix, $\mathcal{B}$ as follows: 
@@ -387,10 +384,10 @@ We treat any vehicle observed online as a new system from which we are intereste
 The most similar model is chosen to predict the behavior of the observed system. To obtain this model, the following error is computed at every iteration:
  %\NB{how are these matrices initialized? We need to show the initial expression of these matrices 1/n ...}
 \begin{equation} \label{eq:pnorm}
-    \forall{P_i} \in \hat{\mathcal{P}}: e_i = \lVert\tilde{\mathcal{P}}(t)-\mathcal{P}_{i}\rVert_{2}
+    \forall{P_i} \in \hat{\mathcal{P}}: e_i = \frac{1}{n}\lVert\tilde{\mathcal{P}}(t)-\mathcal{P}_{i}\rVert_{2}
 \end{equation}
 
-where $\lVert \cdot \rVert_2$ is the $l_2$ matrix norm to return a scalar, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
+where $n$ is number of rows and columns in $\mathcal{P}$, $\lVert \cdot \rVert_2$ is the $l_2$ matrix norm to return a scalar, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
 
 Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predictions, we select the model $M^*$ with the lowest error:
 
