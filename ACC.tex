@@ -312,7 +312,7 @@ For the lanes, the following 3 emissions are considered:
 \begin{enumerate}
     \item[$b_1^l$] Changing Left if $l(t) < l(t-1)$
     \item[$b_2^l$] Changing Right if $l(t) > l(t-1)$
-    \item[$b_3^l$] Not changing if  $l(t) = l(t-1)$
+    \item[$b_3^l$] Not Changing if  $l(t) = l(t-1)$
 \end{enumerate}
 where we assume that lanes are modeled in increasing order from left to right; i.e. the leftmost lane is $1$ and the rightmost lane is $n$.
 
@@ -326,7 +326,7 @@ where we assume that lanes are modeled in increasing order from left to right; i
 
 In the event that \eqref{eq:pred} returns more than one value, we cross-reference the states with the emission matrix, $\mathcal{B}$ as follows: 
 \begin{equation} \label{eq:pred2}
-    s(t+1)=s_j\vert g_{ij} = \max_b(\mathcal{B}_i)    
+    s(t+1)=s_j\vert g_{ij} = \max_b(\mathcal{B}_i*)    
 \end{equation}
 
 
@@ -387,7 +387,7 @@ The most similar model is chosen to predict the behavior of the observed system.
     \forall{P_i} \in \hat{\mathcal{P}}: e_i = \frac{1}{n}\lVert\tilde{\mathcal{P}}(t)-\mathcal{P}_{i}\rVert_{2}
 \end{equation}
 
-where $n$ is number of rows and columns in $\mathcal{P}$, $\lVert \cdot \rVert_2$ is the $l_2$ matrix norm to return a scalar, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
+where $\frac{1}{n}$ is the inverse of the number of columns in $\mathcal{P}$ and is used to normalize the error, $\lVert \cdot \rVert_2$ is the $l_2$ matrix norm, which in our case, represents the distance (i.e. error) between transition matrices of the observed model and the offline models. This error indicates the confidence we have in each model. A higher error indicates more uncertainty that our predictions will be correct.
 
 Combining all errors, we obtain $\hat{e} = \{e_1,\ldots,e_m\}$. To make predictions, we select the model $M^*$ with the lowest error:
 
@@ -432,7 +432,6 @@ and $\hat{V} = \{v^-(t),v_h^=(t),v^+(t)\}$, which is a time-varying set that dep
 
 Three reachable sets containing all the possible states that can be reached by $h$ are obtained. For example, if $h$ is on a 3 lane road and the prediction horizon is 3 time steps, then a total of 27 predictions are obtained, as indicated by the points in Fig. \ref{fig:reach}.
 
-
 \subsection{Risk Assessment}
 
 Risk is determined by computing the relative distance between $h$ and all vehicles $q\in R_h$ over the predictive horizon $H$. By using the approach presented in Section \ref{sec:ahmmpredupdate}, we can predict future states for all $q$ to obtain:
@@ -445,7 +444,7 @@ Risk is determined by computing the relative distance between $h$ and all vehicl
 \end{equation}
 
 where $V_q$ and $L_q$ are the predicted future velocities and lanes for each vehicle $q$, respectively.
-Using these future velocities, we can calculate the positions of each $q$ over the horizon $H$ as $x_q(t) = v_q(t)\delta t$ and obtain the predicted future positions:
+Using these future velocities, we can calculate the positions of each $q$ over the horizon $H$ as $x_q(t) = v_q(t)\delta t + x_q(0)$ and obtain the predicted future positions:
 \begin{equation}
     \hat{x}_q = \{x_q(t+1),\ldots,x_q(t+H)\}
 \end{equation}
@@ -497,7 +496,7 @@ The representation in \eqref{eq:superrisk} suggests that multiple vehicles affec
  where $i = 1,\ldots,H$, $j = 1,\ldots,n$, and $\hat{\mathcal{R}} \in \mathbb{R}^{H\times n}$.
  
 
- In Fig.~\ref{fig:distr}, we show an example of a risk distribution (i.e. $\hat{\mathcal{R}}$), over $H=3$ for velocity $v_h$. The road scenario (Fig.~\ref{fig:roads}) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps. In addition, other vehicles and future predictions of those vehicles for horizon $H=3$ are also shown in the road scenario.
+ In Fig.~\ref{fig:distr}, we show an example of a risk distribution (i.e. $\hat{\mathcal{R}}$), over $H=3$ for velocity $v_h$. A risk distribution takes into account the future states of each vehicles in the time-varying set of vehicles $R_h(t)$. The road scenario (Fig.~\ref{fig:roads}) shows the user's vehicle as well as reachable points for the vehicle, as indicated by the lines labeled with timesteps. In addition, other vehicles and future predictions of those vehicles for horizon $H=3$ are also shown in the road scenario.
 
 \begin{figure}[ht!]
 	\centering
