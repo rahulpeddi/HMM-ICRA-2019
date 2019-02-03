@@ -321,7 +321,12 @@ where we assume that lanes are modeled in increasing order from left to right; i
   Using the framework outlined in Section \ref{sec:fmwk}, given enough observations, we can extract a model for each surrounding vehicle. This model can be used online to predict future states of the system, and this is achieved by collecting more observations online. These online observed states can then be applied to the pre-trained emission and transition matrices as lookup tables to obtain the most likely future state. Each future state is determined as:
  
 \begin{equation} \label{eq:pred}
-   s(t+1) = s_j \in S \vert p_{ij}=\max_p(\mathcal{P}_i*)
+    s(t+1) = s_j \in S \vert p_{ij}=\max_p(\mathcal{P}_i*)
+\end{equation}
+
+The likelihood that $s(t+1)$ is indeed the future state is denoted as:
+\begin{equation}
+    P[ s(t+1) = s_j]=\max_p(\mathcal{P}_i*)
 \end{equation}
 
 In the event that \eqref{eq:pred} returns more than one value, we cross-reference the states with the emission matrix, $\mathcal{B}$ as follows: 
@@ -538,26 +543,26 @@ The value $r^*(t+1)$ gives information about the safest lane to enter and the sa
 
 At every iteration, the optimal pair $(l^*(t),v^*(t))$ is calculated. In this work, we place an emphasis on the user's risk threshold $r_{\max}$, so the autonomous input $u_a(t) = (l^*(t),v^*(t))$ is only implemented when the condition described in \eqref{eq:inputctrl} is met. By minimizing the risk at $t+1$, we ensure that the immediate action of our vehicle $h$ is always the safest option.
 
-\begin{lemma}
-Given a configuration where there exists a safe sequence of actions, and if any risk in this configuration is above the threshold, $ \exists~\hat{\mathcal{R}}(i,j) >= r_{\max}$ over horizon $H$, the approach in Section \ref{sec:adapt} guarantees that the system is always going to be safe. This is a probabilistic guarantee that hinges on the trust measure $\rho$ of our predictions.
+%\begin{lemma}
+%Given a configuration where there exists a safe sequence of actions, and if any risk in this configuration is above the threshold, $ \exists~\hat{\mathcal{R}}(i,j) >= r_{\max}$ over horizon $H$, the approach in Section \ref{sec:adapt} guarantees that the system is always going to be safe. This is a probabilistic guarantee that hinges on the trust measure $\rho$ of our predictions.
 
-\end{lemma}
+%\end{lemma}
 
-\begin{proof}
+%\begin{proof}
 %Using \eqref{eq:riskdistribution}, we generate a risk distribution $\hat{\mathcal{R}}$. 
-The optimal input pair $u^*(t)=(l^*(t),v^*(t))$ is determined from $r^*(t)$ in \eqref{eq:optpt}.
+%The optimal input pair $u^*(t)=(l^*(t),v^*(t))$ is determined from $r^*(t)$ in \eqref{eq:optpt}.
 %, which is the minimum of $\hat{\mathcal{R}}(1,j)$. 
-Assuming that we are in steady state, meaning trust $\rho$ is not changing, from \eqref{eq:riskcalc} we obtain:
+%Assuming that we are in steady state, meaning trust $\rho$ is not changing, from \eqref{eq:riskcalc} we obtain:
 %\vspace{-10pt}
-\begin{equation}
-\gamma_q^*(t) = \frac{1}{r^*(t)}=(\xi+1) d_q(t) \rho
-\end{equation}
+%\begin{equation}
+%\gamma_q^*(t) = \frac{1}{r^*(t)}=(\xi+1) d_q(t) \rho
+%\end{equation}
 %\vspace{-10pt}
-Minimizing risk means that the quantity $(\xi+1)d_q(t)$ is maximized, hence meaning that the separation between vehicles is maximized.
+%Minimizing risk means that the quantity $(\xi+1)d_q(t)$ is maximized, hence meaning that the separation between vehicles is maximized.
 
-Thus, the input $(l^*,v^*)$ guarantees that at each iteration the separation between $h$ and any other vehicle is maximized. Any other possible input $u(t) \neq u^*(t)$ is associated with a risk $r(t)>r^*(t)$, as defined in \eqref{eq:riskcalc}. $\forall u(t) \neq u^*(t)$, $(\xi+1)d_q(t)\leq\gamma_q^*(t)$ hence proving that $u^*(t)$ will achieve the maximum possible separation at every step.
+%Thus, the input $(l^*,v^*)$ guarantees that at each iteration the separation between $h$ and any other vehicle is maximized. Any other possible input $u(t) \neq u^*(t)$ is associated with a risk $r(t)>r^*(t)$, as defined in \eqref{eq:riskcalc}. $\forall u(t) \neq u^*(t)$, $(\xi+1)d_q(t)\leq\gamma_q^*(t)$ hence proving that $u^*(t)$ will achieve the maximum possible separation at every step.
 
-\end{proof}
+%\end{proof}
 
 \section{Simulations} \label{sec:sims}
 %\vspace{-30pt}
